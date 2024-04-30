@@ -10,6 +10,8 @@ import {createDojoConfig} from '@dojoengine/core'
 import manifest from "@/dojo/manifest.ts";
 import metadataProvider from "@/providers/MetadataProvider.ts";
 import AbiProvider from "@/providers/AbiProvider.tsx";
+import { gameModeAtom } from '@/global/states'
+import {useAtom} from "jotai/index";
 
 
 const DO_NOT_EXCEED_MS = 30_000
@@ -22,6 +24,7 @@ const WORLD_ADDRESS = localStorage.getItem('WORLD_ADDRESS') || '0xfea84b178ab1dc
 function App() {
 
     console.log("Reloading App")
+
 
     const checkRpcUrl = useQuery({
         queryKey: ['rpcUrl'],
@@ -56,17 +59,6 @@ function App() {
         enabled: checkRpcUrl.isSuccess && checkTorii.isSuccess,
     })
 
-    // const metadatas = useQuery({
-    //     queryKey: ['metadatas'],
-    //     queryFn: async () => {
-    //         const {data} = await setupQuery.data.graphSdk.metadatas()
-    //         console.log("m", data)
-    //         return (data.metadatas?.edges ?? [])
-    //     },
-    //     enabled: setupQuery.isSuccess
-    // })
-
-
     if (checkRpcUrl.isLoading) {
         return <Loading>Loading Public Node URL</Loading>
     }
@@ -82,10 +74,7 @@ function App() {
     if (setupQuery.data) {
         return (
             <DojoProvider value={setupQuery.data}>
-                <AbiProvider
-                    provider={setupQuery.data.dojoProvider}
-                    components={setupQuery.data.clientComponents}
-                >
+                <AbiProvider    >
                     <MainLayout>
                         <ScreenAtomRenderer/>
                         <Toaster/>
