@@ -8,10 +8,7 @@ import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
 import manifest from "@/dojo/manifest.ts";
-import metadataProvider from "@/providers/MetadataProvider.ts";
 import AbiProvider from "@/providers/AbiProvider.tsx";
-import { gameModeAtom } from '@/global/states'
-import {useAtom} from "jotai/index";
 
 
 const DO_NOT_EXCEED_MS = 30_000

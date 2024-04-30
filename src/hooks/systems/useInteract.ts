@@ -1,102 +1,15 @@
 import {useDojo} from '@/dojo/useDojo'
-import {useMutation, useQuery} from '@tanstack/react-query'
+import {useMutation} from '@tanstack/react-query'
 import {convertToDecimal, felt252ToString} from '@/global/utils'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import {EntityIndex, getComponentValue} from '@latticexyz/recs'
-import {getEntityIdFromKeys} from '@dojoengine/utils'
-import {Abi, num, selector, shortString} from 'starknet'
-import interpret, {isInstruction, ParamDefinitionType} from '@/lib/Instruction'
-import useManifest from '@/hooks/systems/useManifest'
-import {InterfaceType, Manifest} from '@/global/types'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { getComponentValue} from '@dojoengine/recs'
 import {sleep, uuid} from '@latticexyz/utils'
+import { getEntityIdFromKeys} from '@dojoengine/utils'
+import { num, selector, shortString} from 'starknet'
 import {useToast} from '@/components/ui/use-toast'
 import {useComponentValue} from '@dojoengine/react'
 import {useContext} from "react";
 import {AbiContext} from "@/providers/AbiProvider.tsx";
-
-
-const DEFAULT_PARAMETERS_TYPE = 'pixelaw::core::utils::DefaultParameters'
-
-const convertSnakeToPascal = (snakeCaseString: string) => {
-    return snakeCaseString.split('_').map(function (word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    }).join('')
-}
-
-const getParamsDef: (
-    abi: Abi ,
-    contractName: string,
-    methodName: string,
-    position: { x: number, y: number },
-    strict?: boolean
-) => ParamDefinitionType[] = (
-    abi, contractName, methodName, position, strict = false
-) => {
-
-    const interfaceName = `I${convertSnakeToPascal(contractName)}`
-    const methods = abi.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
-    if (!methods) {
-        if (strict) throw new Error(`unknown interface: ${interfaceName}`)
-        else return []
-    }
-    if (!methods?.items) {
-        if (strict) throw new Error(`no methods for interface: ${interfaceName}`)
-        else return []
-    }
-
-    let functionDef = methods.items.find(method => method.name === methodName && method.type === 'function')
-    if (!functionDef) {
-        functionDef = methods.items.find(method => method.name === 'interact' && method.type === 'function')
-        if (!functionDef) {
-            if (strict) throw new Error(`function ${methodName} not found`)
-            else return []
-        }
-    }
-    const parameters = functionDef.inputs.filter(input => input.type !== DEFAULT_PARAMETERS_TYPE)
-
-    return parameters.map(param => {
-        if (isInstruction(param.name)) {
-            // problem with types on contract.abi
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            return interpret(contractName, position, param.name, contract.abi)
-        }
-        const isPrimitiveType = param.type.includes("core::integer") || param.type.includes("core::felt252")
-        let type: 'number' | 'string' | 'enum' = 'number'
-        let variants: { name: string, value: number }[] = []
-        if (!isPrimitiveType) {
-            const typeDefinition = contract.abi.find(x => x.name === param.type)
-            if (typeDefinition?.type === "enum") {
-                variants = (typeDefinition?.variants ?? [])
-                    .map((variant, index) => {
-                        return {
-                            name: variant.name,
-                            value: index
-                        }
-                    })
-                    .filter(variant => variant.name !== 'None')
-                type = 'enum'
-            }
-        } else if (param.type.includes("core::felt252")) {
-            type = 'string'
-        }
-        return {
-            name: param.name,
-            type,
-
-            // if is not primitive type fill these out
-            variants,
-
-            // for interpret instruction only
-            transformValue: undefined,
-            value: undefined,
-
-        }
-    })
-}
+import getParamsDef from "@/hooks/utils/paramsDef.ts"
 
 /// @dev this does not handle struct params yet...will support this on a later iteration
 const useInteract = (
@@ -125,7 +38,7 @@ const useInteract = (
     const solidColor = color.replace('#', '0xFF')
     const decimalColor = convertToDecimal(solidColor)
 
-    const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)]) as EntityIndex
+    const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)])
     const pixelValue = getComponentValue(Pixel, entityId)
 
     const action = (!pixelValue?.action || pixelValue?.action.toString() === '0x0') ? 'interact' : pixelValue.action
@@ -147,11 +60,10 @@ const useInteract = (
         interact: useMutation({
             mutationKey: ['useInteract', contractName, color],
             mutationFn: async ({otherParams}: {
-                // eslint-disable-next-line
                 otherParams?: Record<string, any>
             }) => {
 
-                const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)]) as EntityIndex
+                const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)])
                 const pixelId = uuid()
                 Pixel.addOverride(pixelId, {
                     entity: entityId,
@@ -159,7 +71,7 @@ const useInteract = (
                         color: decimalColor,
                         x: position.x,
                         y: position.y,
-                        owner: account.address,
+                        owner: BigInt(account.address),
                     }
                 })
 
