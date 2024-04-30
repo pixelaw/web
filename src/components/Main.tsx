@@ -1,5 +1,5 @@
 import React from 'react'
-import Plugin from '@/components/Plugin'
+import Apps from '@/components/Apps.tsx'
 import { ColorResult, CompactPicker } from 'react-color'
 import DrawPanel from '@/components/shared/DrawPanel'
 import DrawPanelProvider from '@/providers/DrawPanelProvider.tsx'
@@ -33,7 +33,7 @@ const Main = () => {
                             <CompactPicker color={selectedHexColor} onChangeComplete={handleColorChange} />
                           </div>
 
-                      <Plugin/>
+                      <Apps/>
 
                 </DrawPanelProvider>
           }

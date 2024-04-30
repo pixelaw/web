@@ -17,6 +17,8 @@ export default defineConfig({
       example: ".env.example",
     }),
   ],
+  optimizeDeps: {
+  },
   server: {
     proxy: {
       '/api': {

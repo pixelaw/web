@@ -22,7 +22,7 @@ type PluginButtonPropsType = {
   selected?: boolean
 }
 
-const PluginButton = ({ system, onSelect, expanded, selected }: PluginButtonPropsType) => {
+const AppButton = ({ system, onSelect, expanded, selected }: PluginButtonPropsType) => {
   const {
     setup: {
       clientComponents: {
@@ -70,7 +70,7 @@ const PluginButton = ({ system, onSelect, expanded, selected }: PluginButtonProp
   )
 }
 
-export default function Plugin() {
+export default function Apps() {
 
   const {
     setup: {
@@ -84,6 +84,13 @@ export default function Plugin() {
   const [ gameMode, setGameMode ] = useAtom(gameModeAtom)
   const selectedAppId = getEntityIdFromKeys([ BigInt(shortString.encodeShortString(gameMode)) ])
   const selectedApp = useComponentValue(AppName, selectedAppId)
+
+    // Retrieve all metadatas
+
+    // filter metadatas to only get id = app.system
+
+    // Retrieve the ipfs data for the given address
+
 
   const positionWithAddressAndType = useAtomValue(positionWithAddressAndTypeAtom)
 
@@ -143,7 +150,7 @@ export default function Plugin() {
                 .map((app) => {
                   const componentValue = getComponentValue(App, app)
                   return (
-                    <PluginButton
+                    <AppButton
                       key={app}
                       system={app as unknown as string}
                       selected={componentValue?.system === selectedApp?.system}

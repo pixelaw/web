@@ -1,6 +1,6 @@
-export const PUBLIC_TORII: string =  import.meta.env.PUBLIC_TORII
+export const PUBLIC_TORII: string =  "http://localhost:8080"
 
-export const PUBLIC_NODE_URL: string = import.meta.env.PUBLIC_NODE_URL
+export const PUBLIC_NODE_URL: string = "http://localhost:5050"
 
 export const PUBLIC_MANIFEST_URL: string = import.meta.env.PUBLIC_MANIFEST_URL
 

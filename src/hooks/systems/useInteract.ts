@@ -14,6 +14,9 @@ import { InterfaceType, Manifest } from '@/global/types'
 import { sleep, uuid } from '@latticexyz/utils'
 import { useToast } from '@/components/ui/use-toast'
 import { useComponentValue } from '@dojoengine/react'
+import metadataProvider from "@/providers/MetadataProvider.ts";
+import {useContext} from "react";
+import {AbiContext} from "@/providers/AbiProvider.tsx";
 
 const DEFAULT_PARAMETERS_TYPE = 'pixelaw::core::utils::DefaultParameters'
 
@@ -106,15 +109,24 @@ const useInteract = (
   const {
     setup: {
       systemCalls: {interact},
-      clientComponents: { Pixel, AppName, Instruction },
-      switchManifest
+      clientComponents: { Pixel, AppName, Instruction }
+
     },
     account: { account }
+
   } = useDojo()
 
+  const { getAbiByAddress } = useContext(AbiContext);
+
+  console.log("aa", getAbiByAddress("0x790353f2e4861977852c319a07092652faa3ca9f9096b16e723ab448cbadcd"))
   const { toast } = useToast()
 
-  const manifest = useManifest({ name: appName })
+
+  // const metadatas = useMetadatas("0x03dac8363de378ef479b4b4da400e99e7a14e15d91395fc1870e96eb6e647e44")
+  // const filteredData = metadatas.filter(edge => edge?.node?.id === "0x03dac8363de378ef479b4b4da400e99e7a14e15d91395fc1870e96eb6e647e44")
+  // console.log(metadatas)
+
+  const manifest = {} //useManifest({ name: appName })
 
   const contractName = `${appName}_actions`
 

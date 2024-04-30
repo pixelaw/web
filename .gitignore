@@ -27,3 +27,6 @@ dist-ssr
 */pixel-state.png
 
 .env
+.core
+
+.run

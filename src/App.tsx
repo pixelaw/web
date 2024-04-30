@@ -3,75 +3,69 @@ import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import {useQuery} from '@tanstack/react-query'
 import {setup} from '@/dojo/setup'
-import {CORE_VERSION, MANIFEST_URL, PUBLIC_MANIFEST_URL, PUBLIC_NODE_URL, PUBLIC_TORII} from '@/global/constants'
 import {DojoProvider} from './DojoContext';
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
-import React from 'react'
 import {createDojoConfig} from '@dojoengine/core'
-import {streamToString} from '@/global/utils'
+import manifest from "@/dojo/manifest.ts";
+import metadataProvider from "@/providers/MetadataProvider.ts";
+import AbiProvider from "@/providers/AbiProvider.tsx";
+
 
 const DO_NOT_EXCEED_MS = 30_000
 
+const PUBLIC_NODE_URL = localStorage.getItem('PUBLIC_NODE_URL') || 'http://localhost:5050';
+const PUBLIC_TORII = localStorage.getItem('PUBLIC_TORII') || 'http://localhost:8080';
+const WORLD_ADDRESS = localStorage.getItem('WORLD_ADDRESS') || '0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e';
+
+
 function App() {
-    React.useEffect(() => {
-        document.title = `PixeLAW ${CORE_VERSION}`
-    }, [CORE_VERSION])
-    console.log("reload")
-    const checkRpcUrl = useQuery(
-        {
-            queryKey: ['rpcUrl'],
-            queryFn: async () => await fetch(PUBLIC_NODE_URL),
-            retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
-            retry: 8,
-            staleTime: Infinity, // Data will never be considered stale
-        }
-    )
 
-    const checkTorii = useQuery(
-        {
-            queryKey: ['toriiUrl'],
-            queryFn: async () => await fetch(PUBLIC_TORII),
-            retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
-            retry: 8,
-            enabled: checkRpcUrl.isSuccess
-        }
-    )
+    console.log("Reloading App")
 
-    const checkManifests = useQuery(
-        {
-            queryKey: ['coreManifest'],
-            queryFn: async () => {
-                const result = await fetch(`${PUBLIC_MANIFEST_URL}/manifests/core`)
-                if (!result.body) return {}
-                const string = await streamToString(result.body)
-                return JSON.parse(string)
-            },
-            retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
-            retry: 8,
-            enabled: checkRpcUrl.isSuccess
-        }
-    )
+    const checkRpcUrl = useQuery({
+        queryKey: ['rpcUrl'],
+        queryFn: async () => await fetch(PUBLIC_NODE_URL),
+        retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
+        retry: 8,
+        staleTime: Infinity, // Data will never be considered stale
+    })
 
-    const setupQuery = useQuery(
-        {
-            queryKey: ['setup'],
-            queryFn: async () => {
-                return setup(
-                    createDojoConfig({
-                        manifest: checkManifests.data,
-                        masterAddress: '0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486',
-                        masterPrivateKey: '0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a',
-                        rpcUrl: PUBLIC_NODE_URL,
-                        toriiUrl: PUBLIC_TORII
-                    })
-                )
-            },
-            retry: false,
-            retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
-            enabled: checkManifests.isSuccess
-        }
-    )
+    const checkTorii = useQuery({
+        queryKey: ['toriiUrl'],
+        queryFn: async () => await fetch(PUBLIC_TORII),
+        retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, DO_NOT_EXCEED_MS),
+        retry: 8,
+        enabled: checkRpcUrl.isSuccess
+    })
+
+
+    const setupQuery = useQuery({
+        queryKey: ['setup'],
+        queryFn: async () => {
+            return setup(
+                createDojoConfig({
+                    manifest: manifest(WORLD_ADDRESS),
+                    masterAddress: '0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486',
+                    masterPrivateKey: '0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a',
+                    rpcUrl: PUBLIC_NODE_URL,
+                    toriiUrl: PUBLIC_TORII
+                })
+            )
+        },
+        enabled: checkRpcUrl.isSuccess && checkTorii.isSuccess,
+    })
+
+    // const metadatas = useQuery({
+    //     queryKey: ['metadatas'],
+    //     queryFn: async () => {
+    //         const {data} = await setupQuery.data.graphSdk.metadatas()
+    //         console.log("m", data)
+    //         return (data.metadatas?.edges ?? [])
+    //     },
+    //     enabled: setupQuery.isSuccess
+    // })
+
 
     if (checkRpcUrl.isLoading) {
         return <Loading>Loading Public Node URL</Loading>
@@ -81,10 +75,6 @@ function App() {
         return <Loading>Contracts are being deployed</Loading>
     }
 
-    if (checkManifests.isLoading) {
-        return <Loading>Core Manifest</Loading>
-    }
-
     if (setupQuery.isLoading) {
         return <Loading>Loading setupQuery</Loading>
     }
@@ -92,19 +82,24 @@ function App() {
     if (setupQuery.data) {
         return (
             <DojoProvider value={setupQuery.data}>
-                <MainLayout>
-                    <ScreenAtomRenderer/>
-                    <Toaster/>
-                </MainLayout>
+                <AbiProvider
+                    provider={setupQuery.data.dojoProvider}
+                    components={setupQuery.data.clientComponents}
+                >
+                    <MainLayout>
+                        <ScreenAtomRenderer/>
+                        <Toaster/>
+                    </MainLayout>
+                </AbiProvider>
             </DojoProvider>
         );
     }
 
     let errorMessage = ''
+
     if (setupQuery.isError) {
         errorMessage = `setupQuery Error: ${setupQuery.error}`
     }
-    console.log({setupQuery, checkManifests})
 
     if (checkRpcUrl.isError) {
         errorMessage = `PUBLIC_NODE_URL error: ${checkRpcUrl.error.message}. If this is happening in your local environment, Katana might not be up.`
@@ -114,9 +109,6 @@ function App() {
         errorMessage = `PUBLIC_TORII error: ${checkTorii.error.message}. If this is happening in your local environment, Torii might not be up.`
     }
 
-    if (checkManifests.isError) {
-        errorMessage = `Core Manifest Error: ${checkManifests.error.message}. If this is happening in your local environment, Keiko might not be up or the Core Manifest might not have been uploaded yet.`
-    }
 
     return (
         <div
@@ -127,12 +119,17 @@ function App() {
             )}
         >
             <div className={'w-[25%]'}>
-                <h1 className={'text-lg uppercase font-silkscreen text-brand-danger text-center'}>Something went
-                    wrong</h1>
+                <h1 className={'text-lg uppercase font-silkscreen text-brand-danger text-center'}>
+                    Something went wrong
+                </h1>
                 {errorMessage !== '' &&
-                    <p className={'text-sm text-brand-violetAccent text-white mt-xs'}>{errorMessage}</p>}
-                <p className={'text-sm text-brand-violetAccent text-white mt-xs'}>Try to refresh this page. If issue
-                    still persists, alert the team at Discord.</p>
+                    <p className={'text-sm text-brand-violetAccent text-white mt-xs'}>
+                        {errorMessage}
+                    </p>
+                }
+                <p className={'text-sm text-brand-violetAccent text-white mt-xs'}>
+                    Try to refresh this page. If issue still persists, alert the team at Discord.
+                </p>
             </div>
         </div>
     );

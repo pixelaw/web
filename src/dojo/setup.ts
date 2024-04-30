@@ -11,6 +11,7 @@ import { BurnerManager } from "@dojoengine/create-burner";
 import { getSdk } from '@/generated/graphql'
 import { GraphQLClient } from 'graphql-request'
 import { PUBLIC_TORII } from '@/global/constants'
+import metadataProvider from "@/providers/MetadataProvider.ts";
 
 export type SetupResult = Awaited<ReturnType<typeof setup>>;
 
@@ -60,7 +61,7 @@ export async function setup({ ...config }: DojoConfig) {
     ),
     accountClassHash: config.accountClassHash,
     rpcProvider: dojoProvider.provider,
-    feeTokenAddress: ""
+    feeTokenAddress: config.feeTokenAddress
   });
 
   console.log("burnerManager.init()")
@@ -78,7 +79,10 @@ export async function setup({ ...config }: DojoConfig) {
   // Add in new queries or subscriptions in src/graphql/schema.graphql
   // then generate them using the codegen and fix-codegen commands in package.json
   const createGraphSdk = () => getSdk(new GraphQLClient(`${PUBLIC_TORII}/graphql`));
+
+
   console.groupEnd();
+
   return {
     client,
     clientComponents,
@@ -90,7 +94,6 @@ export async function setup({ ...config }: DojoConfig) {
     ),
     config,
     dojoProvider,
-    burnerManager,
-    switchManifest: (manifest: any) => dojoProvider.manifest = manifest
+    burnerManager
   };
 }

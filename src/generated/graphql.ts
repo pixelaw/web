@@ -1,8 +1,7 @@
-import { GraphQLClient } from 'graphql-request';
+import { GraphQLClient, RequestOptions } from 'graphql-request';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { GraphQLClientRequestHeaders } from 'graphql-request/build/cjs/types';
-import { print } from 'graphql'
+import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -11,6 +10,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+type GraphQLClientRequestHeaders = RequestOptions['requestHeaders'];
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -309,149 +309,7 @@ export type InstructionWhereInput = {
   systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
 };
 
-export type LastAttempt = {
-  __typename?: 'LastAttempt';
-  entity?: Maybe<World__Entity>;
-  player?: Maybe<Scalars['ContractAddress']['output']>;
-  timestamp?: Maybe<Scalars['u64']['output']>;
-};
-
-export type LastAttemptConnection = {
-  __typename?: 'LastAttemptConnection';
-  edges?: Maybe<Array<Maybe<LastAttemptEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type LastAttemptEdge = {
-  __typename?: 'LastAttemptEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<LastAttempt>;
-};
-
-export type LastAttemptOrder = {
-  direction: OrderDirection;
-  field: LastAttemptOrderField;
-};
-
-export enum LastAttemptOrderField {
-  Player = 'PLAYER',
-  Timestamp = 'TIMESTAMP'
-}
-
-export type LastAttemptWhereInput = {
-  player?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  timestamp?: InputMaybe<Scalars['u64']['input']>;
-  timestampEQ?: InputMaybe<Scalars['u64']['input']>;
-  timestampGT?: InputMaybe<Scalars['u64']['input']>;
-  timestampGTE?: InputMaybe<Scalars['u64']['input']>;
-  timestampLT?: InputMaybe<Scalars['u64']['input']>;
-  timestampLTE?: InputMaybe<Scalars['u64']['input']>;
-  timestampNEQ?: InputMaybe<Scalars['u64']['input']>;
-};
-
-export type MinesweeperGame = {
-  __typename?: 'MinesweeperGame';
-  creator?: Maybe<Scalars['ContractAddress']['output']>;
-  entity?: Maybe<World__Entity>;
-  id?: Maybe<Scalars['u32']['output']>;
-  mines_amount?: Maybe<Scalars['u32']['output']>;
-  size?: Maybe<Scalars['u32']['output']>;
-  started_timestamp?: Maybe<Scalars['u64']['output']>;
-  state?: Maybe<Scalars['Enum']['output']>;
-  x?: Maybe<Scalars['u32']['output']>;
-  y?: Maybe<Scalars['u32']['output']>;
-};
-
-export type MinesweeperGameConnection = {
-  __typename?: 'MinesweeperGameConnection';
-  edges?: Maybe<Array<Maybe<MinesweeperGameEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type MinesweeperGameEdge = {
-  __typename?: 'MinesweeperGameEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<MinesweeperGame>;
-};
-
-export type MinesweeperGameOrder = {
-  direction: OrderDirection;
-  field: MinesweeperGameOrderField;
-};
-
-export enum MinesweeperGameOrderField {
-  Creator = 'CREATOR',
-  Id = 'ID',
-  MinesAmount = 'MINES_AMOUNT',
-  Size = 'SIZE',
-  StartedTimestamp = 'STARTED_TIMESTAMP',
-  State = 'STATE',
-  X = 'X',
-  Y = 'Y'
-}
-
-export type MinesweeperGameWhereInput = {
-  creator?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  creatorNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  id?: InputMaybe<Scalars['u32']['input']>;
-  idEQ?: InputMaybe<Scalars['u32']['input']>;
-  idGT?: InputMaybe<Scalars['u32']['input']>;
-  idGTE?: InputMaybe<Scalars['u32']['input']>;
-  idLT?: InputMaybe<Scalars['u32']['input']>;
-  idLTE?: InputMaybe<Scalars['u32']['input']>;
-  idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  mines_amount?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountEQ?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountGT?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountGTE?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountLT?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountLTE?: InputMaybe<Scalars['u32']['input']>;
-  mines_amountNEQ?: InputMaybe<Scalars['u32']['input']>;
-  size?: InputMaybe<Scalars['u32']['input']>;
-  sizeEQ?: InputMaybe<Scalars['u32']['input']>;
-  sizeGT?: InputMaybe<Scalars['u32']['input']>;
-  sizeGTE?: InputMaybe<Scalars['u32']['input']>;
-  sizeLT?: InputMaybe<Scalars['u32']['input']>;
-  sizeLTE?: InputMaybe<Scalars['u32']['input']>;
-  sizeNEQ?: InputMaybe<Scalars['u32']['input']>;
-  started_timestamp?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampEQ?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampGT?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampGTE?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampLT?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampLTE?: InputMaybe<Scalars['u64']['input']>;
-  started_timestampNEQ?: InputMaybe<Scalars['u64']['input']>;
-  state?: InputMaybe<Scalars['Enum']['input']>;
-  x?: InputMaybe<Scalars['u32']['input']>;
-  xEQ?: InputMaybe<Scalars['u32']['input']>;
-  xGT?: InputMaybe<Scalars['u32']['input']>;
-  xGTE?: InputMaybe<Scalars['u32']['input']>;
-  xLT?: InputMaybe<Scalars['u32']['input']>;
-  xLTE?: InputMaybe<Scalars['u32']['input']>;
-  xNEQ?: InputMaybe<Scalars['u32']['input']>;
-  y?: InputMaybe<Scalars['u32']['input']>;
-  yEQ?: InputMaybe<Scalars['u32']['input']>;
-  yGT?: InputMaybe<Scalars['u32']['input']>;
-  yGTE?: InputMaybe<Scalars['u32']['input']>;
-  yLT?: InputMaybe<Scalars['u32']['input']>;
-  yLTE?: InputMaybe<Scalars['u32']['input']>;
-  yNEQ?: InputMaybe<Scalars['u32']['input']>;
-};
-
-export type ModelUnion = App | AppName | AppUser | CoreActionsAddress | Instruction | LastAttempt | MinesweeperGame | Permissions | Pixel | QueueItem | Snake | SnakeSegment;
+export type ModelUnion = App | AppName | AppUser | CoreActionsAddress | Instruction | Permissions | Pixel | QueueItem | Snake | SnakeSegment;
 
 export enum OrderDirection {
   Asc = 'ASC',
@@ -724,6 +582,7 @@ export type SnakeSegment = {
   entity?: Maybe<World__Entity>;
   id?: Maybe<Scalars['u32']['output']>;
   next_id?: Maybe<Scalars['u32']['output']>;
+  pixel_original_app?: Maybe<Scalars['ContractAddress']['output']>;
   pixel_original_color?: Maybe<Scalars['u32']['output']>;
   pixel_original_text?: Maybe<Scalars['felt252']['output']>;
   previous_id?: Maybe<Scalars['u32']['output']>;
@@ -752,6 +611,7 @@ export type SnakeSegmentOrder = {
 export enum SnakeSegmentOrderField {
   Id = 'ID',
   NextId = 'NEXT_ID',
+  PixelOriginalApp = 'PIXEL_ORIGINAL_APP',
   PixelOriginalColor = 'PIXEL_ORIGINAL_COLOR',
   PixelOriginalText = 'PIXEL_ORIGINAL_TEXT',
   PreviousId = 'PREVIOUS_ID',
@@ -774,6 +634,13 @@ export type SnakeSegmentWhereInput = {
   next_idLT?: InputMaybe<Scalars['u32']['input']>;
   next_idLTE?: InputMaybe<Scalars['u32']['input']>;
   next_idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_app?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
   pixel_original_color?: InputMaybe<Scalars['u32']['input']>;
   pixel_original_colorEQ?: InputMaybe<Scalars['u32']['input']>;
   pixel_original_colorGT?: InputMaybe<Scalars['u32']['input']>;
@@ -872,6 +739,7 @@ export type World__Entity = {
   __typename?: 'World__Entity';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   eventId?: Maybe<Scalars['String']['output']>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   models?: Maybe<Array<Maybe<ModelUnion>>>;
@@ -895,6 +763,7 @@ export type World__Event = {
   __typename?: 'World__Event';
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   data?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
   transactionHash?: Maybe<Scalars['String']['output']>;
@@ -913,11 +782,36 @@ export type World__EventEdge = {
   node?: Maybe<World__Event>;
 };
 
+export type World__EventMessage = {
+  __typename?: 'World__EventMessage';
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
+  eventId?: Maybe<Scalars['String']['output']>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
+  id?: Maybe<Scalars['ID']['output']>;
+  keys?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  models?: Maybe<Array<Maybe<ModelUnion>>>;
+  updatedAt?: Maybe<Scalars['DateTime']['output']>;
+};
+
+export type World__EventMessageConnection = {
+  __typename?: 'World__EventMessageConnection';
+  edges?: Maybe<Array<Maybe<World__EventMessageEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type World__EventMessageEdge = {
+  __typename?: 'World__EventMessageEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<World__EventMessage>;
+};
+
 export type World__Metadata = {
   __typename?: 'World__Metadata';
   content?: Maybe<World__Content>;
   coverImg?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
   iconImg?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -941,7 +835,9 @@ export type World__MetadataEdge = {
 export type World__Model = {
   __typename?: 'World__Model';
   classHash?: Maybe<Scalars['felt252']['output']>;
+  contractAddress?: Maybe<Scalars['felt252']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   transactionHash?: Maybe<Scalars['felt252']['output']>;
@@ -960,6 +856,16 @@ export type World__ModelEdge = {
   node?: Maybe<World__Model>;
 };
 
+export type World__ModelOrder = {
+  direction: OrderDirection;
+  field: World__ModelOrderField;
+};
+
+export enum World__ModelOrderField {
+  ClassHash = 'CLASS_HASH',
+  Name = 'NAME'
+}
+
 export type World__PageInfo = {
   __typename?: 'World__PageInfo';
   endCursor?: Maybe<Scalars['Cursor']['output']>;
@@ -971,23 +877,23 @@ export type World__PageInfo = {
 export type World__Query = {
   __typename?: 'World__Query';
   appModels?: Maybe<AppConnection>;
-  appnameModels?: Maybe<AppNameConnection>;
-  appuserModels?: Maybe<AppUserConnection>;
-  coreactionsaddressModels?: Maybe<CoreActionsAddressConnection>;
+  appNameModels?: Maybe<AppNameConnection>;
+  appUserModels?: Maybe<AppUserConnection>;
+  coreActionsAddressModels?: Maybe<CoreActionsAddressConnection>;
   entities?: Maybe<World__EntityConnection>;
   entity: World__Entity;
+  eventMessage: World__EventMessage;
+  eventMessages?: Maybe<World__EventMessageConnection>;
   events?: Maybe<World__EventConnection>;
   instructionModels?: Maybe<InstructionConnection>;
-  lastattemptModels?: Maybe<LastAttemptConnection>;
   metadatas?: Maybe<World__MetadataConnection>;
-  minesweepergameModels?: Maybe<MinesweeperGameConnection>;
   model: World__Model;
   models?: Maybe<World__ModelConnection>;
   permissionsModels?: Maybe<PermissionsConnection>;
   pixelModels?: Maybe<PixelConnection>;
-  queueitemModels?: Maybe<QueueItemConnection>;
+  queueItemModels?: Maybe<QueueItemConnection>;
   snakeModels?: Maybe<SnakeConnection>;
-  snakesegmentModels?: Maybe<SnakeSegmentConnection>;
+  snakeSegmentModels?: Maybe<SnakeSegmentConnection>;
   transaction: World__Transaction;
   transactions?: Maybe<World__TransactionConnection>;
 };
@@ -1005,7 +911,7 @@ export type World__QueryAppModelsArgs = {
 };
 
 
-export type World__QueryAppnameModelsArgs = {
+export type World__QueryAppNameModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1017,7 +923,7 @@ export type World__QueryAppnameModelsArgs = {
 };
 
 
-export type World__QueryAppuserModelsArgs = {
+export type World__QueryAppUserModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1029,7 +935,7 @@ export type World__QueryAppuserModelsArgs = {
 };
 
 
-export type World__QueryCoreactionsaddressModelsArgs = {
+export type World__QueryCoreActionsAddressModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1057,6 +963,22 @@ export type World__QueryEntityArgs = {
 };
 
 
+export type World__QueryEventMessageArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type World__QueryEventMessagesArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  keys?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type World__QueryEventsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1080,18 +1002,6 @@ export type World__QueryInstructionModelsArgs = {
 };
 
 
-export type World__QueryLastattemptModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<LastAttemptOrder>;
-  where?: InputMaybe<LastAttemptWhereInput>;
-};
-
-
 export type World__QueryMetadatasArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1099,18 +1009,6 @@ export type World__QueryMetadatasArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type World__QueryMinesweepergameModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<MinesweeperGameOrder>;
-  where?: InputMaybe<MinesweeperGameWhereInput>;
 };
 
 
@@ -1126,6 +1024,7 @@ export type World__QueryModelsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<World__ModelOrder>;
 };
 
 
@@ -1153,7 +1052,7 @@ export type World__QueryPixelModelsArgs = {
 };
 
 
-export type World__QueryQueueitemModelsArgs = {
+export type World__QueryQueueItemModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1177,7 +1076,7 @@ export type World__QuerySnakeModelsArgs = {
 };
 
 
-export type World__QuerySnakesegmentModelsArgs = {
+export type World__QuerySnakeSegmentModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -1190,7 +1089,7 @@ export type World__QuerySnakesegmentModelsArgs = {
 
 
 export type World__QueryTransactionArgs = {
-  id: Scalars['ID']['input'];
+  transactionHash: Scalars['ID']['input'];
 };
 
 
@@ -1213,6 +1112,7 @@ export type World__Subscription = {
   __typename?: 'World__Subscription';
   entityUpdated: World__Entity;
   eventEmitted: World__Event;
+  eventMessageUpdated: World__EventMessage;
   modelRegistered: World__Model;
 };
 
@@ -1227,6 +1127,11 @@ export type World__SubscriptionEventEmittedArgs = {
 };
 
 
+export type World__SubscriptionEventMessageUpdatedArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
 export type World__SubscriptionModelRegisteredArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
 };
@@ -1235,6 +1140,7 @@ export type World__Transaction = {
   __typename?: 'World__Transaction';
   calldata?: Maybe<Array<Maybe<Scalars['felt252']['output']>>>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
+  executedAt?: Maybe<Scalars['DateTime']['output']>;
   id?: Maybe<Scalars['ID']['output']>;
   maxFee?: Maybe<Scalars['felt252']['output']>;
   nonce?: Maybe<Scalars['felt252']['output']>;
@@ -1263,6 +1169,11 @@ export type AlertsQueryVariables = Exact<{
 
 export type AlertsQuery = { __typename?: 'World__Query', events?: { __typename?: 'World__EventConnection', edges?: Array<{ __typename?: 'World__EventEdge', node?: { __typename?: 'World__Event', id?: string | null, keys?: Array<string | null> | null, data?: Array<string | null> | null, createdAt?: any | null, transactionHash?: string | null } | null } | null> | null } | null };
 
+export type MetadatasQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MetadatasQuery = { __typename?: 'World__Query', metadatas?: { __typename?: 'World__MetadataConnection', edges?: Array<{ __typename?: 'World__MetadataEdge', node?: { __typename?: 'World__Metadata', id?: string | null, uri?: string | null, worldAddress: string } | null } | null> | null } | null };
+
 
 export const AlertsDocument = gql`
     query alerts($first: Int) {
@@ -1282,18 +1193,38 @@ export const AlertsDocument = gql`
   }
 }
     `;
+export const MetadatasDocument = gql`
+    query metadatas {
+  metadatas {
+    edges {
+      node {
+        id
+        uri
+        worldAddress
+      }
+    }
+  }
+}
+    `;
 
-export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
+export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
 
-const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType) => action();
+const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
 const AlertsDocumentString = print(AlertsDocument);
+const MetadatasDocumentString = print(MetadatasDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
     alerts(variables?: AlertsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: AlertsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<AlertsQuery>(AlertsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'alerts', 'query');
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<AlertsQuery>(AlertsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'alerts', 'query', variables);
+    },
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+    metadatas(variables?: MetadatasQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: MetadatasQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+      console.log("a")
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<MetadatasQuery>(MetadatasDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'metadatas', 'query', variables);
     }
   };
 }
