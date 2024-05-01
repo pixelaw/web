@@ -159,7 +159,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     const expandedMaxX = visibleAreaEnd[0] + expansionFactor
     const expandedMaxY = visibleAreaEnd[1] + expansionFactor
 
-
     visibleAreaStart[0] = expandedMinX < minLimit ? minLimit : expandedMinX
     visibleAreaStart[1] = expandedMinX < minLimit ? minLimit : expandedMinY
 

@@ -44,7 +44,6 @@ const useInteract = (
     const action = (!pixelValue?.action || pixelValue?.action.toString() === '0x0') ? 'interact' : pixelValue.action
     const methodName = felt252ToString(action)
 
-
     const paramsDef = abiLoading?[]:getParamsDef(abi, contractName, methodName, position)
 
     const fillableParamDefs = paramsDef.filter(paramDef => paramDef?.value == null)
@@ -62,7 +61,7 @@ const useInteract = (
             mutationFn: async ({otherParams}: {
                 otherParams?: Record<string, any>
             }) => {
-
+                console.log("heer")
                 const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)])
                 const pixelId = uuid()
                 Pixel.addOverride(pixelId, {

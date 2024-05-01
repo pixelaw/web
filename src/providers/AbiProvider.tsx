@@ -25,20 +25,23 @@ const loadAbi = () => {
     const [gameMode] = useAtom(gameModeAtom)
 
     // Find the current app system address
-    const selectedAppId = useMemo(() => getEntityIdFromKeys([ BigInt(shortString.encodeShortString(gameMode)) ]), [gameMode])
+    const selectedAppId = getEntityIdFromKeys([ BigInt(shortString.encodeShortString(gameMode)) ])
     const selectedApp = useComponentValue(AppName, selectedAppId)
     const selectedAppSystem = selectedApp?.system
+    console.log({gameMode, selectedAppSystem})
 
-
+    // Query the abi for the App System
     const {data: abi = emptyAbi, isLoading} = useQuery({
         queryKey: ['abi', gameMode],
         queryFn: async () => {
             let result: Abi = []
+            console.log("start query")
             if(selectedAppSystem) {
-                console.log("reloading abi for", gameMode)
+                console.log("reloading abi for", selectedAppSystem)
                 const ch =  await provider.getClassHashAt(selectedAppSystem)
                 const cl =  await provider.getClass(ch)
                 result = cl.abi
+
             }
             return result
         },

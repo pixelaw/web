@@ -20,6 +20,7 @@ export default function getParamsDef (
 
     const interfaceName = `I${convertSnakeToPascal(contractName)}`
     const methods = abi.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
+
     if (!methods) {
         if (strict) throw new Error(`unknown interface: ${interfaceName}`)
         else return []

@@ -7,7 +7,9 @@ export type IWorld = Awaited<ReturnType<typeof setupWorld>>;
 
 export async function setupWorld(provider: DojoProvider) {
   function actions() {
-    const interact = async ({ account, contract_name, call, calldata }: { account: AccountInterface, contract_name: string, call: string, calldata: BigNumberish[] }) => {
+    const interact = async (
+        { account, contract_name, call, calldata }: { account: AccountInterface, contract_name: string, call: string, calldata: BigNumberish[] }
+    ) => {
 
       try {
         return await provider.execute(
