@@ -11,7 +11,9 @@ import { BurnerManager } from "@dojoengine/create-burner";
 import { getSdk } from '@/generated/graphql'
 import { GraphQLClient } from 'graphql-request'
 import { PUBLIC_TORII } from '@/global/constants'
-import metadataProvider from "@/providers/MetadataProvider.ts";
+import {CustomDojoProvider} from "@/providers/CustomDojoProvider.ts";
+
+
 
 export type SetupResult = Awaited<ReturnType<typeof setup>>;
 
@@ -19,6 +21,7 @@ export async function setup({ ...config }: DojoConfig) {
   console.group('setup');
 
   console.log("torii.createClient", config.manifest.world.address)
+
   // torii client
   const toriiClient = await torii.createClient([], {
     rpcUrl: config.rpcUrl,
@@ -42,6 +45,9 @@ export async function setup({ ...config }: DojoConfig) {
   await getSyncEntities(toriiClient, contractComponents as any);
 
   console.log("new DojoProvider")
+
+  // TODO Update the manifest with the contracts from the entities
+
 
   // create dojo provider
   const dojoProvider = new DojoProvider(config.manifest, config.rpcUrl);
