@@ -8,8 +8,10 @@ import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
 import AbiProvider from "@/providers/AbiProvider.tsx";
+
 import { useEffect, useState} from "react";
 import { getSettingsStore, setDojoConfig, useSettingsStore } from "./global/settings.store";
+
 
 function App() {
     console.log("💟 PixeLAW App 💟")
@@ -23,17 +25,10 @@ function App() {
 
     const setupQuery = useQuery({
         queryKey: ['setupQuery'],
-        queryFn: async () => {
-            const config = getSettingsStore().config; // because we use the store, we can check for the un-cached config
-            if (!config) {
-                throw new Error("Missing valid Dojo config")
-            }
-            console.log("🏵️ Setting up Dojo 🔨", config)
-            return await setup(createDojoConfig(config!))
-        },
+        queryFn: queryFunction,
         enabled: config !== undefined && configIsValid,
         staleTime: Infinity,
-        retry: false,
+        retry: false, // important: when retrying, dojo can lock up in a setup loop and new queries will never be triggered
     })
 
     if (setupQuery.isLoading) {
