@@ -23,7 +23,7 @@ const useSubscribe = <T extends BaseDataType>(
       {
         next: onMessage,
         error: (err) => console.error(err),
-        complete: () => console.log('Subscription completed')
+        complete: () => console.debug('Subscription completed')
       }
     )
     return () => unsubscribe()
