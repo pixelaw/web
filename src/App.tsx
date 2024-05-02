@@ -9,15 +9,10 @@ import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
 import AbiProvider from "@/providers/AbiProvider.tsx";
 import { useEffect, useState} from "react";
-import { getSettingsStore, setDojoConfig, useSettingsStore } from "./settings.store";
-
-let urlTests = ["http://localhost:5053", "http://localhost:5050", "http://localhost:47478"]
-let idx = 0;
+import { getSettingsStore, setDojoConfig, useSettingsStore } from "./global/settings.store";
 
 function App() {
     console.log("💟 PixeLAW App 💟")
-    const [urlTest, setUrlTest] = useState(urlTests[idx % urlTests.length]);
-
     const {config, configIsValid, configError} = useSettingsStore(state => {
         return {
             config: state.config,
@@ -25,21 +20,6 @@ function App() {
             configError: state.configError
         }
     });
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            console.log("Triggering url change", urlTest)
-            // use the generic setDojoConfig function to update the config, only update this variable; allows to also update manifest:
-            setDojoConfig({
-                rpcUrl: urlTest
-            }).catch((e) => {
-                throw e;
-            })
-            idx++
-            setUrlTest(urlTests[idx % urlTests.length]);
-        }, 7000);
-        return () => clearTimeout(timer);
-    }, [urlTest]); // Depend on setRpcUrl so the effect runs again if it changes
 
     const setupQuery = useQuery({
         queryKey: ['setupQuery'],
