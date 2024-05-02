@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import manifest from "./dojo/manifest";
-import { setup } from "./dojo/setup";
+import manifest from "../dojo/manifest";
+import { setup } from "../dojo/setup";
 
 type DojoConfig = {
   rpcUrl: string;
@@ -26,7 +26,7 @@ export interface ISettingsStore {
 
 export const defaultDojoConfig: DojoConfig = {
   relayUrl: "http://localhost:8080",
-  rpcUrl: "http://localhost:9090",
+  rpcUrl: "http://localhost:5050",
   toriiUrl: "http://localhost:8080",
   manifest: manifest(
     "0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e"
