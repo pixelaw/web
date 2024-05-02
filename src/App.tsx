@@ -1,52 +1,61 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
-import {useQuery, QueryKeyHashFunction} from '@tanstack/react-query'
+import {useQuery,} from '@tanstack/react-query'
 import {setup} from '@/dojo/setup'
 import {DojoProvider} from './DojoContext';
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
 import AbiProvider from "@/providers/AbiProvider.tsx";
-import {useDojoConfig} from "@/dojo/useDojoConfig.tsx";
-import {useContext, useEffect, useRef} from "react";
+import { useCallback, useEffect, useState} from "react";
+import { getSettingsStore, setDojoConfig, useSettingsStore } from "./settings.store";
 
-let hasRun = false
+let urlTests = ["http://localhost:5053", "http://localhost:5050", "http://localhost:47478"]
+let idx = 0;
 
 function App() {
+    console.log("💟 PixeLAW App 💟")
+    const [urlTest, setUrlTest] = useState(urlTests[idx % urlTests.length]);
 
-    console.log("Rendering App")
+    const {config, configIsValid, configError} = useSettingsStore(state => {
+        return {
+            config: state.config,
+            configIsValid: state.configIsValid,
+            configError: state.configError
+        }
+    });
 
-    const {config, isSuccess: configSuccess, error: configError, setRpcUrl} = useDojoConfig();
-    //
-    // useEffect(() => {
+    useEffect(() => {
         const timer = setTimeout(() => {
-            if (hasRun) return;
-            hasRun = true;
-            setRpcUrl("http://localhost:5051");
+            console.log("Triggering url change", urlTest)
+            // use the generic setDojoConfig function to update the config, only update this variable; allows to also update manifest:
+            setDojoConfig({
+                rpcUrl: urlTest
+            }).catch((e) => {
+                throw e;
+            })
+            idx++
+            setUrlTest(urlTests[idx % urlTests.length]);
         }, 7000);
-    //
-    //     // Clean up function to clear the timeout if the component unmounts
-    //     return () => clearTimeout(timer);
-    // }, [setRpcUrl]); // Depend on setRpcUrl so the effect runs again if it changes
+        return () => clearTimeout(timer);
+    }, [urlTest]); // Depend on setRpcUrl so the effect runs again if it changes
 
-
-    console.log(config.rpcUrl,{ configSuccess})
+    const queryFunction = async () => {
+        if (!config) {
+            throw new Error("Missing valid Dojo config")
+        }
+        console.log("🏵️ Setting up Dojo 🔨", config)
+        return await setup(createDojoConfig(config!))
+    };
 
     const setupQuery = useQuery({
-        queryKey: ['setup', config.rpcUrl],
-        queryFn: async () => {
-            console.log("setupp", {configSuccess})
-            return await setup(createDojoConfig(config))
-        },
-        enabled: configSuccess,
+        queryKey: ['setupQuery'],
+        queryFn: queryFunction,
+        enabled: config !== undefined && configIsValid,
         staleTime: Infinity,
+        retry: false, // important: when retrying, dojo can lock up in a setup loop and new queries will never be triggered
     })
-
-    // useEffect(() => {
-    //     console.log("App.useEffect")
-    //     setupQuery.refetch();
-    // }, [config.rpcUrl]);
 
     if (setupQuery.isLoading) {
         return <Loading>Loading setupQuery</Loading>
@@ -72,15 +81,8 @@ function App() {
     }
 
     if (configError) {
-        errorMessage = `configError Error: ${configError}`
+        errorMessage = `configError ${configError}`
     }
-
-    // useEffect(() => {
-    //     if (configSuccess && setupQuery && setupQuery.isSuccess) {
-    //         console.log("refer")
-    //         setupQuery.refetch();
-    //     }
-    // }, [config, configSuccess]);
 
     return (
         <div
