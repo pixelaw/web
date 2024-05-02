@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { createWorld } from '@latticexyz/recs';
+import { createWorld } from '@dojoengine/recs';
 
 export const world = createWorld();
