@@ -25,7 +25,13 @@ function App() {
 
     const setupQuery = useQuery({
         queryKey: ['setupQuery'],
-        queryFn: queryFunction,
+        queryFn: async () => {
+            if (!config) {
+                throw new Error("Missing valid Dojo config")
+            }
+            console.log("🏵️ Setting up Dojo 🔨", config)
+            return await setup(createDojoConfig(config!))
+        },
         enabled: config !== undefined && configIsValid,
         staleTime: Infinity,
         retry: false, // important: when retrying, dojo can lock up in a setup loop and new queries will never be triggered
