@@ -2,10 +2,11 @@
 
 import { AccountInterface, BigNumberish} from 'starknet'
 import {CustomDojoProvider} from "@/providers/CustomDojoProvider.ts";
+import {DojoProvider} from "@dojoengine/core";
 
 export type IWorld = Awaited<ReturnType<typeof setupWorld>>;
 
-export async function setupWorld(provider: CustomDojoProvider) {
+export async function setupWorld(provider: DojoProvider) {
   function actions() {
     const interact = async (
         { account, contract_name, call, calldata }: { account: AccountInterface, contract_name: string, call: string, calldata: BigNumberish[] }

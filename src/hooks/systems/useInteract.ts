@@ -61,7 +61,7 @@ const useInteract = (
             mutationFn: async ({otherParams}: {
                 otherParams?: Record<string, any>
             }) => {
-                console.log("heer")
+
                 const entityId = getEntityIdFromKeys([BigInt(position.x), BigInt(position.y)])
                 const pixelId = uuid()
                 Pixel.addOverride(pixelId, {

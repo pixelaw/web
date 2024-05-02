@@ -28,7 +28,7 @@ const loadAbi = () => {
     const selectedAppId = getEntityIdFromKeys([ BigInt(shortString.encodeShortString(gameMode)) ])
     const selectedApp = useComponentValue(AppName, selectedAppId)
     const selectedAppSystem = selectedApp?.system
-    console.log({gameMode, selectedAppSystem})
+    // console.log({gameMode, selectedAppSystem})
 
     // Query the abi for the App System
     const {data: abi = emptyAbi, isLoading} = useQuery({

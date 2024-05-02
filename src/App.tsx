@@ -1,46 +1,52 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
-import {useQuery} from '@tanstack/react-query'
+import {useQuery, QueryKeyHashFunction} from '@tanstack/react-query'
 import {setup} from '@/dojo/setup'
 import {DojoProvider} from './DojoContext';
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
 import AbiProvider from "@/providers/AbiProvider.tsx";
-import {useConfig} from "@/providers/ConfigProvider.tsx";
-import {useContext} from "react";
-import manifest from "@/dojo/manifest.ts";
+import {useDojoConfig} from "@/dojo/useDojoConfig.tsx";
+import {useContext, useEffect, useRef} from "react";
 
+let hasRun = false
 
 function App() {
 
-    console.log("Reloading App")
+    console.log("Rendering App")
 
-    const {config, isSuccess: configSuccess, error: configError} = useConfig();
+    const {config, isSuccess: configSuccess, error: configError, setRpcUrl} = useDojoConfig();
+    //
+    // useEffect(() => {
+        const timer = setTimeout(() => {
+            if (hasRun) return;
+            hasRun = true;
+            setRpcUrl("http://localhost:5051");
+        }, 7000);
+    //
+    //     // Clean up function to clear the timeout if the component unmounts
+    //     return () => clearTimeout(timer);
+    // }, [setRpcUrl]); // Depend on setRpcUrl so the effect runs again if it changes
 
-    console.log("he")
-    console.log({configSuccess, configError})
+
+    console.log(config.rpcUrl,{ configSuccess})
 
     const setupQuery = useQuery({
-        queryKey: ['setup'],
+        queryKey: ['setup', config.rpcUrl],
         queryFn: async () => {
-            console.log("setup")
-            const result = await setup(createDojoConfig({
-                manifest: manifest(config.worldAddress),
-                masterAddress: '0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486',
-                masterPrivateKey: '0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a',
-                rpcUrl: config.rpcUrl,
-                toriiUrl: config.toriiUrl,
-                relayUrl: config.relayUrl
-            }))
-            return result
+            console.log("setupp", {configSuccess})
+            return await setup(createDojoConfig(config))
         },
         enabled: configSuccess,
-        staleTime: Infinity
+        staleTime: Infinity,
     })
 
-    console.log("done")
+    // useEffect(() => {
+    //     console.log("App.useEffect")
+    //     setupQuery.refetch();
+    // }, [config.rpcUrl]);
 
     if (setupQuery.isLoading) {
         return <Loading>Loading setupQuery</Loading>
@@ -69,6 +75,12 @@ function App() {
         errorMessage = `configError Error: ${configError}`
     }
 
+    // useEffect(() => {
+    //     if (configSuccess && setupQuery && setupQuery.isSuccess) {
+    //         console.log("refer")
+    //         setupQuery.refetch();
+    //     }
+    // }, [config, configSuccess]);
 
     return (
         <div
