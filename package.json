@@ -39,7 +39,6 @@
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.14.2",
     "immer": "^10.1.1",
-    "jotai": "^2.4.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.288.0",
     "micro-starknet": "^0.2.3",

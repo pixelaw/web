@@ -1,8 +1,7 @@
 import React from "react";
 import {clsx} from "clsx";
 import {Button} from "@/components/ui/button";
-import { useAtom } from 'jotai'
-import { zoomLevelAtom } from '@/global/states.ts'
+import { getGameStore, useGameStore } from "@/global/user.store";
 
 type PropsType = {
   value?: number,
@@ -21,19 +20,10 @@ const ZoomControl: React.FC<PropsType & React.HTMLAttributes<HTMLDivElement>> = 
     props
 ) => {
 
-  // const [zoom, setZoom] = React.useState(100)
-  // const [zoom , setZoom] = useAtom(zoomLevelAtom)
-
-  // const handleZoomChange = (newValue: number) => {
-  //   setZoom(newValue)
-  // }
-
+  const zoomLevel = useGameStore((state) => state.zoomLevel);
 
   const {min, max, className} = props
   const steps = props?.steps ?? 1
-
-  const [zoomLevel, setZoomLevel] = useAtom(zoomLevelAtom)
-  // const value = props?.value ?? zoomLevel
 
   const handleChange = (type: ZoomType) => {
     let newValue = zoomLevel
@@ -48,8 +38,7 @@ const ZoomControl: React.FC<PropsType & React.HTMLAttributes<HTMLDivElement>> = 
         if (min > newValue) newValue = min
       }
     }
-    setZoomLevel(newValue)
-    // handleZoomChange(newValue)
+    getGameStore().set({ zoomLevel: newValue })
   }
 
   return (

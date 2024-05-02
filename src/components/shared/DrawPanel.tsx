@@ -3,8 +3,7 @@ import {clsx} from 'clsx'
 import {useRenderGrid} from '@/hooks/useRenderGrid'
 import {CANVAS_HEIGHT, CANVAS_WIDTH, MAX_ROWS_COLS} from '@/global/constants'
 import {useDrawPanel} from '@/providers/DrawPanelProvider.tsx'
-import {useAtomValue} from 'jotai'
-import {notificationDataAtom} from '@/global/states'
+import { useGameStore } from '@/global/user.store'
 
 export type Coordinate = [number, number]
 
@@ -52,8 +51,7 @@ const DrawPanel = () => {
     //canvas ref
     const gridCanvasRef = React.useRef<HTMLCanvasElement>()
 
-
-    const notificationData = useAtomValue(notificationDataAtom)
+    const notificationData = useGameStore((state) => state.notificationData);
 
     const focus = notificationData ? [notificationData] : []
 
