@@ -2,63 +2,46 @@ import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import {useQuery,} from '@tanstack/react-query'
-import {setup} from '@/dojo/setup'
-import {DojoContextProvider} from './DojoContext';
+import {setup, SetupResult} from '@/dojo/setup'
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
-import {createDojoConfig} from '@dojoengine/core'
-import {useSettingsStore} from "./global/settings.store";
-
+import {createDojoConfig, DojoProvider} from '@dojoengine/core'
+import AbiProvider from "@/providers/AbiProvider.tsx";
+import { useCallback, useEffect, useState} from "react";
+import { Account } from "starknet";
+import { useBurnerManager } from "@dojoengine/create-burner";
+import { TPixelLawError, usePixelawProvider } from "./providers/PixelawProvider";
+import { Client } from "@dojoengine/torii-client";
 
 function App() {
-    console.log("Rendering App")
-    const {config, configIsValid, configError} = useSettingsStore(state => {
-        return {
-            config: state.config,
-            configIsValid: state.configIsValid,
-            configError: state.configError
-        }
-    });
+    console.log("💟 PixelAW App 💟")
+   
+    const {clientState, error, gameData} = usePixelawProvider();
 
-    const setupQuery = useQuery({
-        queryKey: ['setupQuery'],
-        queryFn: async () => {
-            if (!config) {
-                throw new Error("Missing valid Dojo config")
-            }
-            console.log("🏵️ Setting up Dojo 🔨", config)
-            return await setup(createDojoConfig(config!))
-        },
-        enabled: config !== undefined && configIsValid,
-        staleTime: Infinity,
-        retry: false, // important: when retrying, dojo can lock up in a setup loop and new queries will never be triggered
-    })
-
-    if (setupQuery.isLoading) {
-        return <Loading>Loading setupQuery</Loading>
+    if (clientState === "loading") {
+        return <Loading>Loading DojoState</Loading>
     }
 
-    if (setupQuery.data) {
+    if (clientState === "gameActive") {
         return (
-            <DojoContextProvider value={setupQuery.data}>
-
-                    <MainLayout>
-                        <ScreenAtomRenderer/>
-                        <Toaster/>
-                    </MainLayout>
-
-            </DojoContextProvider>
+            <AbiProvider>
+                <MainLayout>
+                    <ScreenAtomRenderer/>
+                    <Toaster/>
+                </MainLayout>
+            </AbiProvider>
         );
     }
 
-    let errorMessage = ''
+    let errorMessage = '[Pixel Panic error]'
 
-    if (setupQuery.isError) {
-        errorMessage = `setupQuery Error: ${setupQuery.error}`
-    }
-
-    if (configError) {
-        errorMessage = `configError ${configError}`
+    if (clientState === "error") {
+        // conditional over err type:
+        const errType = typeof (error as TPixelLawError).type === 'string' ? (error as TPixelLawError).type : 'unknown'
+        // error.type == "DojoStateError" 
+        // error.type == "ConfigError"
+        // dojostate error / config error verbosity (in custom error type?)
+        errorMessage = `${errType} error: ${error}`
     }
 
     return (

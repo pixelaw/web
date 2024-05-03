@@ -1,7 +1,7 @@
-import {create} from "zustand";
-import {immer} from "zustand/middleware/immer";
-import manifest from "../dojo/manifest";
-import {setup} from "../dojo/setup";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import manifest from "./dojo/manifest";
+import { setup } from "./dojo/setup";
 
 type DojoConfig = {
   rpcUrl: string;
@@ -26,7 +26,7 @@ export interface ISettingsStore {
 
 export const defaultDojoConfig: DojoConfig = {
   relayUrl: "http://localhost:8080",
-  rpcUrl: "http://localhost:5050",
+  rpcUrl: "http://localhost:9090",
   toriiUrl: "http://localhost:8080",
   manifest: manifest(
     "0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e"
@@ -97,7 +97,9 @@ const useSettingsStore = create<ISettingsStore>()(
           ...defaultDojoConfig,
           ...get().config,
           ...data,
+          manifest: manifest(get().worldAddress!)
         } as DojoConfig;
+
         await checkDojoConfig(newConfig);
         set((state) => {
           Object.assign(state, { config: newConfig, configIsValid: true });
@@ -119,11 +121,6 @@ const useSettingsStore = create<ISettingsStore>()(
     setWorldAddress: async (address: string) => {
       console.warn("unimplemnted")
       // TODO: update the world address
-    },
-    setManifest: (data: Partial<Manifest>) => {
-      set((state) => {
-        Object.assign(state, { manifest: data });
-      });
     },
   }))
 );

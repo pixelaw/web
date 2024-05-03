@@ -4,6 +4,7 @@ import App from './App.tsx';
 import './index.css';
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
+import { PixelawProvider } from './providers/PixelawProvider.tsx';
 
 const queryClient = new QueryClient()
 
@@ -15,8 +16,10 @@ function init() {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <PixelawProvider>
+          <App />
           <ReactQueryDevtools/>
+        </PixelawProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );
