@@ -1,7 +1,6 @@
-import {create} from "zustand";
-import {immer} from "zustand/middleware/immer";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
 import manifest from "../dojo/manifest";
-import {setup} from "../dojo/setup";
 
 type DojoConfig = {
   rpcUrl: string;
@@ -35,12 +34,6 @@ export const defaultDojoConfig: DojoConfig = {
     "0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486",
   masterPrivateKey:
     "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
-};
-
-export type DojoSetupResult = {
-  data: Awaited<ReturnType<typeof setup>>;
-  isSuccess: boolean;
-  error: Error | string | undefined;
 };
 
 const checkUrl = async (url: string) => {
@@ -91,8 +84,6 @@ const useSettingsStore = create<ISettingsStore>()(
       "0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e",
     setDojoConfig: async (data: Partial<DojoConfig>) => {
       try {
-        // If only setting a partial, we use default, then current, then new values
-        // We can also update the manifest here
         const newConfig = {
           ...defaultDojoConfig,
           ...get().config,
@@ -117,13 +108,8 @@ const useSettingsStore = create<ISettingsStore>()(
       });
     },
     setWorldAddress: async (address: string) => {
-      console.warn("unimplemnted")
+      console.warn("unimplemented");
       // TODO: update the world address
-    },
-    setManifest: (data: Partial<Manifest>) => {
-      set((state) => {
-        Object.assign(state, { manifest: data });
-      });
     },
   }))
 );

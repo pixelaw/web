@@ -2,7 +2,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import {useQuery,} from '@tanstack/react-query'
-import {setup, SetupResult} from '@/dojo/setup'
+import {setupPixelaw, SetupResult} from '@/dojo/setupPixelaw'
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig, DojoProvider} from '@dojoengine/core'
@@ -14,8 +14,6 @@ import { TPixelLawError, usePixelawProvider } from "./providers/PixelawProvider"
 import { Client } from "@dojoengine/torii-client";
 
 function App() {
-    console.log("💟 PixelAW App 💟")
-   
     const {clientState, error, gameData} = usePixelawProvider();
 
     if (clientState === "loading") {
