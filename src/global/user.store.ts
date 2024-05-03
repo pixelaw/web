@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
-import { NotificationDataType, PositionWithAddressAndType } from "./types";
+import {create} from "zustand";
+import {immer} from "zustand/middleware/immer";
+import {NotificationDataType, PositionWithAddressAndType} from "./types";
 
 export interface IUserStore {
   gameMode: string;

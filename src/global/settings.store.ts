@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import {create} from "zustand";
+import {immer} from "zustand/middleware/immer";
 import manifest from "../dojo/manifest";
-import { setup } from "../dojo/setup";
+import {setup} from "../dojo/setup";
 
 type DojoConfig = {
   rpcUrl: string;

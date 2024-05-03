@@ -3,18 +3,15 @@ import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import {useQuery,} from '@tanstack/react-query'
 import {setup} from '@/dojo/setup'
-import {DojoProvider} from './DojoContext';
+import {DojoContextProvider} from './DojoContext';
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
 import {createDojoConfig} from '@dojoengine/core'
-import AbiProvider from "@/providers/AbiProvider.tsx";
-
-import { useEffect, useState} from "react";
-import { getSettingsStore, setDojoConfig, useSettingsStore } from "./global/settings.store";
+import {useSettingsStore} from "./global/settings.store";
 
 
 function App() {
-    console.log("💟 PixeLAW App 💟")
+    console.log("Rendering App")
     const {config, configIsValid, configError} = useSettingsStore(state => {
         return {
             config: state.config,
@@ -43,14 +40,14 @@ function App() {
 
     if (setupQuery.data) {
         return (
-            <DojoProvider value={setupQuery.data}>
-                <AbiProvider>
+            <DojoContextProvider value={setupQuery.data}>
+
                     <MainLayout>
                         <ScreenAtomRenderer/>
                         <Toaster/>
                     </MainLayout>
-                </AbiProvider>
-            </DojoProvider>
+
+            </DojoContextProvider>
         );
     }
 

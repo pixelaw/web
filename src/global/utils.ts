@@ -1,4 +1,4 @@
-import { shortString } from 'starknet'
+import {shortString} from 'starknet'
 
 /*
 * @notice converts a number to hexadecimal
