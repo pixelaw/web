@@ -67,7 +67,7 @@ const useInteract = (
                         color: decimalColor,
                         x: position.x,
                         y: position.y,
-                        owner: BigInt(account.address),
+                        owner: BigInt(account!.address),
                     }
                 })
 

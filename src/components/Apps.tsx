@@ -90,12 +90,6 @@ export default function Apps() {
   ]);
   const selectedApp = useComponentValue(AppName, selectedAppId);
 
-  // Retrieve all metadatas
-
-  // filter metadatas to only get id = app.system
-
-  // Retrieve the ipfs data for the given address
-
   const apps = useEntityQuery([Has(App)]);
 
   return (

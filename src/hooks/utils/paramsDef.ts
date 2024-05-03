@@ -19,7 +19,9 @@ export default function getParamsDef (
 ) : ParamDefinitionType[] {
 
     const interfaceName = `I${convertSnakeToPascal(contractName)}`
-    const methods = manifest.contracts.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
+    const contract = manifest.contracts.find(c => c.name.includes(contractName))
+    const abi = contract!.abi
+    const methods = abi.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
 
     if (!methods) {
         if (strict) throw new Error(`unknown interface: ${interfaceName}`)
