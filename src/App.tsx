@@ -1,17 +1,11 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
-import {useQuery,} from '@tanstack/react-query'
-import {setupPixelaw, SetupResult} from '@/dojo/setupPixelaw'
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
-import {createDojoConfig, DojoProvider} from '@dojoengine/core'
 import AbiProvider from "@/providers/AbiProvider.tsx";
-import { useCallback, useEffect, useState} from "react";
-import { Account } from "starknet";
-import { useBurnerManager } from "@dojoengine/create-burner";
-import { TPixelLawError, usePixelawProvider } from "./providers/PixelawProvider";
-import { Client } from "@dojoengine/torii-client";
+import { usePixelawProvider } from "./providers/PixelawProvider";
+import { TPixelLawError } from "./dojo/setupPixelaw";
 
 function App() {
     const {clientState, error, gameData} = usePixelawProvider();
