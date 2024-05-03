@@ -4,7 +4,7 @@ import {useRenderGrid} from '@/hooks/useRenderGrid'
 import {CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAX_ROWS_COLS} from '@/global/constants'
 import {useDrawPanel} from '@/providers/DrawPanelProvider.tsx'
 import { getGameStore, useGameStore } from '@/global/user.store'
-import { createUseGesture, dragAction, pinchAction, wheelAction } from '@use-gesture/react'
+import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from '@use-gesture/react'
 
 export type Coordinate = [number, number]
 
@@ -108,10 +108,20 @@ const DrawPanel = () => {
         }
     }, [])
     
-    const useGesture = createUseGesture([dragAction, pinchAction, wheelAction])
+    const useGesture = createUseGesture([dragAction, pinchAction, wheelAction, hoverAction, moveAction])
     useGesture(
         {
             // onMove: ({ event }) => console.log('move', event),
+            onMove: ({ dragging, event: {clientX, clientY} }) => {
+                if (!gridCanvasRef.current || dragging) return;
+                const rect = gridCanvasRef.current.getBoundingClientRect()
+                const x = Math.abs(panOffsetX) + clientX - rect.left  // pixel
+                const y = Math.abs(panOffsetY) + clientY - rect.top  // pixel
+
+                const gridX = Math.floor(x / cellSize)
+                const gridY = Math.floor(y / cellSize)
+                onHover?.([gridX, gridY])
+            },
             onDrag: ({ pinching, cancel, offset: [x, y], ...rest }) => {
                 if (pinching) return cancel()
                 const offsetX = x - initialPositionX;
@@ -141,42 +151,40 @@ const DrawPanel = () => {
     )
 
 
-    // function onClickCoordinates(x: number, clientY: number) {y
-    //     if (!gridCanvasRef.current) return
-    //     const rect = gridCanvasRef.current.getBoundingClientRect()
-    //     const x = Math.abs(panOffsetX) + clientX - rect.left  // pixel
-    //     const y = Math.abs(panOffsetY) + clientY - rect.top  // pixel
+    function onClickCoordinates(clientX: number, clientY: number) {
+        if (!gridCanvasRef.current) return
+        const rect = gridCanvasRef.current.getBoundingClientRect()
+        const x = Math.abs(panOffsetX) + clientX - rect.left  // pixel
+        const y = Math.abs(panOffsetY) + clientY - rect.top  // pixel
 
-    //     const gridX = Math.floor(x / cellSize)
-    //     const gridY = Math.floor(y / cellSize)
+        const gridX = Math.floor(x / cellSize)
+        const gridY = Math.floor(y / cellSize)
 
-    //     onCellClick?.([gridX, gridY])
-    // }
+        onCellClick?.([gridX, gridY])
+    }
 
-    // function onMouseLeave() {
-    //     setPanning(false)
+    function onMouseLeave() {
+        onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd])
+    }
 
-    //     onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd])
-    // }
+    function onMouseUp(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+        onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd])
 
-    // function onMouseUp(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-    //     setPanning(false)
-    //     onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd])
+        // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
+        console.log('mouse up', event)
+        if (Date.now() - mouseDownTime < 300) {
+            onClickCoordinates(event.clientX, event.clientY)
+        }
+    }
 
-    //     // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
-    //     if (Date.now() - mouseDownTime < 300) {
-    //         onClickCoordinates(event.clientX, event.clientY)
-    //     }
-    // }
+    function onMouseDown(clientX: number, clientY: number) {
+        // setInitialPositionX(clientX - panOffsetX)
+        // setInitialPositionY(clientY - panOffsetY)
 
-    // function onMouseDown(clientX: number, clientY: number) {
-    //     setPanning(true)
-    //     setInitialPositionX(clientX - panOffsetX)
-    //     setInitialPositionY(clientY - panOffsetY)
+        // Record the current time when mouse is down
+        setMouseDownTime(Date.now())
+    }
 
-    //     // Record the current time when mouse is down
-    //     setMouseDownTime(Date.now())
-    // }
 
     // function onMouseHover(clientX: number, clientY: number) {
     //     if (!gridCanvasRef.current) return
@@ -220,11 +228,12 @@ const DrawPanel = () => {
                     <canvas ref={gridCanvasRef}
                             width={CANVAS_WIDTH}
                             height={CANVAS_HEIGHT}
-                            className={clsx(['cursor-pointer pointer-events-none', {'!cursor-grab': panning}])}
-                            // onMouseDown={(event) => onMouseDown(event.clientX, event.clientY)}
+                            className={clsx(['cursor-pointer pointer-events-auto', {'!cursor-grab': panning}])}
+                            onMouseDown={(event) => onMouseDown(event.clientX, event.clientY)}
                             // onMouseMove={(event) => onMouseMove(event.clientX, event.clientY)}
-                            // onMouseUp={(event) => onMouseUp(event)}
-                            // onMouseLeave={onMouseLeave}
+                            onMouseUp={(event) => onMouseUp(event)}
+                            onMouseLeave={onMouseLeave}
+                            onClick={(event) => onMouseUp(event)}
                     />
                 </div>
             </div>
