@@ -4,7 +4,7 @@ import { toast } from '@/components/ui/use-toast'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { getComponentValue } from '@latticexyz/recs'
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { getEntityIdFromKeys } from '@dojoengine/utils'
 import { felt252ToString } from '@/global/utils'
 import { useQueryClient } from '@tanstack/react-query'
@@ -46,7 +46,7 @@ const useAnnounceAlert = () => {
     account: {
       account
     }
-  } = useDojo()
+  } = usePixelaw()
 
   const onAlert = ({data: { eventEmitted: { id, data }}}: EventDataMessage) => {
     const alert = parseEventData(id, data)

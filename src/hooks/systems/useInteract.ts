@@ -1,4 +1,4 @@
-import {useDojo} from '@/dojo/useDojo'
+import {usePixelaw} from '@/dojo/usePixelaw.ts'
 import {useMutation} from '@tanstack/react-query'
 import {convertToDecimal, felt252ToString} from '@/global/utils'
 import { getComponentValue} from '@dojoengine/recs'
@@ -8,7 +8,6 @@ import { num, selector, shortString} from 'starknet'
 import {useToast} from '@/components/ui/use-toast'
 import {useComponentValue} from '@dojoengine/react'
 import {useContext} from "react";
-import {AbiContext} from "@/providers/AbiProvider.tsx";
 import getParamsDef from "@/hooks/utils/paramsDef.ts"
 
 /// @dev this does not handle struct params yet...will support this on a later iteration
@@ -21,15 +20,13 @@ const useInteract = (
     const {
         setup: {
             systemCalls: {interact},
-            clientComponents: {Pixel, AppName, Instruction}
-
+            clientComponents: {Pixel, AppName, Instruction},
+            manifest,
         },
         account: {account}
 
-    } = useDojo()
+    } = usePixelaw()
 
-
-    const {abi, isLoading: abiLoading} = useContext(AbiContext)
 
     const {toast} = useToast()
 
@@ -44,7 +41,7 @@ const useInteract = (
     const action = (!pixelValue?.action || pixelValue?.action.toString() === '0x0') ? 'interact' : pixelValue.action
     const methodName = felt252ToString(action)
 
-    const paramsDef = abiLoading?[]:getParamsDef(abi, contractName, methodName, position)
+    const paramsDef = getParamsDef(manifest, contractName, methodName, position)
 
     const fillableParamDefs = paramsDef.filter(paramDef => paramDef?.value == null)
 

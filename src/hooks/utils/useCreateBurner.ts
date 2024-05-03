@@ -1,4 +1,4 @@
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { useQuery } from '@tanstack/react-query'
 
 const useCreateBurner = (accountIndex: number) => {
@@ -6,7 +6,7 @@ const useCreateBurner = (accountIndex: number) => {
     account: {
       create
     },
-  } = useDojo()
+  } = usePixelaw()
 
   return useQuery({
     queryKey: ['createAccount', accountIndex],

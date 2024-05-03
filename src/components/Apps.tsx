@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import { useComponentValue, useEntityQuery } from "@dojoengine/react";
 import { Has, getComponentValue } from "@dojoengine/recs";
-import { useDojo } from "@/dojo/useDojo";
+import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { felt252ToString, felt252ToUnicode } from "@/global/utils";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { shortString } from "starknet";
@@ -29,7 +29,7 @@ const AppButton = ({
     setup: {
       clientComponents: { App },
     },
-  } = useDojo();
+  } = usePixelaw();
 
   const app = useComponentValue(App, system);
   const name = felt252ToString(app?.name ?? "app name");
@@ -78,7 +78,7 @@ export default function Apps() {
     setup: {
       clientComponents: { App, AppName },
     },
-  } = useDojo();
+  } = usePixelaw();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   const { gameMode, positionWithAddressAndType } = useGameStore((state) => ({

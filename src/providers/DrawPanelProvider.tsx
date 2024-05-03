@@ -1,6 +1,6 @@
 import React, { SetStateAction } from "react";
 import { CellDatum, Coordinate } from "@/components/shared/DrawPanel.tsx";
-import { useDojo } from "@/dojo/useDojo";
+import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -50,7 +50,7 @@ export default function DrawPanelProvider({
     setup: {
       clientComponents: { Pixel },
     },
-  } = useDojo();
+  } = usePixelaw();
 
   //mode of the game
   //setting the coordinates and passing it to plugin when hover in the cell

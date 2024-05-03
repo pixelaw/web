@@ -4,7 +4,7 @@ import Logo from "@/components/shared/Logo";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import {Active_Page, MainLayoutType} from "@/global/types";
 import ZoomControl from "@/components/ZoomControl";
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import WalletAddress from '@/components/WalletAddress'
 import Loading from '@/components/Loading'
 import { getUrlParam } from '@/global/utils'
@@ -44,7 +44,7 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
       account,
       select
     },
-  } = useDojo()
+  } = usePixelaw()
 
   const index = getUrlParam('account', 0)
 

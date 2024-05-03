@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Image from "@/components/ui/Image";
 import { useComponentValue } from "@dojoengine/react";
-import { useDojo } from "@/dojo/useDojo";
+import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { felt252ToString } from "@/global/utils";
 import useAlerts from "@/hooks/events/useAlerts";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
@@ -41,7 +41,7 @@ const Alert: React.FC<AlertProp> = ({
     setup: {
       clientComponents: { App },
     },
-  } = useDojo();
+  } = usePixelaw();
 
   const app = useComponentValue(App, getEntityIdFromKeys([BigInt(caller)]));
   const name = felt252ToString(app?.name ?? "caller");

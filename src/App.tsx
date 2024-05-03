@@ -3,9 +3,8 @@ import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import Loading from '@/components/Loading'
 import {cn} from '@/lib/utils'
-import AbiProvider from "@/providers/AbiProvider.tsx";
-import { usePixelawProvider } from "./providers/PixelawProvider";
-import { TPixelLawError } from "./dojo/setupPixelaw";
+import {usePixelawProvider} from "./providers/PixelawProvider";
+import {TPixelLawError} from "./dojo/setupPixelaw";
 
 function App() {
     const {clientState, error, gameData} = usePixelawProvider();
@@ -16,12 +15,10 @@ function App() {
 
     if (clientState === "gameActive") {
         return (
-            <AbiProvider>
-                <MainLayout>
-                    <ScreenAtomRenderer/>
-                    <Toaster/>
-                </MainLayout>
-            </AbiProvider>
+            <MainLayout>
+                <ScreenAtomRenderer/>
+                <Toaster/>
+            </MainLayout>
         );
     }
 

@@ -1,6 +1,6 @@
 import {Abi} from "starknet";
 import interpret, {isInstruction, ParamDefinitionType, Variant} from "@/lib/Instruction.ts";
-import {InterfaceType} from "@/global/types.ts";
+import {InterfaceType, Manifest} from "@/global/types.ts";
 
 const DEFAULT_PARAMETERS_TYPE = 'pixelaw::core::utils::DefaultParameters'
 
@@ -11,7 +11,7 @@ const convertSnakeToPascal = (snakeCaseString: string) => {
 }
 
 export default function getParamsDef (
-    abi: Abi ,
+    manifest: Manifest ,
     contractName: string,
     methodName: string,
     position: { x: number, y: number },
@@ -19,7 +19,7 @@ export default function getParamsDef (
 ) : ParamDefinitionType[] {
 
     const interfaceName = `I${convertSnakeToPascal(contractName)}`
-    const methods = abi.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
+    const methods = manifest.contracts.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
 
     if (!methods) {
         if (strict) throw new Error(`unknown interface: ${interfaceName}`)

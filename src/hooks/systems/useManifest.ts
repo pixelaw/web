@@ -1,4 +1,4 @@
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { useComponentValue } from '@dojoengine/react'
 import { getEntityIdFromKeys } from '@dojoengine/utils'
 import { shortString } from 'starknet'
@@ -17,7 +17,7 @@ const useManifest = ({name}: PropsType) => {
         App, AppName
       }
     },
-  } = useDojo()
+  } = usePixelaw()
 
   const nameEntityId = getEntityIdFromKeys([BigInt(shortString.encodeShortString(name))])
   const appName = useComponentValue(AppName, nameEntityId)

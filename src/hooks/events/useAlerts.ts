@@ -1,4 +1,4 @@
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { useQuery } from '@tanstack/react-query'
 import { removeNullsFromArray } from '@/global/utils'
 import { parseEventData } from '@/hooks/events/utils'
@@ -11,7 +11,7 @@ const useAlerts = () => {
     account: {
       account
     }
-  } = useDojo()
+  } = usePixelaw()
 
   return useQuery({
     queryKey: ['alerts', account.address.toLowerCase()],

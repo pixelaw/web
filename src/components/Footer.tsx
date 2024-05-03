@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import { felt252ToString, formatAddress } from '@/global/utils.ts'
-import { useDojo } from '@/dojo/useDojo'
+import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { useComponentValue } from '@dojoengine/react'
 import { getEntityIdFromKeys } from '@dojoengine/utils'
 
@@ -24,7 +24,7 @@ export default function Footer(props: PropsType) {
     account: {
       account,
     },
-  } = useDojo()
+  } = usePixelaw()
 
   const system = (props.type === 'N/A' ? 0 : props.type) ?? 0
 
