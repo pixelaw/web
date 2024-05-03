@@ -106,11 +106,7 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
               onClick={() => setCurrentPage(Active_Page.Lobby)}
             />
 
-            <ZoomControl
-              max={100}
-              min={25}
-              steps={5}
-            />
+            <ZoomControl/>
 
             <WalletAddress address={account.address} />
           </WideWrapper>

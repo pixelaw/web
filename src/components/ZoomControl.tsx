@@ -1,90 +1,83 @@
 import React from "react";
-import {clsx} from "clsx";
-import {Button} from "@/components/ui/button";
+import { clsx } from "clsx";
+import { Button } from "@/components/ui/button";
 import { getGameStore, useGameStore } from "@/global/user.store";
+import { INTERACTION } from "@/global/constants";
 
 type PropsType = {
-  value?: number,
-  onZoomChange?: (value: number) => void,
-  min?: number,
-  max?: number
-  steps?: number
-}
+  value?: number;
+  onZoomChange?: (value: number) => void;
+};
 
 enum ZoomType {
   Add,
-  Subtract
+  Subtract,
 }
 
-const ZoomControl: React.FC<PropsType & React.HTMLAttributes<HTMLDivElement>> = (
-    props
-) => {
-
+const ZoomControl: React.FC<
+  PropsType & React.HTMLAttributes<HTMLDivElement>
+> = (props) => {
   const zoomLevel = useGameStore((state) => state.zoomLevel);
 
-  const {min, max, className} = props
-  const steps = props?.steps ?? 1
+  const { MINZOOM, MAXZOOM, ZOOMSTEPS } = INTERACTION;
+  const { className } = props;
 
   const handleChange = (type: ZoomType) => {
-    let newValue = zoomLevel
+    let newValue = zoomLevel;
     if (type === ZoomType.Add) {
-      newValue += steps
-      if (max) {
-        if (max < newValue) newValue = max
+      newValue += ZOOMSTEPS;
+      if (MAXZOOM) {
+        if (MAXZOOM < newValue) newValue = MAXZOOM;
       }
     } else {
-      newValue -= steps
-      if (min) {
-        if (min > newValue) newValue = min
+      newValue -= ZOOMSTEPS;
+      if (MINZOOM) {
+        if (MINZOOM > newValue) newValue = MINZOOM;
       }
     }
-    getGameStore().set({ zoomLevel: newValue })
-  }
+    getGameStore().set({ zoomLevel: newValue });
+  };
 
   return (
+    <div className={clsx(["h-[50px]", className])} {...props}>
       <div
-          className={clsx(
-              [
-                'h-[50px]',
-                className
-              ])}
-          {...props}
+        className={clsx([
+          "h-full w-[15em]",
+          "flex-center gap-x-10",
+          "bg-black rounded-full p-[0.25em] ",
+        ])}
       >
-        <div
-            className={clsx(
-                [
-                  'h-full w-[15em]',
-                  'flex-center gap-x-10',
-                  'bg-black rounded-full p-[0.25em] '
-                ])}
+        <Button
+          variant={"icon"}
+          size={"icon"}
+          onClick={() => handleChange(ZoomType.Subtract)}
+          disabled={MINZOOM ? MINZOOM >= zoomLevel : false}
+          className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
+          &#8722;
+        </Button>
 
-          <Button
-              variant={'icon'}
-              size={'icon'}
-              onClick={() => handleChange(ZoomType.Subtract)}
-              disabled={min ? min >= zoomLevel : false}
-              className={'font-emoji font-bold text-brand-violetAccent text-[34px]'}
-          >
-            &#8722;
-          </Button>
+        <span
+          className={"text-brand-skyblue text-base font-silkscreen text-center"}
+        >
+          {" "}
+          {zoomLevel.toFixed(0)}%{" "}
+        </span>
 
-          <span className={'text-brand-skyblue text-base font-silkscreen text-center'}> {zoomLevel}% </span>
-
-          <Button
-              variant={'icon'}
-              size={'icon'}
-              onClick={() => handleChange(ZoomType.Add)}
-              disabled={max ? max <= zoomLevel : false}
-              className={'font-emoji font-bold text-brand-violetAccent text-[34px]'}
-          >
-            &#43;
-          </Button>
-        </div>
+        <Button
+          variant={"icon"}
+          size={"icon"}
+          onClick={() => handleChange(ZoomType.Add)}
+          disabled={MAXZOOM ? MAXZOOM <= zoomLevel : false}
+          className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
+        >
+          &#43;
+        </Button>
       </div>
-  )
-}
+    </div>
+  );
+};
 
-ZoomControl.displayName = "NavigationBarZoomControl"
+ZoomControl.displayName = "NavigationBarZoomControl";
 
-export default ZoomControl
+export default ZoomControl;
