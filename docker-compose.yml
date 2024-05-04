@@ -7,7 +7,7 @@ services:
       - DISABLE_FEE=true
       - DISABLE_VALIDATE=true
       - RUST_LOG=info,hyper=off
-      - WORLD_ADDRESS=0x608cc3b3f4cf88e180bd3222dbf4af8afc1f0dbe93b2c30cd58f86ea6ccdbbf
+      - WORLD_ADDRESS=0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e
       - INVOKE_MAX_STEPS=4000000
     ports:
       - "127.0.0.1:5050:5050"
@@ -18,10 +18,10 @@ services:
     networks:
       - pixelaw
     volumes:
-#      - storage:/keiko/storage
-#      - log:/keiko/log
-      - ./.core/storage:/keiko/storage
-      - ./.core/log:/keiko/log
+      - storage:/keiko/storage
+      - log:/keiko/log
+#      - ./.core/storage:/keiko/storage
+#      - ./.core/log:/keiko/log
 networks:
   pixelaw:
     driver: bridge
