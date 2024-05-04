@@ -21,7 +21,6 @@
     "@dojoengine/state": "0.6.125",
     "@dojoengine/torii-client": "0.6.125",
     "@dojoengine/utils": "0.6.125",
-    "@latticexyz/recs": "^2.0.7",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-select": "^2.0.0",

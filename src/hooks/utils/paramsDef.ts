@@ -1,5 +1,4 @@
-import {Abi} from "starknet";
-import interpret, {isInstruction, ParamDefinitionType, Variant} from "@/lib/Instruction.ts";
+import {interpret, isInstruction, ParamDefinitionType, Variant} from "@/utils";
 import {InterfaceType, Manifest} from "@/global/types.ts";
 
 const DEFAULT_PARAMETERS_TYPE = 'pixelaw::core::utils::DefaultParameters'

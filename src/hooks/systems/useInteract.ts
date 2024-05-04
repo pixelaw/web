@@ -2,12 +2,11 @@ import {usePixelaw} from '@/dojo/usePixelaw.ts'
 import {useMutation} from '@tanstack/react-query'
 import {convertToDecimal, felt252ToString} from '@/global/utils'
 import { getComponentValue} from '@dojoengine/recs'
-import {sleep, uuid} from '@latticexyz/utils'
+import { sleep, uuid} from '@/utils/'
 import { getEntityIdFromKeys} from '@dojoengine/utils'
 import { num, selector, shortString} from 'starknet'
 import {useToast} from '@/components/ui/use-toast'
 import {useComponentValue} from '@dojoengine/react'
-import {useContext} from "react";
 import getParamsDef from "@/hooks/utils/paramsDef.ts"
 
 /// @dev this does not handle struct params yet...will support this on a later iteration

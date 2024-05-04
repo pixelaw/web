@@ -1,6 +1,6 @@
 import React from "react";
 import {useMainLayout} from "@/components/layouts/MainLayout";
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils";
 import ActionDiv from "@/components/ActionDiv";
 import {wallets} from "@/global/config";
 import {Active_Page} from "@/global/types";

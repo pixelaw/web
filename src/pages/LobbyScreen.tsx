@@ -1,5 +1,5 @@
 import React from "react";
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils";
 import {Button} from "@/components/ui/button";
 import {useMainLayout} from "@/components/layouts/MainLayout";
 import {Active_Page} from "@/global/types";

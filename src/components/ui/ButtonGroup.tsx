@@ -1,6 +1,6 @@
 import { Key } from 'react'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils.ts'
+import { cn } from '@/utils'
 
 type PropsType<T> = {
   id?: string

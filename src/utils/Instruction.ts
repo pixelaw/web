@@ -66,7 +66,7 @@ type InterpretType = (appName: string, position: {
     y: number
 }, typeInstruction: string, abi: AbiType) => ParamDefinitionType
 
-const interpret: InterpretType = (appName: string, position: {
+export const interpret: InterpretType = (appName: string, position: {
     x: number,
     y: number
 }, typeInstruction: string, abi: AbiType) => {

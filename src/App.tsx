@@ -2,7 +2,7 @@ import MainLayout from "@/components/layouts/MainLayout";
 import ScreenAtomRenderer from "@/components/ScreenAtomRenderer";
 import {Toaster} from '@/components/ui/toaster'
 import Loading from '@/components/Loading'
-import {cn} from '@/lib/utils'
+import {cn} from '@/utils/'
 import {usePixelawProvider} from "./providers/PixelawProvider";
 import {TPixelLawError} from "./dojo/setupPixelaw";
 

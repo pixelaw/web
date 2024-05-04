@@ -1,5 +1,5 @@
 import React from "react";
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils";
 
 const Image = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
     ({className, src, alt, ...props}, ref) => {

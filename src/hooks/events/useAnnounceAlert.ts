@@ -3,7 +3,7 @@ import { parseEventData } from '@/hooks/events/utils'
 import { toast } from '@/components/ui/use-toast'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { getComponentValue } from '@latticexyz/recs'
+import { getComponentValue } from '@dojoengine/recs'
 import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { getEntityIdFromKeys } from '@dojoengine/utils'
 import { felt252ToString } from '@/global/utils'

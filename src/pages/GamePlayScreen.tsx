@@ -1,4 +1,4 @@
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils/";
 import Main from "@/components/Main";
 import React from "react";
 import {useMainLayout} from "@/components/layouts/MainLayout";

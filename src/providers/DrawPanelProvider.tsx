@@ -10,7 +10,7 @@ import {
 import { useEntityQuery } from "@dojoengine/react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { getComponentValue, Has } from "@latticexyz/recs";
+import { getComponentValue, Has } from "@dojoengine/recs";
 import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";

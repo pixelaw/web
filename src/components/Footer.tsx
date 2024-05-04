@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 import { felt252ToString, formatAddress } from '@/global/utils.ts'
 import { usePixelaw } from '@/dojo/usePixelaw.ts'
 import { useComponentValue } from '@dojoengine/react'

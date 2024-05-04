@@ -1,5 +1,5 @@
 import React from "react";
-import {cn} from "@/lib/utils";
+import {cn} from "@/utils";
 import Image from "@/components/ui/Image";
 
 const Logo = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(

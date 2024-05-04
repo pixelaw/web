@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { defineComponent, Type as RecsType, World } from "@latticexyz/recs";
+import { defineComponent, Type as RecsType, World } from "@dojoengine/recs";
 
 export function defineContractComponents(world: World) {
   return {

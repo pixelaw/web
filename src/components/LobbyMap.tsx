@@ -1,5 +1,5 @@
 import Image from '@/components/ui/Image'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 import React, { MouseEventHandler } from 'react'
 
 const PIXEL_STATE_SRC = '/assets/placeholder/pixel-state.png'
