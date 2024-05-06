@@ -9,6 +9,7 @@ export interface IUserStore {
     hoveredPixel: PositionWithAddressAndType;
     selectedHexColor: string;
     zoomLevel: Vector2;
+    panOffset: Vector2;
     notificationData: NotificationDataType | undefined;
     setGameMode(data: string): void;
     set(data: Partial<IUserStore>): void;
@@ -28,6 +29,7 @@ const useGameStore = create<IUserStore>()(
         },
         selectedHexColor: '#FFFFFF',
         zoomLevel: new Vector2(50,0),
+        panOffset: new Vector2(0,0),
         notificationData: undefined,
         setGameMode: (data: string) => {
             set(state => {

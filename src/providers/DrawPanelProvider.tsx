@@ -1,31 +1,40 @@
 import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
-import { Coordinate } from "@/components/shared/DrawPanel.tsx";
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { useEntityQuery } from "@dojoengine/react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { getComponentValue, Has } from "@dojoengine/recs";
-import { argbToHex } from "@/global/utils.ts";
+import { argbToHex, felt252ToString } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
-import { renderGrid, TPixel } from "@/hooks/useRenderGrid";
-import { Vector2 } from "threejs-math";
+import { renderGrid, TPixel } from "@/drawing/renderGrid";
 
-type DrawPanelType = {
+type TDrawPanelType = {
     setCanvasRef: React.Dispatch<React.SetStateAction<MutableRefObject<HTMLCanvasElement>>>;
-    panOffset: Vector2;
-    grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
-    onHover?: (coordinate: Coordinate) => void;
+    onHover?: (coordinate: [number, number]) => void;
 };
 
-export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPanelType);
+export type TPixelData = {
+    x: Number;
+    y: Number;
+    created_at: Number;
+    updated_at: Number;
+    app: BigInt;
+    color: string;
+    owner: BigInt;
+    text: string;
+    timestamp: Number;
+    action: BigInt;
+}
+
+export const DrawPanelContext = React.createContext<TDrawPanelType>({} as TDrawPanelType);
 
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const [canvasRef, setCanvasRef] = useState<MutableRefObject<HTMLCanvasElement>>(null!);
     const grid = useRef<Map<string, TPixel>>(new Map());
-    const [panOffset] = useState<Vector2>(new Vector2(0, 0));
+    const pixelData = useRef<Map<[number, number], TPixelData>>(new Map());
     const {
         setup: {
             clientComponents: { Pixel },
@@ -59,36 +68,36 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
 
     const entityIds = useEntityQuery([Has(Pixel)]);
 
-    const { pixels, data } = useMemo(() => {
-        console.log("pixels memo");
-
-        const pixelData: Record<`[${number},${number}]`, { color: string; text: string }> = {};
+    const { pixels } = useMemo(() => {
         const pixels = entityIds
             .map((entityId) => getComponentValue(Pixel, entityId))
             .filter((entity) => !!entity)
             .filter((entity) => entity?.color !== 0);
 
         pixels.forEach((pixel) => {
-            pixelData[`[${pixel!.x},${pixel!.y}]`] = {
-                color: argbToHex(pixel!.color),
-                text: pixel?.text?.toString() ?? "",
-            };
+            console.log("💡 Pixel", pixel);
+            const color = argbToHex(pixel!.color);
+            const text = pixel?.text?.toString() ?? "";
+            pixelData.current.set([pixel!.x, pixel!.y], {
+                x: pixel!.x,
+                y: pixel!.y,
+                created_at: pixel!.created_at,
+                updated_at: pixel!.updated_at,
+                app: pixel!.app,
+                color,
+                owner: pixel!.owner,
+                text,
+                timestamp: pixel!.timestamp,
+                action: pixel!.action,
+            });
             grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
                 position: [pixel!.x, pixel!.y],
-                color: argbToHex(pixel!.color),
-                text: pixel?.text?.toString() ?? "",
+                color,
+                text,
             });
         });
 
-        const data = Object.entries({ ...pixelData }).map(([key, value]) => {
-            return {
-                coordinates: key.match(/\d+/g)?.map(Number) as [number, number],
-                hexColor: value.color,
-                text: value.text,
-            };
-        });
-
-        return { pixels, data };
+        return { pixels };
     }, [entityIds]);
 
     const [openModal, setOpenModal] = React.useState(false);
@@ -110,8 +119,26 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         setAdditionalParams({});
     };
 
-    const handleCellClick = (coordinate: Coordinate) => {
-        const pixel = pixels.find((pixel) => pixel!.x === coordinate[0] && pixel!.y == coordinate[1]);
+    const handleCellClick = (coordinate: [number,number]) => {
+        const pixel = pixelData.current.get([coordinate[0], coordinate[1]]);
+        console.log("💡 Pixel clicked", pixel);
+        getGameStore().set({
+            hoveredPixel: {
+                x: coordinate[0],
+                y: coordinate[1],
+                address: pixel?.owner || "N/A", // TODO: finish 
+                pixel: pixel?.app || "N/A", // TODO: finish this
+            },
+        });
+        if (hasParams) setOpenModal(true);
+        else handleInteract();
+    };
+
+    const handleHover = (coordinate: [number,number]) => {
+        // do not hover when the modal is open
+        if (openModal) return;
+        const pixel = pixelData.current.get([coordinate[0], coordinate[1]]);
+        if (getGameStore().hoveredPixel.x === coordinate[0] && getGameStore().hoveredPixel.y === coordinate[1]) return;
         getGameStore().set({
             hoveredPixel: {
                 x: coordinate[0],
@@ -120,22 +147,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 pixel: pixel?.app || "N/A",
             },
         });
-        if (hasParams) setOpenModal(true);
-        else handleInteract();
-    };
-
-    const handleHover = (coordinate: Coordinate) => {
-        // do not hover when the modal is open
-        if (openModal) return;
-        // const pixel = pixels.find((pixel) => pixel!.x === coordinate[0] && pixel!.y == coordinate[1]);
-        // getGameStore().set({
-        //     hoveredPixel: {
-        //         x: coordinate[0],
-        //         y: coordinate[1],
-        //         address: pixel?.owner || "N/A",
-        //         pixel: pixel?.app || "N/A",
-        //     },
-        // });
     };
 
     // TODO: Figure out what this does
@@ -171,12 +182,9 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         let animationId: number;
         const render = () => {
             animationId = requestAnimationFrame(render);
-            if (!canvasRef || !canvasRef.current) return;
-            const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
-            if (!ctx) return;
-            renderGrid(ctx, {
-                canvas: canvasRef,
-                panOffset,
+            if (!canvasRef || !canvasRef.current || !grid || !grid.current) return;
+            renderGrid({
+                canvas: canvasRef.current,
                 grid: grid.current,
             });
         };
@@ -188,8 +196,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         <DrawPanelContext.Provider
             value={{
                 setCanvasRef,
-                panOffset,
-                grid: grid.current,
                 onCellClick: handleCellClick,
                 onHover: handleHover,
             }}

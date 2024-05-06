@@ -16,23 +16,17 @@ export const setZoom = (zoomLevel: number) => {
 };
 
 const DrawPanel = () => {
-    const {
-        setCanvasRef,
-        panOffset,
-        onCellClick,
-        onHover,
-        grid,
-    } = useDrawPanel();
+    const { setCanvasRef, onCellClick, onHover } = useDrawPanel();
 
     // pass canvas ref to context
     const gridCanvasRef = useRef<HTMLCanvasElement>(null!);
 
     useEffect(() => {
         setCanvasRef(gridCanvasRef);
-    }, [gridCanvasRef, setCanvasRef])
+    }, [gridCanvasRef, setCanvasRef]);
 
     const [isPanning, setIsPanning] = React.useState<boolean>(false); // this is for displaying the hand cursor
-    
+
     const [mouseDownTime, setMouseDownTime] = React.useState<number>(0); // Add a new state for storing the mousedown time
 
     // Cancel default gestures, use-gesture recommendation
@@ -58,6 +52,7 @@ const DrawPanel = () => {
             // onMove: ({ event }) => console.log('move', event),
             onMove: ({ dragging, event: { clientX, clientY } }) => {
                 if (!gridCanvasRef.current || dragging) return;
+                const panOffset = getGameStore().panOffset;
                 const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
                 const rect = gridCanvasRef.current.getBoundingClientRect();
                 const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
@@ -70,6 +65,7 @@ const DrawPanel = () => {
             onDrag: ({ pinching, cancel, offset: [x, y], ...rest }) => {
                 if (pinching) return cancel();
                 if (!isPanning) setIsPanning(true);
+                const panOffset = getGameStore().panOffset;
                 const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
                 const offsetX = x;
                 const offsetY = y;
@@ -101,6 +97,7 @@ const DrawPanel = () => {
 
     function onClickCoordinates(clientX: number, clientY: number) {
         if (!gridCanvasRef.current) return;
+        const panOffset = getGameStore().panOffset;
         const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
         const rect = gridCanvasRef.current.getBoundingClientRect();
         const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
