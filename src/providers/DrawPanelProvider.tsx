@@ -11,6 +11,7 @@ import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/user.store";
 import { TPixel } from "@/hooks/useRenderGrid";
+import { Vector2 } from "threejs-math";
 
 
 
@@ -20,10 +21,7 @@ type DrawPanelType = {
     coordinates: [number | undefined, number | undefined] | undefined;
     visibleAreaStart: [number, number];
     visibleAreaEnd: [number, number];
-    panOffsetX: number;
-    panOffsetY: number;
-    setPanOffsetX: React.Dispatch<SetStateAction<number>>;
-    setPanOffsetY: React.Dispatch<SetStateAction<number>>;
+    panOffset: Vector2;
     data?: Array<CellDatum | undefined> | undefined;
     grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
@@ -35,6 +33,7 @@ export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPan
 
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const grid = useRef<Map<string, TPixel>>(new Map());
+    const [panOffset] = useState<Vector2>(new Vector2(0, 0));
     const {
         setup: {
             clientComponents: { Pixel },
@@ -47,17 +46,11 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         gameMode,
         positionWithAddressAndType: position,
         selectedHexColor,
-        // notificationData
     } = useGameStore((state) => ({
         gameMode: state.gameMode,
         positionWithAddressAndType: state.hoveredPixel,
         selectedHexColor: state.selectedHexColor,
-        // notificationData: state.notificationData,
     }));
-
-    // offset is a negative value
-    const [panOffsetX, setPanOffsetX] = React.useState<number>(0);
-    const [panOffsetY, setPanOffsetY] = React.useState<number>(0);
 
     //For setting the visible area
     const [visibleAreaStart, setVisibleAreaStart] = React.useState<[number, number]>([0, 0]);
@@ -214,10 +207,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 coordinates: [position.x, position.y],
                 visibleAreaStart,
                 visibleAreaEnd,
-                panOffsetX,
-                panOffsetY,
-                setPanOffsetX,
-                setPanOffsetY,
+                panOffset,
                 data,
                 grid: grid.current,
                 onCellClick: handleCellClick,

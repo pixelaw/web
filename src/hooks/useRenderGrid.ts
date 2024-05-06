@@ -69,8 +69,7 @@ export function useRenderGrid() {
     height: number,
     cellSize: number,
     coordinates: [ number | undefined, number | undefined ] | undefined
-    panOffsetX: number,
-    panOffsetY: number,
+    panOffset: Vector2,
     selectedHexColor: string,
     visibleAreaXStart: number,
     visibleAreaXEnd: number,
@@ -84,8 +83,7 @@ export function useRenderGrid() {
       cellSize,
       width,
       height,
-      panOffsetX,
-      panOffsetY,
+      panOffset,
       coordinates,
       selectedHexColor,
       visibleAreaXStart,
@@ -100,8 +98,8 @@ export function useRenderGrid() {
 
     for (let row = visibleAreaXStart; row <= visibleAreaXEnd; row++) {
       for (let col = visibleAreaYStart; col <= visibleAreaYEnd; col++) {
-        const x = row * cellSize + panOffsetX
-        const y = col * cellSize + panOffsetY
+        const x = row * cellSize + panOffset.x
+        const y = col * cellSize + panOffset.y
 
         let pixelColor = '#2F1643' // default color
         let pixelText = ''

@@ -31,10 +31,7 @@ const DrawPanel = () => {
         coordinates,
         selectedHexColor,
         data,
-        panOffsetX,
-        panOffsetY,
-        setPanOffsetX,
-        setPanOffsetY,
+        panOffset,
         onCellClick,
         onVisibleAreaCoordinate,
         onHover,
@@ -46,12 +43,12 @@ const DrawPanel = () => {
 
     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
     // min: [x,y], [10,10]
-    const visibleAreaXStart = Math.max(0, Math.floor(-panOffsetX / cellSize));
-    const visibleAreaYStart = Math.max(0, Math.floor(-panOffsetY / cellSize));
+    const visibleAreaXStart = Math.max(0, Math.floor(-panOffset.x / cellSize));
+    const visibleAreaYStart = Math.max(0, Math.floor(-panOffset.y / cellSize));
 
     // max: [x,y]: [20,20]
-    const visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffsetX) / cellSize));
-    const visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffsetY) / cellSize));
+    const visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize));
+    const visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize));
 
     // Add a new state for storing the mousedown time
     const [mouseDownTime, setMouseDownTime] = React.useState<number>(0);
@@ -84,8 +81,7 @@ const DrawPanel = () => {
                     height: gridCanvasRef.current.height,
                     cellSize,
                     coordinates,
-                    panOffsetX,
-                    panOffsetY,
+                    panOffset,
                     selectedHexColor,
                     visibleAreaXStart,
                     visibleAreaXEnd,
@@ -103,8 +99,6 @@ const DrawPanel = () => {
         return () => cancelAnimationFrame(animationId);
     }, [
         coordinates,
-        panOffsetX,
-        panOffsetY,
         cellSize,
         selectedHexColor,
         data,
@@ -141,8 +135,8 @@ const DrawPanel = () => {
                 if (!gridCanvasRef.current || dragging) return;
                 const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
                 const rect = gridCanvasRef.current.getBoundingClientRect();
-                const x = Math.abs(panOffsetX) + clientX - rect.left; // pixel
-                const y = Math.abs(panOffsetY) + clientY - rect.top; // pixel
+                const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
+                const y = Math.abs(panOffset.y) + clientY - rect.top; // pixel
 
                 const gridX = Math.floor(x / cellSize);
                 const gridY = Math.floor(y / cellSize);
@@ -158,8 +152,8 @@ const DrawPanel = () => {
                 const maxOffsetX = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
                 const maxOffsetY = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
 
-                setPanOffsetX(offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX);
-                setPanOffsetY(offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY);
+                panOffset.x = offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX;
+                panOffset.y = offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY;
             },
             onDragEnd: () => setIsPanning(false),
             onPinch: ({ delta: [ds] }) => {
@@ -183,8 +177,8 @@ const DrawPanel = () => {
     function onClickCoordinates(clientX: number, clientY: number) {
         if (!gridCanvasRef.current) return;
         const rect = gridCanvasRef.current.getBoundingClientRect();
-        const x = Math.abs(panOffsetX) + clientX - rect.left; // pixel
-        const y = Math.abs(panOffsetY) + clientY - rect.top; // pixel
+        const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
+        const y = Math.abs(panOffset.y) + clientY - rect.top; // pixel
 
         const gridX = Math.floor(x / cellSize);
         const gridY = Math.floor(y / cellSize);
