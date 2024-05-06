@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
-import { useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/user.store";
 import { INTERACTION } from "@/global/constants";
 import { deltaZoom } from "./shared/DrawPanel";
 
@@ -13,7 +13,7 @@ type PropsType = {
 const ZoomControl: React.FC<
   PropsType & React.HTMLAttributes<HTMLDivElement>
 > = (props) => {
-  const zoomLevel = useGameStore((state) => state.zoomLevel);
+  const zoomLevel = getGameStore().zoomLevel;
 
   const { MINZOOM, MAXZOOM, ZOOMSTEPS } = INTERACTION;
   const { className } = props;
@@ -35,7 +35,7 @@ const ZoomControl: React.FC<
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(-1)}
-          disabled={MINZOOM >= zoomLevel}
+          disabled={MINZOOM >= zoomLevel.x}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#8722;
@@ -45,14 +45,14 @@ const ZoomControl: React.FC<
           className={"text-brand-skyblue text-base font-silkscreen text-center"}
         >
           {" "}
-          {zoomLevel.toFixed(0)}%{" "}
+          {zoomLevel.x?.toFixed(0)}%{" "}
         </span>
 
         <Button
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(1)}
-          disabled={MAXZOOM <= zoomLevel}
+          disabled={MAXZOOM <= zoomLevel.x}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#43;

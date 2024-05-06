@@ -1,7 +1,7 @@
-import React, { SetStateAction, useEffect, useMemo } from "react";
+import React, { createRef, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { CellDatum, Coordinate } from "@/components/shared/DrawPanel.tsx";
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
-import { MAX_CELL_SIZE } from "@/global/constants.ts";
+import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants.ts";
 import { useEntityQuery } from "@dojoengine/react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -10,10 +10,12 @@ import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/user.store";
+import { TPixel } from "@/hooks/useRenderGrid";
+
+
 
 type DrawPanelType = {
     gameMode: string;
-    cellSize: number;
     selectedHexColor: string;
     coordinates: [number | undefined, number | undefined] | undefined;
     visibleAreaStart: [number, number];
@@ -23,7 +25,7 @@ type DrawPanelType = {
     setPanOffsetX: React.Dispatch<SetStateAction<number>>;
     setPanOffsetY: React.Dispatch<SetStateAction<number>>;
     data?: Array<CellDatum | undefined> | undefined;
-
+    grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
     onVisibleAreaCoordinate?: (visibleAreaStart: Coordinate, visibleAreaEnd: Coordinate) => void;
     onHover?: (coordinate: Coordinate) => void;
@@ -32,6 +34,7 @@ type DrawPanelType = {
 export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPanelType);
 
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
+    const grid = useRef<Map<string, TPixel>>(new Map());
     const {
         setup: {
             clientComponents: { Pixel },
@@ -44,17 +47,13 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         gameMode,
         positionWithAddressAndType: position,
         selectedHexColor,
-        zoomLevel,
         // notificationData
     } = useGameStore((state) => ({
         gameMode: state.gameMode,
         positionWithAddressAndType: state.hoveredPixel,
         selectedHexColor: state.selectedHexColor,
-        zoomLevel: state.zoomLevel,
         // notificationData: state.notificationData,
     }));
-
-    const cellSize = MAX_CELL_SIZE * (zoomLevel / 100);
 
     // offset is a negative value
     const [panOffsetX, setPanOffsetX] = React.useState<number>(0);
@@ -79,7 +78,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
 
     const entityIds = useEntityQuery([Has(Pixel)]);
 
-    const { pixels, pixelData, data } = useMemo(() => {
+    const { pixels, data } = useMemo(() => {
         console.log("pixels memo");
 
         const pixelData: Record<`[${number},${number}]`, { color: string; text: string }> = {};
@@ -93,6 +92,11 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 color: argbToHex(pixel!.color),
                 text: pixel?.text?.toString() ?? "",
             };
+            grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
+                position: [pixel!.x, pixel!.y],
+                color: argbToHex(pixel!.color),
+                text: pixel?.text?.toString() ?? "",
+            })
         });
 
         const data = Object.entries({ ...pixelData }).map(([key, value]) => {
@@ -103,15 +107,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             };
         });
 
-        return { pixels, data, pixelData };
-    }, [entityIds]);
-
-    const handleData = () => {
-        return data;
-    };
-
-    useEffect(() => {
-        console.log("pixels change");
+        return { pixels, data };
     }, [entityIds]);
 
     const [openModal, setOpenModal] = React.useState(false);
@@ -171,15 +167,15 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     const handleHover = (coordinate: Coordinate) => {
         // do not hover when the modal is open
         if (openModal) return;
-        const pixel = pixels.find((pixel) => pixel!.x === coordinate[0] && pixel!.y == coordinate[1]);
-        getGameStore().set({
-            hoveredPixel: {
-                x: coordinate[0],
-                y: coordinate[1],
-                address: pixel?.owner || "N/A",
-                pixel: pixel?.app || "N/A",
-            },
-        });
+        // const pixel = pixels.find((pixel) => pixel!.x === coordinate[0] && pixel!.y == coordinate[1]);
+        // getGameStore().set({
+        //     hoveredPixel: {
+        //         x: coordinate[0],
+        //         y: coordinate[1],
+        //         address: pixel?.owner || "N/A",
+        //         pixel: pixel?.app || "N/A",
+        //     },
+        // });
     };
 
     // TODO: Figure out what this does
@@ -214,7 +210,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         <DrawPanelContext.Provider
             value={{
                 gameMode,
-                cellSize,
                 selectedHexColor,
                 coordinates: [position.x, position.y],
                 visibleAreaStart,
@@ -224,6 +219,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 setPanOffsetX,
                 setPanOffsetY,
                 data,
+                grid: grid.current,
                 onCellClick: handleCellClick,
                 onVisibleAreaCoordinate: handleVisibleAreaCoordinate,
                 onHover: handleHover,

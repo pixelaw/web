@@ -1,12 +1,14 @@
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
 import {NotificationDataType, PositionWithAddressAndType} from "./types";
+import { createRef, MutableRefObject, RefObject } from "react";
+import { Vector2 } from "threejs-math";
 
 export interface IUserStore {
     gameMode: string;
     hoveredPixel: PositionWithAddressAndType;
     selectedHexColor: string;
-    zoomLevel: number;
+    zoomLevel: Vector2;
     notificationData: NotificationDataType | undefined;
 
     setGameMode(data: string): void;
@@ -14,6 +16,8 @@ export interface IUserStore {
     set(data: Partial<IUserStore>): void;
 }
 
+let zoomLevel = createRef<number>() as MutableRefObject<number>;
+zoomLevel.current = 50;
 
 const useGameStore = create<IUserStore>()(
     immer((set) => ({
@@ -25,7 +29,7 @@ const useGameStore = create<IUserStore>()(
             pixel: '',
         },
         selectedHexColor: '#FFFFFF',
-        zoomLevel: 50,
+        zoomLevel: new Vector2(0,0),
         notificationData: undefined,
         setGameMode: (data: string) => {
             set(state => {
