@@ -71,10 +71,8 @@ export function useRenderGrid() {
     coordinates: [ number | undefined, number | undefined ] | undefined
     panOffset: Vector2,
     selectedHexColor: string,
-    visibleAreaXStart: number,
-    visibleAreaXEnd: number,
-    visibleAreaYStart: number,
-    visibleAreaYEnd: number,
+    viewStart: Vector2,
+    viewEnd: Vector2,
     pixels: Array<CellDatum | undefined> | undefined
     focus: Array<{x: number, y: number}>
     grid: Map<string, TPixel>
@@ -86,18 +84,16 @@ export function useRenderGrid() {
       panOffset,
       coordinates,
       selectedHexColor,
-      visibleAreaXStart,
-      visibleAreaXEnd,
-      visibleAreaYStart,
-      visibleAreaYEnd,
+      viewStart,
+      viewEnd,
       pixels,
       focus,
       grid
     } = options
     ctx.clearRect(0, 0, width, height)
 
-    for (let row = visibleAreaXStart; row <= visibleAreaXEnd; row++) {
-      for (let col = visibleAreaYStart; col <= visibleAreaYEnd; col++) {
+    for (let row = viewStart.x; row <= viewEnd.x; row++) {
+      for (let col = viewStart.y; col <= viewEnd.y; col++) {
         const x = row * cellSize + panOffset.x
         const y = col * cellSize + panOffset.y
 

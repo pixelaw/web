@@ -5,6 +5,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAP_SIZE, MAX_CELL_SIZE } fro
 import { useDrawPanel } from "@/providers/DrawPanelProvider.tsx";
 import { getGameStore, useGameStore } from "@/global/user.store";
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from "@use-gesture/react";
+import { Vector2 } from "threejs-math";
 
 export type Coordinate = [number, number];
 
@@ -26,6 +27,34 @@ export const setZoom = (zoomLevel: number) => {
     getGameStore().zoomLevel.x = newZoom;
 };
 
+const calculateVisibleArea = (panOffset: Vector2) => {
+    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+    let visibleAreaXStart = Math.max(0, Math.floor(-panOffset.x / cellSize));
+    let visibleAreaYStart = Math.max(0, Math.floor(-panOffset.y / cellSize));
+    let visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize));
+    let visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize));
+    const expansionFactor = 10;
+    const minLimit = 0,
+        maxLimit = 256;
+
+    const expandedMinX = visibleAreaXStart - expansionFactor;
+    const expandedMinY = visibleAreaYStart - expansionFactor;
+
+    const expandedMaxX = visibleAreaXEnd + expansionFactor;
+    const expandedMaxY = visibleAreaYEnd + expansionFactor;
+
+    visibleAreaXStart = expandedMinX < minLimit ? minLimit : expandedMinX;
+    visibleAreaYStart = expandedMinX < minLimit ? minLimit : expandedMinY;
+
+    visibleAreaXEnd = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
+    visibleAreaYEnd = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
+
+    const viewStart = new Vector2(visibleAreaXStart, visibleAreaYStart);
+    const viewEnd = new Vector2(visibleAreaXEnd, visibleAreaYEnd);
+
+    return { viewStart, viewEnd };
+}
+
 const DrawPanel = () => {
     const {
         coordinates,
@@ -33,7 +62,6 @@ const DrawPanel = () => {
         data,
         panOffset,
         onCellClick,
-        onVisibleAreaCoordinate,
         onHover,
         grid,
     } = useDrawPanel();
@@ -42,13 +70,6 @@ const DrawPanel = () => {
     const [isPanning, setIsPanning] = React.useState<boolean>(false);
 
     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    // min: [x,y], [10,10]
-    const visibleAreaXStart = Math.max(0, Math.floor(-panOffset.x / cellSize));
-    const visibleAreaYStart = Math.max(0, Math.floor(-panOffset.y / cellSize));
-
-    // max: [x,y]: [20,20]
-    const visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize));
-    const visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize));
 
     // Add a new state for storing the mousedown time
     const [mouseDownTime, setMouseDownTime] = React.useState<number>(0);
@@ -63,11 +84,6 @@ const DrawPanel = () => {
 
     const focus = notificationData ? [notificationData] : [];
 
-    //It should be run one time only
-    useEffect(() => {
-        onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd]);
-    }, []);
-
     useEffect(() => {
         let animationId: number;
         const render = () => {
@@ -76,6 +92,7 @@ const DrawPanel = () => {
                 const ctx = gridCanvasRef.current.getContext("2d", { willReadFrequently: true });
                 if (!ctx) return;
 
+                const {viewStart, viewEnd} = calculateVisibleArea(panOffset);
                 renderGrid(ctx, {
                     width: gridCanvasRef.current.width,
                     height: gridCanvasRef.current.height,
@@ -83,10 +100,8 @@ const DrawPanel = () => {
                     coordinates,
                     panOffset,
                     selectedHexColor,
-                    visibleAreaXStart,
-                    visibleAreaXEnd,
-                    visibleAreaYStart,
-                    visibleAreaYEnd,
+                    viewStart,
+                    viewEnd,
                     pixels: data,
                     grid,
                     focus,
@@ -103,10 +118,6 @@ const DrawPanel = () => {
         selectedHexColor,
         data,
         renderGrid,
-        visibleAreaXStart,
-        visibleAreaXEnd,
-        visibleAreaYStart,
-        visibleAreaYEnd,
         grid,
     ]);
 
@@ -187,11 +198,10 @@ const DrawPanel = () => {
     }
 
     function onMouseLeave() {
-        onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd]);
+
     }
 
     function onMouseUp(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd]);
 
         // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
         if (Date.now() - mouseDownTime < 300) {

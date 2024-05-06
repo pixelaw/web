@@ -13,19 +13,16 @@ import { getGameStore, useGameStore } from "@/global/user.store";
 import { TPixel } from "@/hooks/useRenderGrid";
 import { Vector2 } from "threejs-math";
 
-
-
 type DrawPanelType = {
     gameMode: string;
     selectedHexColor: string;
     coordinates: [number | undefined, number | undefined] | undefined;
-    visibleAreaStart: [number, number];
-    visibleAreaEnd: [number, number];
+    viewStart: Vector2;
+    viewEnd: Vector2;
     panOffset: Vector2;
     data?: Array<CellDatum | undefined> | undefined;
     grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
-    onVisibleAreaCoordinate?: (visibleAreaStart: Coordinate, visibleAreaEnd: Coordinate) => void;
     onHover?: (coordinate: Coordinate) => void;
 };
 
@@ -34,6 +31,8 @@ export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPan
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const grid = useRef<Map<string, TPixel>>(new Map());
     const [panOffset] = useState<Vector2>(new Vector2(0, 0));
+    const [viewStart] = useState<Vector2>(new Vector2(0, 0));
+    const [viewEnd] = useState<Vector2>(new Vector2(28, 8));
     const {
         setup: {
             clientComponents: { Pixel },
@@ -51,10 +50,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         positionWithAddressAndType: state.hoveredPixel,
         selectedHexColor: state.selectedHexColor,
     }));
-
-    //For setting the visible area
-    const [visibleAreaStart, setVisibleAreaStart] = React.useState<[number, number]>([0, 0]);
-    const [visibleAreaEnd, setVisibleAreaEnd] = React.useState<[number, number]>([28, 8]);
 
     const { interact, params, instruction } = useInteract(`${gameMode}`, selectedHexColor, {
         x: position?.x ?? 10,
@@ -136,27 +131,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         else handleInteract();
     };
 
-    const handleVisibleAreaCoordinate = (visibleAreaStart: Coordinate, visibleAreaEnd: Coordinate) => {
-        const expansionFactor = 10;
-        const minLimit = 0,
-            maxLimit = 256;
-
-        const expandedMinX = visibleAreaStart[0] - expansionFactor;
-        const expandedMinY = visibleAreaStart[1] - expansionFactor;
-
-        const expandedMaxX = visibleAreaEnd[0] + expansionFactor;
-        const expandedMaxY = visibleAreaEnd[1] + expansionFactor;
-
-        visibleAreaStart[0] = expandedMinX < minLimit ? minLimit : expandedMinX;
-        visibleAreaStart[1] = expandedMinX < minLimit ? minLimit : expandedMinY;
-
-        visibleAreaEnd[0] = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
-        visibleAreaEnd[1] = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
-
-        setVisibleAreaStart(visibleAreaStart);
-        setVisibleAreaEnd(visibleAreaEnd);
-    };
-
     const handleHover = (coordinate: Coordinate) => {
         // do not hover when the modal is open
         if (openModal) return;
@@ -205,13 +179,12 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 gameMode,
                 selectedHexColor,
                 coordinates: [position.x, position.y],
-                visibleAreaStart,
-                visibleAreaEnd,
+                viewStart,
+                viewEnd,
                 panOffset,
                 data,
                 grid: grid.current,
                 onCellClick: handleCellClick,
-                onVisibleAreaCoordinate: handleVisibleAreaCoordinate,
                 onHover: handleHover,
             }}
         >
