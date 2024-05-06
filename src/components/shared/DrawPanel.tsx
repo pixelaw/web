@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import {clsx} from 'clsx'
 import {useRenderGrid} from '@/hooks/useRenderGrid'
-import {CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAX_ROWS_COLS} from '@/global/constants'
+import {CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAP_SIZE} from '@/global/constants'
 import {useDrawPanel} from '@/providers/DrawPanelProvider.tsx'
 import { getGameStore, useGameStore } from '@/global/user.store'
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from '@use-gesture/react'
@@ -40,18 +40,15 @@ const DrawPanel = () => {
     } = useDrawPanel()
 
     //moving the canvas
-    const [panning, setPanning] = React.useState<boolean>(false)
-
-    const [initialPositionX, setInitialPositionX] = React.useState<number>(0)
-    const [initialPositionY, setInitialPositionY] = React.useState<number>(0)
+    const [isPanning, setIsPanning] = React.useState<boolean>(false)
 
     // min: [x,y], [10,10]
     const visibleAreaXStart = Math.max(0, Math.floor(-panOffsetX / cellSize))
     const visibleAreaYStart = Math.max(0, Math.floor(-panOffsetY / cellSize))
 
     // max: [x,y]: [20,20]
-    const visibleAreaXEnd = Math.min(MAX_ROWS_COLS, Math.ceil((CANVAS_WIDTH - panOffsetX) / cellSize))
-    const visibleAreaYEnd = Math.min(MAX_ROWS_COLS, Math.ceil((CANVAS_HEIGHT - panOffsetY) / cellSize))
+    const visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffsetX) / cellSize))
+    const visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffsetY) / cellSize))
 
     // Add a new state for storing the mousedown time
     const [mouseDownTime, setMouseDownTime] = React.useState<number>(0)
@@ -94,6 +91,7 @@ const DrawPanel = () => {
         }
     }, [coordinates, panOffsetX, panOffsetY, cellSize, selectedHexColor, data, renderGrid, visibleAreaXStart, visibleAreaXEnd, visibleAreaYStart, visibleAreaYEnd])
 
+    // Cancel default gestures, use-gesture recommendation
     const ref = React.useRef<HTMLDivElement>(null)
     useEffect(() => {
         const handler = (e: Event) => {e.preventDefault()}
@@ -124,15 +122,17 @@ const DrawPanel = () => {
             },
             onDrag: ({ pinching, cancel, offset: [x, y], ...rest }) => {
                 if (pinching) return cancel()
-                const offsetX = x - initialPositionX;
-                const offsetY = y - initialPositionY;
+                if (!isPanning) setIsPanning(true);
+                const offsetX = x;
+                const offsetY = y;
 
-                const maxOffsetX = -(MAX_ROWS_COLS * cellSize - CANVAS_WIDTH);
-                const maxOffsetY = -(MAX_ROWS_COLS * cellSize - CANVAS_WIDTH);
+                const maxOffsetX = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
+                const maxOffsetY = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
 
                 setPanOffsetX(offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX)
                 setPanOffsetY(offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY)
             },
+            onDragEnd: () => setIsPanning(false),
             onPinch: ({ delta: [ds] }) => {
                 deltaZoom(ds);
             },
@@ -145,8 +145,9 @@ const DrawPanel = () => {
         },
         {
         target: ref,
-        scroll: { eventOptions: {capture: true} },
-        pinch: { rubberband: true, eventOptions: {capture: true} },
+        // Capture events to avoid bubbling into regular document events
+        scroll: { rubberband: false, eventOptions: {capture: true} },
+        pinch: { rubberband: false, eventOptions: {capture: true} },
         }
     )
 
@@ -171,7 +172,6 @@ const DrawPanel = () => {
         onVisibleAreaCoordinate?.([visibleAreaXStart, visibleAreaYStart], [visibleAreaXEnd, visibleAreaYEnd])
 
         // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
-        console.log('mouse up', event)
         if (Date.now() - mouseDownTime < 300) {
             onClickCoordinates(event.clientX, event.clientY)
         }
@@ -228,7 +228,7 @@ const DrawPanel = () => {
                     <canvas ref={gridCanvasRef}
                             width={CANVAS_WIDTH}
                             height={CANVAS_HEIGHT}
-                            className={clsx(['cursor-pointer pointer-events-auto', {'!cursor-grab': panning}])}
+                            className={clsx(['cursor-pointer pointer-events-auto', {'!cursor-grab': isPanning}])}
                             onMouseDown={(event) => onMouseDown(event.clientX, event.clientY)}
                             // onMouseMove={(event) => onMouseMove(event.clientX, event.clientY)}
                             onMouseUp={(event) => onMouseUp(event)}

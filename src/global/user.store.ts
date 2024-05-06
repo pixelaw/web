@@ -4,7 +4,7 @@ import {NotificationDataType, PositionWithAddressAndType} from "./types";
 
 export interface IUserStore {
     gameMode: string;
-    positionWithAddressAndType: PositionWithAddressAndType;
+    hoveredPixel: PositionWithAddressAndType;
     selectedHexColor: string;
     zoomLevel: number;
     notificationData: NotificationDataType | undefined;
@@ -18,7 +18,7 @@ export interface IUserStore {
 const useGameStore = create<IUserStore>()(
     immer((set) => ({
         gameMode: "paint",
-        positionWithAddressAndType: {
+        hoveredPixel: {
             x: 0,
             y: 0,
             address: '',

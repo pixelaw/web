@@ -106,6 +106,15 @@
   font-style: normal;
 }
 
+* {
+/* Block default browser overscoll behaviour 
+    - disables 'history back' on scroll
+    - disables 'rubberbanding' scrolled area
+*/
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+}
+
 @layer base {
   * {
     @apply border-border;

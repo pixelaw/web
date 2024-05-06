@@ -81,9 +81,9 @@ export default function Apps() {
   } = usePixelaw();
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const { gameMode, positionWithAddressAndType } = useGameStore((state) => ({
+  const { gameMode, hoveredPixel } = useGameStore((state) => ({
     gameMode: state.gameMode,
-    positionWithAddressAndType: state.positionWithAddressAndType,
+    hoveredPixel: state.hoveredPixel,
   }));
   const selectedAppId = getEntityIdFromKeys([
     BigInt(shortString.encodeShortString(gameMode)),
@@ -149,12 +149,12 @@ export default function Apps() {
 
           <Footer
             coordinates={{
-              x: Number(positionWithAddressAndType.x),
-              y: Number(positionWithAddressAndType.y),
+              x: Number(hoveredPixel.x),
+              y: Number(hoveredPixel.y),
             }}
             collapsed={isOpen}
-            type={String(positionWithAddressAndType.pixel)}
-            owner={String(positionWithAddressAndType.address)}
+            type={String(hoveredPixel.pixel)}
+            owner={String(hoveredPixel.address)}
           />
         </div>
       </div>
