@@ -34,7 +34,7 @@ export const DrawPanelContext = React.createContext<TDrawPanelType>({} as TDrawP
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const [canvasRef, setCanvasRef] = useState<MutableRefObject<HTMLCanvasElement>>(null!);
     const grid = useRef<Map<string, TPixel>>(new Map());
-    const pixelData = useRef<Map<[number, number], TPixelData>>(new Map());
+    const pixelData = useRef<Map<string, TPixelData>>(new Map());
     const {
         setup: {
             clientComponents: { Pixel },
@@ -75,10 +75,9 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => entity?.color !== 0);
 
         pixels.forEach((pixel) => {
-            console.log("💡 Pixel", pixel);
             const color = argbToHex(pixel!.color);
             const text = pixel?.text?.toString() ?? "";
-            pixelData.current.set([pixel!.x, pixel!.y], {
+            pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
                 x: pixel!.x,
                 y: pixel!.y,
                 created_at: pixel!.created_at,
@@ -120,7 +119,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     };
 
     const handleCellClick = (coordinate: [number,number]) => {
-        const pixel = pixelData.current.get([coordinate[0], coordinate[1]]);
+        const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
         console.log("💡 Pixel clicked", pixel);
         getGameStore().set({
             hoveredPixel: {
@@ -137,14 +136,14 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     const handleHover = (coordinate: [number,number]) => {
         // do not hover when the modal is open
         if (openModal) return;
-        const pixel = pixelData.current.get([coordinate[0], coordinate[1]]);
+        const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
         if (getGameStore().hoveredPixel.x === coordinate[0] && getGameStore().hoveredPixel.y === coordinate[1]) return;
         getGameStore().set({
             hoveredPixel: {
                 x: coordinate[0],
                 y: coordinate[1],
-                address: pixel?.owner || "N/A",
-                pixel: pixel?.app || "N/A",
+                address: String(pixel?.owner || "N/A"),
+                pixel: String(pixel?.app || "N/A") ,
             },
         });
     };

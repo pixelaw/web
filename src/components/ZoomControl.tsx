@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
 import { getGameStore, useGameStore } from "@/global/game.store";
@@ -13,6 +13,7 @@ type PropsType = {
 const ZoomControl: React.FC<
   PropsType & React.HTMLAttributes<HTMLDivElement>
 > = (props) => {
+  const [zoom, setZoom] = React.useState<number>(0);  
   const zoomLevel = getGameStore().zoomLevel;
 
   const { MINZOOM, MAXZOOM, ZOOMSTEPS } = INTERACTION;
@@ -21,6 +22,16 @@ const ZoomControl: React.FC<
   const handleClick = (dir: number) => {
     deltaZoom(ZOOMSTEPS * dir);
   };
+
+  useEffect(() => {
+    const updateZoom = () => {
+      if (getGameStore().zoomLevel.x !== zoom) {
+        setZoom(getGameStore().zoomLevel.x);
+      }
+    }
+    document.addEventListener("updateZoom", updateZoom);
+    return () => document.removeEventListener("updateZoom", updateZoom);
+  }, []);
 
   return (
     <div className={clsx(["h-[50px]", className])} {...props}>

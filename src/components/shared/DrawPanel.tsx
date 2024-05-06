@@ -12,7 +12,10 @@ export const deltaZoom = (delta: number) => {
 
 export const setZoom = (zoomLevel: number) => {
     const newZoom = Math.max(Math.min(zoomLevel || 50, INTERACTION.MAXZOOM), INTERACTION.MINZOOM);
-    getGameStore().zoomLevel.x = newZoom;
+    if (newZoom !== getGameStore().zoomLevel.x) {
+        getGameStore().zoomLevel.x = newZoom;
+        document.dispatchEvent(new Event("updateZoom"));
+    }
 };
 
 const DrawPanel = () => {

@@ -133,7 +133,6 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
 
             const pixel = grid.get(`[${row},${col}]`) || undefined;
             if (pixel) {
-                console.log("💡 Pixel", pixel);
                 /// if hexColor from the contract is empty, then use default color
                 pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color;
                 // Get the current color of the pixel
