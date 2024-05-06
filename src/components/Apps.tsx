@@ -9,7 +9,7 @@ import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { felt252ToString, felt252ToUnicode } from "@/global/utils";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { shortString } from "starknet";
-import { useGameStore, getGameStore } from "@/global/user.store";
+import { useGameStore, getGameStore } from "@/global/game.store";
 
 type PluginButtonPropsType = {
   // contract address

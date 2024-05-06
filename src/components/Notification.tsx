@@ -9,7 +9,7 @@ import useAlerts from "@/hooks/events/useAlerts";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import useAccountAddress from "@/hooks/utils/useAccountAddress";
-import { getGameStore, useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/game.store";
 
 type AlertType = {
   id: string;
@@ -77,7 +77,6 @@ const Alert: React.FC<AlertProp> = ({
 export default function Notification() {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
-  const notificationData = useGameStore((state) => state.notificationData);
   const alerts = useAlerts();
   const accountAddress = useAccountAddress() ?? "DEFAULT";
 

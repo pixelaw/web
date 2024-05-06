@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { clsx } from "clsx";
-import { useRenderGrid } from "@/hooks/useRenderGrid";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { useDrawPanel } from "@/providers/DrawPanelProvider.tsx";
-import { getGameStore, useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/game.store";
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from "@use-gesture/react";
-import { Vector2 } from "threejs-math";
+import { renderGrid } from "@/hooks/useRenderGrid";
 
 export type Coordinate = [number, number];
 
@@ -21,90 +20,37 @@ export const deltaZoom = (delta: number) => {
 };
 
 export const setZoom = (zoomLevel: number) => {
-    const zoom = getGameStore().zoomLevel;
     const newZoom = Math.max(Math.min(zoomLevel || 50, INTERACTION.MAXZOOM), INTERACTION.MINZOOM);
-    console.log("setting zoom", newZoom, zoom);
     getGameStore().zoomLevel.x = newZoom;
 };
 
-const calculateVisibleArea = (panOffset: Vector2) => {
-    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    let visibleAreaXStart = Math.max(0, Math.floor(-panOffset.x / cellSize));
-    let visibleAreaYStart = Math.max(0, Math.floor(-panOffset.y / cellSize));
-    let visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize));
-    let visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize));
-    const expansionFactor = 10;
-    const minLimit = 0,
-        maxLimit = 256;
-
-    const expandedMinX = visibleAreaXStart - expansionFactor;
-    const expandedMinY = visibleAreaYStart - expansionFactor;
-
-    const expandedMaxX = visibleAreaXEnd + expansionFactor;
-    const expandedMaxY = visibleAreaYEnd + expansionFactor;
-
-    visibleAreaXStart = expandedMinX < minLimit ? minLimit : expandedMinX;
-    visibleAreaYStart = expandedMinX < minLimit ? minLimit : expandedMinY;
-
-    visibleAreaXEnd = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
-    visibleAreaYEnd = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
-
-    const viewStart = new Vector2(visibleAreaXStart, visibleAreaYStart);
-    const viewEnd = new Vector2(visibleAreaXEnd, visibleAreaYEnd);
-
-    return { viewStart, viewEnd };
-}
-
 const DrawPanel = () => {
+    //canvas ref
+    const gridCanvasRef = useRef<HTMLCanvasElement>(null!);
+    
     const {
         coordinates,
-        selectedHexColor,
-        data,
         panOffset,
         onCellClick,
         onHover,
         grid,
     } = useDrawPanel();
 
-    //moving the canvas
-    const [isPanning, setIsPanning] = React.useState<boolean>(false);
-
-    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-
-    // Add a new state for storing the mousedown time
-    const [mouseDownTime, setMouseDownTime] = React.useState<number>(0);
-
-    //render canvas grid
-    const renderGrid = useRenderGrid();
-
-    //canvas ref
-    const gridCanvasRef = React.useRef<HTMLCanvasElement>();
-
-    const notificationData = useGameStore((state) => state.notificationData);
-
-    const focus = notificationData ? [notificationData] : [];
+    const [isPanning, setIsPanning] = React.useState<boolean>(false); // this is for displaying the hand cursor
+    
+    const [mouseDownTime, setMouseDownTime] = React.useState<number>(0); // Add a new state for storing the mousedown time
 
     useEffect(() => {
         let animationId: number;
         const render = () => {
             if (gridCanvasRef.current) {
-                const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
                 const ctx = gridCanvasRef.current.getContext("2d", { willReadFrequently: true });
                 if (!ctx) return;
-
-                const {viewStart, viewEnd} = calculateVisibleArea(panOffset);
                 renderGrid(ctx, {
-                    width: gridCanvasRef.current.width,
-                    height: gridCanvasRef.current.height,
-                    cellSize,
+                    canvas: gridCanvasRef,
                     coordinates,
                     panOffset,
-                    selectedHexColor,
-                    viewStart,
-                    viewEnd,
-                    pixels: data,
                     grid,
-                    focus,
                 });
             }
 
@@ -113,11 +59,8 @@ const DrawPanel = () => {
         animationId = requestAnimationFrame(render);
         return () => cancelAnimationFrame(animationId);
     }, [
+        gridCanvasRef,
         coordinates,
-        cellSize,
-        selectedHexColor,
-        data,
-        renderGrid,
         grid,
     ]);
 
@@ -187,6 +130,7 @@ const DrawPanel = () => {
 
     function onClickCoordinates(clientX: number, clientY: number) {
         if (!gridCanvasRef.current) return;
+        const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
         const rect = gridCanvasRef.current.getBoundingClientRect();
         const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
         const y = Math.abs(panOffset.y) + clientY - rect.top; // pixel
@@ -197,12 +141,7 @@ const DrawPanel = () => {
         onCellClick?.([gridX, gridY]);
     }
 
-    function onMouseLeave() {
-
-    }
-
     function onMouseUp(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-
         // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
         if (Date.now() - mouseDownTime < 300) {
             onClickCoordinates(event.clientX, event.clientY);
@@ -210,10 +149,6 @@ const DrawPanel = () => {
     }
 
     function onMouseDown(clientX: number, clientY: number) {
-        // setInitialPositionX(clientX - panOffsetX)
-        // setInitialPositionY(clientY - panOffsetY)
-
-        // Record the current time when mouse is down
         setMouseDownTime(Date.now());
     }
 
@@ -264,7 +199,6 @@ const DrawPanel = () => {
                     onMouseDown={(event) => onMouseDown(event.clientX, event.clientY)}
                     // onMouseMove={(event) => onMouseMove(event.clientX, event.clientY)}
                     onMouseUp={(event) => onMouseUp(event)}
-                    onMouseLeave={onMouseLeave}
                     onClick={(event) => onMouseUp(event)}
                 />
             </div>

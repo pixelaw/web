@@ -9,18 +9,13 @@ import { getComponentValue, Has } from "@dojoengine/recs";
 import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
-import { getGameStore, useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/game.store";
 import { TPixel } from "@/hooks/useRenderGrid";
 import { Vector2 } from "threejs-math";
 
 type DrawPanelType = {
-    gameMode: string;
-    selectedHexColor: string;
     coordinates: [number | undefined, number | undefined] | undefined;
-    viewStart: Vector2;
-    viewEnd: Vector2;
     panOffset: Vector2;
-    data?: Array<CellDatum | undefined> | undefined;
     grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
     onHover?: (coordinate: Coordinate) => void;
@@ -31,8 +26,6 @@ export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPan
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const grid = useRef<Map<string, TPixel>>(new Map());
     const [panOffset] = useState<Vector2>(new Vector2(0, 0));
-    const [viewStart] = useState<Vector2>(new Vector2(0, 0));
-    const [viewEnd] = useState<Vector2>(new Vector2(28, 8));
     const {
         setup: {
             clientComponents: { Pixel },
@@ -173,16 +166,13 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     //   );
     // }, [cellSize, notificationData]);
 
+    //render canvas grid
+
     return (
         <DrawPanelContext.Provider
             value={{
-                gameMode,
-                selectedHexColor,
                 coordinates: [position.x, position.y],
-                viewStart,
-                viewEnd,
                 panOffset,
-                data,
                 grid: grid.current,
                 onCellClick: handleCellClick,
                 onHover: handleHover,

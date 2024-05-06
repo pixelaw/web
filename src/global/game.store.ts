@@ -10,9 +10,7 @@ export interface IUserStore {
     selectedHexColor: string;
     zoomLevel: Vector2;
     notificationData: NotificationDataType | undefined;
-
     setGameMode(data: string): void;
-
     set(data: Partial<IUserStore>): void;
 }
 
@@ -29,7 +27,7 @@ const useGameStore = create<IUserStore>()(
             pixel: '',
         },
         selectedHexColor: '#FFFFFF',
-        zoomLevel: new Vector2(0,0),
+        zoomLevel: new Vector2(50,0),
         notificationData: undefined,
         setGameMode: (data: string) => {
             set(state => {

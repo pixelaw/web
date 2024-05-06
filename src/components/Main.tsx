@@ -4,7 +4,7 @@ import { ColorResult, CompactPicker } from "react-color";
 import DrawPanel from "@/components/shared/DrawPanel";
 import DrawPanelProvider from "@/providers/DrawPanelProvider.tsx";
 import useAnnounceAlert from "@/hooks/events/useAnnounceAlert";
-import { getGameStore, useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/game.store";
 
 const Main = () => {
   const selectedHexColor = useGameStore((state) => state.selectedHexColor);

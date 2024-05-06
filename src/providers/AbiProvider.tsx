@@ -4,7 +4,7 @@ import { useComponentValue } from "@dojoengine/react";
 import { useDojo } from "@/dojo/useDojo.ts";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { Abi, shortString } from "starknet";
-import { getGameStore } from "@/global/user.store";
+import { getGameStore } from "@/global/game.store";
 
 const emptyAbi: Abi = [];
 

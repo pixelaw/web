@@ -1,7 +1,7 @@
 import React from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
-import { getGameStore, useGameStore } from "@/global/user.store";
+import { getGameStore, useGameStore } from "@/global/game.store";
 import { INTERACTION } from "@/global/constants";
 import { deltaZoom } from "./shared/DrawPanel";
 
