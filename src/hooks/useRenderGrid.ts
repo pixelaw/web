@@ -97,16 +97,16 @@ export const renderGrid = (
     ctx: CanvasRenderingContext2D,
     options: {
         canvas: MutableRefObject<HTMLCanvasElement>;
-        coordinates: [number | undefined, number | undefined] | undefined;
         panOffset: Vector2;
         grid: Map<string, TPixel>;
     },
 ) => {
-    const { panOffset, coordinates, grid } = options;
+    const { panOffset, grid } = options;
     const { width, height } = options.canvas.current;
     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : [];
     const selectedHexColor = getGameStore().selectedHexColor;
+    const hoveredPixel = getGameStore().hoveredPixel;
 
     const { viewStart, viewEnd } = calculateVisibleArea(panOffset);
     ctx.clearRect(0, 0, width, height);
@@ -130,7 +130,7 @@ export const renderGrid = (
                 pixelColor = pixel.color;
             }
 
-            if (coordinates && row === coordinates[0] && col === coordinates[1]) {
+            if (hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y) { 
                 pixelColor = selectedHexColor;
             }
 

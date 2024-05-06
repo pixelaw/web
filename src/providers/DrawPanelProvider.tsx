@@ -1,7 +1,6 @@
-import React, { createRef, MutableRefObject, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { CellDatum, Coordinate } from "@/components/shared/DrawPanel.tsx";
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { Coordinate } from "@/components/shared/DrawPanel.tsx";
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
-import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants.ts";
 import { useEntityQuery } from "@dojoengine/react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -10,11 +9,11 @@ import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
-import { TPixel } from "@/hooks/useRenderGrid";
+import { renderGrid, TPixel } from "@/hooks/useRenderGrid";
 import { Vector2 } from "threejs-math";
 
 type DrawPanelType = {
-    coordinates: [number | undefined, number | undefined] | undefined;
+    setCanvasRef: React.Dispatch<React.SetStateAction<MutableRefObject<HTMLCanvasElement>>>;
     panOffset: Vector2;
     grid: Map<string, TPixel>;
     onCellClick?: (position: [number, number]) => void;
@@ -24,6 +23,7 @@ type DrawPanelType = {
 export const DrawPanelContext = React.createContext<DrawPanelType>({} as DrawPanelType);
 
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
+    const [canvasRef, setCanvasRef] = useState<MutableRefObject<HTMLCanvasElement>>(null!);
     const grid = useRef<Map<string, TPixel>>(new Map());
     const [panOffset] = useState<Vector2>(new Vector2(0, 0));
     const {
@@ -77,7 +77,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
                 position: [pixel!.x, pixel!.y],
                 color: argbToHex(pixel!.color),
                 text: pixel?.text?.toString() ?? "",
-            })
+            });
         });
 
         const data = Object.entries({ ...pixelData }).map(([key, value]) => {
@@ -167,11 +167,27 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     // }, [cellSize, notificationData]);
 
     //render canvas grid
+    useEffect(() => {
+        let animationId: number;
+        const render = () => {
+            animationId = requestAnimationFrame(render);
+            if (!canvasRef || !canvasRef.current) return;
+            const ctx = canvasRef.current.getContext("2d", { willReadFrequently: true });
+            if (!ctx) return;
+            renderGrid(ctx, {
+                canvas: canvasRef,
+                panOffset,
+                grid: grid.current,
+            });
+        };
+        animationId = requestAnimationFrame(render);
+        return () => cancelAnimationFrame(animationId);
+    }, [canvasRef, grid]);
 
     return (
         <DrawPanelContext.Provider
             value={{
-                coordinates: [position.x, position.y],
+                setCanvasRef,
                 panOffset,
                 grid: grid.current,
                 onCellClick: handleCellClick,

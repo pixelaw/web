@@ -2,17 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { clsx } from "clsx";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { useDrawPanel } from "@/providers/DrawPanelProvider.tsx";
-import { getGameStore, useGameStore } from "@/global/game.store";
+import { getGameStore } from "@/global/game.store";
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from "@use-gesture/react";
-import { renderGrid } from "@/hooks/useRenderGrid";
-
-export type Coordinate = [number, number];
-
-export type CellDatum = {
-    coordinates: Array<number>;
-    hexColor: string;
-    text: string;
-};
 
 export const deltaZoom = (delta: number) => {
     const newZoom = getGameStore().zoomLevel.x + delta;
@@ -25,44 +16,24 @@ export const setZoom = (zoomLevel: number) => {
 };
 
 const DrawPanel = () => {
-    //canvas ref
-    const gridCanvasRef = useRef<HTMLCanvasElement>(null!);
-    
     const {
-        coordinates,
+        setCanvasRef,
         panOffset,
         onCellClick,
         onHover,
         grid,
     } = useDrawPanel();
 
+    // pass canvas ref to context
+    const gridCanvasRef = useRef<HTMLCanvasElement>(null!);
+
+    useEffect(() => {
+        setCanvasRef(gridCanvasRef);
+    }, [gridCanvasRef, setCanvasRef])
+
     const [isPanning, setIsPanning] = React.useState<boolean>(false); // this is for displaying the hand cursor
     
     const [mouseDownTime, setMouseDownTime] = React.useState<number>(0); // Add a new state for storing the mousedown time
-
-    useEffect(() => {
-        let animationId: number;
-        const render = () => {
-            if (gridCanvasRef.current) {
-                const ctx = gridCanvasRef.current.getContext("2d", { willReadFrequently: true });
-                if (!ctx) return;
-                renderGrid(ctx, {
-                    canvas: gridCanvasRef,
-                    coordinates,
-                    panOffset,
-                    grid,
-                });
-            }
-
-            animationId = requestAnimationFrame(render);
-        };
-        animationId = requestAnimationFrame(render);
-        return () => cancelAnimationFrame(animationId);
-    }, [
-        gridCanvasRef,
-        coordinates,
-        grid,
-    ]);
 
     // Cancel default gestures, use-gesture recommendation
     const ref = React.useRef<HTMLDivElement>(null);
