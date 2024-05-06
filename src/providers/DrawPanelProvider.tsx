@@ -1,10 +1,8 @@
-import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { useEntityQuery } from "@dojoengine/react";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { getComponentValue, Has } from "@dojoengine/recs";
-import { argbToHex, felt252ToString } from "@/global/utils.ts";
+import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
@@ -21,13 +19,13 @@ export type TPixelData = {
     y: Number;
     created_at: Number;
     updated_at: Number;
-    app: BigInt;
+    app: string;
     color: string;
-    owner: BigInt;
+    owner: string;
     text: string;
     timestamp: Number;
     action: BigInt;
-}
+};
 
 export const DrawPanelContext = React.createContext<TDrawPanelType>({} as TDrawPanelType);
 
@@ -41,8 +39,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         },
     } = usePixelaw();
 
-    //mode of the game
-    //setting the coordinates and passing it to plugin when hover in the cell
     const {
         gameMode,
         positionWithAddressAndType: position,
@@ -68,35 +64,36 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
 
     const entityIds = useEntityQuery([Has(Pixel)]);
 
-    const { pixels } = useMemo(() => {
-        const pixels = entityIds
+    /*
+     * @notice Update loop that stores Pixel data in a map that can
+     * be accessed by [x,y] coordinates (lookup is efficient)
+     */
+    useEffect(() => {
+        entityIds
             .map((entityId) => getComponentValue(Pixel, entityId))
             .filter((entity) => !!entity)
-            .filter((entity) => entity?.color !== 0);
-
-        pixels.forEach((pixel) => {
-            const color = argbToHex(pixel!.color);
-            const text = pixel?.text?.toString() ?? "";
-            pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                x: pixel!.x,
-                y: pixel!.y,
-                created_at: pixel!.created_at,
-                updated_at: pixel!.updated_at,
-                app: pixel!.app,
-                color,
-                owner: pixel!.owner,
-                text,
-                timestamp: pixel!.timestamp,
-                action: pixel!.action,
+            .filter((entity) => entity?.color !== 0)
+            .forEach((pixel) => {
+                const color = argbToHex(pixel!.color);
+                const text = pixel?.text?.toString() ?? "";
+                pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
+                    x: pixel!.x,
+                    y: pixel!.y,
+                    created_at: pixel!.created_at,
+                    updated_at: pixel!.updated_at,
+                    app: pixel!.app.toString(),
+                    color,
+                    owner: pixel!.owner.toString(),
+                    text,
+                    timestamp: pixel!.timestamp,
+                    action: pixel!.action,
+                });
+                grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
+                    position: [pixel!.x, pixel!.y],
+                    color,
+                    text,
+                });
             });
-            grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                position: [pixel!.x, pixel!.y],
-                color,
-                text,
-            });
-        });
-
-        return { pixels };
     }, [entityIds]);
 
     const [openModal, setOpenModal] = React.useState(false);
@@ -118,14 +115,14 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         setAdditionalParams({});
     };
 
-    const handleCellClick = (coordinate: [number,number]) => {
+    const handleCellClick = (coordinate: [number, number]) => {
         const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
         console.log("💡 Pixel clicked", pixel);
         getGameStore().set({
             hoveredPixel: {
                 x: coordinate[0],
                 y: coordinate[1],
-                address: pixel?.owner || "N/A", // TODO: finish 
+                address: pixel?.owner || "N/A", // TODO: finish
                 pixel: pixel?.app || "N/A", // TODO: finish this
             },
         });
@@ -133,7 +130,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         else handleInteract();
     };
 
-    const handleHover = (coordinate: [number,number]) => {
+    const handleHover = (coordinate: [number, number]) => {
         // do not hover when the modal is open
         if (openModal) return;
         const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
@@ -142,8 +139,8 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             hoveredPixel: {
                 x: coordinate[0],
                 y: coordinate[1],
-                address: String(pixel?.owner || "N/A"),
-                pixel: String(pixel?.app || "N/A") ,
+                address: pixel?.owner || "N/A",
+                pixel: pixel?.app || "N/A",
             },
         });
     };
