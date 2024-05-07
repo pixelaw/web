@@ -31,6 +31,7 @@ export default function Footer(props: PropsType) {
     const systemId = getEntityIdFromKeys([BigInt(system)])
     const app = useComponentValue(App, systemId)
 
+    // @ts-ignore
     return (
         <div
             className={cn(
@@ -58,7 +59,7 @@ export default function Footer(props: PropsType) {
                 <h3 className={cn(['text-brand-violetAccent04 text-sm'])}>Type: <span
                     className={'text-white font-semibold ml-1'}>{felt252ToString(app?.name ?? 'null')}</span></h3>
                 <h3 className={cn(['text-brand-violetAccent04 text-sm'])}>Owner: <span
-                  className={'text-white font-semibold ml-1'}>{account.address === props.owner ? 'Me' : formatAddress(String(props.owner))}</span>
+                  className={'text-white font-semibold ml-1'}>{account!.address === props.owner ? 'Me' : formatAddress(String(props.owner))}</span>
                 </h3>
             </div>
 

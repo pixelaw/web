@@ -31,8 +31,10 @@ const AppButton = ({
     },
   } = usePixelaw();
 
+// @ts-ignore
   const app = useComponentValue(App, system);
   const name = felt252ToString(app?.name ?? "app name");
+    // @ts-ignore
   const icon = felt252ToUnicode(app?.icon ?? "app icon");
   const isOpen = expanded === true;
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {interpret, isInstruction, ParamDefinitionType, Variant} from "@/utils";
 import {InterfaceType, Manifest} from "@/global/types.ts";
 

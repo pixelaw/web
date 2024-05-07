@@ -50,10 +50,11 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
 
   const { isLoading, data, isSuccess } = useCreateBurner(index)
 
+    // FIXME account can be null here.. handle it
   React.useEffect(() => {
-    if (account.address === data || !data || !isSuccess) return
+    if ( account!.address === data || !data || !isSuccess) return
     select(data)
-  }, [select, account.address, data, isSuccess])
+  }, [select, account!.address, data, isSuccess])
 
   if (isLoading) {
     return <Loading>Deploying burner wallet</Loading>
@@ -109,7 +110,7 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
 
             <ZoomControl/>
 
-            <WalletAddress address={account.address} />
+            <WalletAddress address={account!.address} />
           </WideWrapper>
         </header>
 

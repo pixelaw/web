@@ -52,8 +52,8 @@ const useAnnounceAlert = () => {
     const alert = parseEventData(id, data)
     const app = getComponentValue(App, getEntityIdFromKeys([BigInt(alert.caller)]))
     const appName = felt252ToString(app?.name ?? alert.caller)
-    if (account.address.toLowerCase() !== alert.player.toLowerCase()) return
-    queryClient.invalidateQueries({ queryKey: ['alerts', account.address.toLowerCase()]}).then()
+    if (account!.address.toLowerCase() !== alert.player.toLowerCase()) return
+    queryClient.invalidateQueries({ queryKey: ['alerts', account!.address.toLowerCase()]}).then()
     toast({
       title: appName,
       description: alert.message

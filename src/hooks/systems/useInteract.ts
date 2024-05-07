@@ -99,7 +99,7 @@ const useInteract = (
                 await sleep(1_000)
                 const interaction = `${appName}.${methodName}`
                 try {
-                    await interact(account, contractName, position, decimalColor, methodName, additionalParams)
+                    await interact(account!, contractName, position, decimalColor, methodName, additionalParams)
                     const paramsList = additionalParams.length ? ` with params: [${additionalParams.join(", ")}]` : ''
                     toast({
                         title: 'Successful Transaction',

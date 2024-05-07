@@ -14,7 +14,7 @@ const useAlerts = () => {
   } = usePixelaw()
 
   return useQuery({
-    queryKey: ['alerts', account.address.toLowerCase()],
+    queryKey: ['alerts', account!.address.toLowerCase()],
     queryFn: async () => {
       /// TODO: paginate getting alerts. Settling for this right now
       const {data} = await graphSdk.alerts({ first: ALERTS_TO_GET })
@@ -22,7 +22,7 @@ const useAlerts = () => {
         .filter(edge => {
           if (!edge?.node?.data) return false
           const player = edge.node.data[3]
-          return player?.toLowerCase() === account.address.toLowerCase()
+          return player?.toLowerCase() === account!.address.toLowerCase()
         })
         .map((edge, index) => {
           const eventData = removeNullsFromArray(edge?.node?.data ?? [])
