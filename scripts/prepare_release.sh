@@ -15,14 +15,14 @@ prev_version=$(cat VERSION)
 next_version=$1
 
 # Update package.json
-sed -i'' -e "s/"version": "$prev_version"/"version": "$next_version"/g" package.json
+jq '.version = "'$next_version'"' package.json > temp.json && mv temp.json package.json
 
 # Update README.md
 sed -i'' -e "s/Version $prev_version/Version $next_version/g" README.md
 
-#echo $1 > VERSION
-#
-## Uncommented git commands
-#git commit -am "Prepare v$1"
-#git tag -a "v$1" -m "Version $1"
+echo $1 > VERSION
+
+# Uncommented git commands
+git commit -am "Prepare v$1"
+git tag -a "v$1" -m "Version $1"
 
