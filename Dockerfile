@@ -7,12 +7,10 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN --mount=type=cache,id=yarn,target=/root/.cache/yarn/v6 yarn install --frozen-lockfile
  
-FROM base AS build
- 
-RUN corepack enable
-WORKDIR /app
+
+FROM deps AS build
 COPY . .
-RUN yarn build
+RUN --mount=type=cache,id=yarn,target=/root/.cache/yarn/v6 yarn build
  
 FROM base
  
