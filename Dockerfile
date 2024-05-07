@@ -1,8 +1,8 @@
-# Use the official Node.js 16 image.
+# Use the official Node.js 20 image.
 FROM node:20
 
 # Set the working directory.
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
@@ -19,10 +19,10 @@ RUN yarn build
 # Use a lightweight Node.js image for the runtime.
 FROM node:20-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy build artifacts from the builder stage.
-COPY --from=0 /usr/src/app/dist ./dist
+COPY --from=0 /app/dist ./
 
 # Start the application
 CMD ["yarn", "serve"]
