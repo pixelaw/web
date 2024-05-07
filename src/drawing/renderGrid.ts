@@ -64,12 +64,12 @@ export type TPixel = {
 //   ctx.strokeRect(x, y, cellSize, cellSize)
 // }
 
-const calculateVisibleArea = (panOffset: Vector2) => {
+const calculateVisibleArea = (cameraOffset: Vector2) => {
     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    let visibleAreaXStart = Math.floor(-panOffset.x / cellSize);
-    let visibleAreaYStart = Math.floor(-panOffset.y / cellSize);
-    let visibleAreaXEnd = Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize);
-    let visibleAreaYEnd = Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize);
+    let visibleAreaXStart = Math.floor(-cameraOffset.x / cellSize);
+    let visibleAreaYStart = Math.floor(-cameraOffset.y / cellSize);
+    let visibleAreaXEnd = Math.ceil((CANVAS_WIDTH - cameraOffset.x) / cellSize);
+    let visibleAreaYEnd = Math.ceil((CANVAS_HEIGHT - cameraOffset.y) / cellSize);
     // const bufferArea = 10;
     // const minLimit = 0,
     //     maxLimit = MAP_SIZE;
@@ -118,12 +118,12 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
     if (!ctx) return;
     const zoomLevel = getGameStore().zoomLevel.x;
     const cellSize = MAX_CELL_SIZE * (zoomLevel / 100);
-    const panOffset = getGameStore().panOffset;
+    const cameraOffset = getGameStore().cameraOffset;
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : [];
     const selectedHexColor = getGameStore().selectedHexColor;
     const hoveredPixel = getGameStore().hoveredPixel;
 
-    const { viewStart, viewEnd } = calculateVisibleArea(panOffset);
+    const { viewStart, viewEnd } = calculateVisibleArea(cameraOffset);
     ctx.clearRect(0, 0, width, height);
 
     const start = {
@@ -140,8 +140,8 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
     for (let row = start.x; row <= end.x; row++) {
         for (let col = start.y; col <= end.y; col++) {
             if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
-            const x = row * cellSize + panOffset.x;
-            const y = col * cellSize + panOffset.y;
+            const x = row * cellSize + cameraOffset.x;
+            const y = col * cellSize + cameraOffset.y;
 
             let pixelColor = defaultColor; // default color
             let pixelText = "";

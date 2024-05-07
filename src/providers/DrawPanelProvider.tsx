@@ -65,7 +65,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     const entityIds = useEntityQuery([Has(Pixel)]);
 
     /*
-     * @notice Update loop that stores Pixel data in a map that can
+     * @dev Update loop that stores Pixel data in a map that can
      * be accessed by [x,y] coordinates (lookup is efficient)
      */
     useEffect(() => {
@@ -145,35 +145,6 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         });
     };
 
-    // TODO: Figure out what this does
-    // React.useEffect(() => {
-    //   if (!notificationData) return;
-    //   const targetPixelX = notificationData.x * cellSize;
-    //   const targetPixelY = notificationData.y * cellSize;
-
-    //   const offsetX = targetPixelX - CANVAS_WIDTH / 2;
-    //   const offsetY = targetPixelY - CANVAS_HEIGHT / 2;
-
-    //   const maxOffsetX = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
-    //   const maxOffsetY = -(MAP_SIZE * cellSize - CANVAS_HEIGHT);
-
-    //   setPanOffsetX(
-    //     offsetX < 0
-    //       ? 0
-    //       : Math.abs(offsetX) > Math.abs(maxOffsetX)
-    //         ? maxOffsetX
-    //         : -offsetX
-    //   );
-    //   setPanOffsetY(
-    //     offsetY < 0
-    //       ? 0
-    //       : Math.abs(offsetY) > Math.abs(maxOffsetY)
-    //         ? maxOffsetY
-    //         : -offsetY
-    //   );
-    // }, [cellSize, notificationData]);
-
-    //render canvas grid
     useEffect(() => {
         let animationId: number;
         const render = () => {
