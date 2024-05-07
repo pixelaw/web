@@ -66,25 +66,25 @@ export type TPixel = {
 
 const calculateVisibleArea = (panOffset: Vector2) => {
     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    let visibleAreaXStart = Math.max(0, Math.floor(-panOffset.x / cellSize));
-    let visibleAreaYStart = Math.max(0, Math.floor(-panOffset.y / cellSize));
-    let visibleAreaXEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize));
-    let visibleAreaYEnd = Math.min(MAP_SIZE, Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize));
-    const bufferArea = 10;
-    const minLimit = 0,
-        maxLimit = MAP_SIZE;
+    let visibleAreaXStart = Math.floor(-panOffset.x / cellSize);
+    let visibleAreaYStart = Math.floor(-panOffset.y / cellSize);
+    let visibleAreaXEnd = Math.ceil((CANVAS_WIDTH - panOffset.x) / cellSize);
+    let visibleAreaYEnd = Math.ceil((CANVAS_HEIGHT - panOffset.y) / cellSize);
+    // const bufferArea = 10;
+    // const minLimit = 0,
+    //     maxLimit = MAP_SIZE;
 
-    const expandedMinX = visibleAreaXStart - bufferArea;
-    const expandedMinY = visibleAreaYStart - bufferArea;
+    // const expandedMinX = visibleAreaXStart - bufferArea;
+    // const expandedMinY = visibleAreaYStart - bufferArea;
 
-    const expandedMaxX = visibleAreaXEnd + bufferArea;
-    const expandedMaxY = visibleAreaYEnd + bufferArea;
+    // const expandedMaxX = visibleAreaXEnd + bufferArea;
+    // const expandedMaxY = visibleAreaYEnd + bufferArea;
 
-    visibleAreaXStart = expandedMinX < minLimit ? minLimit : expandedMinX;
-    visibleAreaYStart = expandedMinX < minLimit ? minLimit : expandedMinY;
+    // visibleAreaXStart = expandedMinX < minLimit ? minLimit : expandedMinX;
+    // visibleAreaYStart = expandedMinX < minLimit ? minLimit : expandedMinY;
 
-    visibleAreaXEnd = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
-    visibleAreaYEnd = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
+    // visibleAreaXEnd = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
+    // visibleAreaYEnd = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
 
     const viewStart = new Vector2(visibleAreaXStart, visibleAreaYStart);
     const viewEnd = new Vector2(visibleAreaXEnd, visibleAreaYEnd);
@@ -92,20 +92,32 @@ const calculateVisibleArea = (panOffset: Vector2) => {
     return { viewStart, viewEnd };
 };
 
-// export setupRenderer = () => {
-//     const offScreenCanvas = document.createElement("canvas");
-//     offScreenCanvas.width = CANVAS_WIDTH;
-//     offScreenCanvas.height = CANVAS_HEIGHT;
-//     const offScreenCtx = offScreenCanvas.getContext("2d", { willReadFrequently: true });
-//     if (!offScreenCtx) return;
-//     return offScreenCtx;
-// }
+const offScreenCanvas = document.createElement("canvas");
+const defaultColor = "#2F1643";
+
+// TODO: this is template for eventual use of an offscreen renderer so we don't have to draw all the empty tiles individually but can copy them from the offscreen canvas
+export const createFillPattern = (ctx: CanvasRenderingContext2D, color: string) => {
+    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+    offScreenCanvas.width = cellSize-0.5;
+    offScreenCanvas.height = cellSize-0.5;
+    const offScreenCtx = offScreenCanvas.getContext("2d", { willReadFrequently: true });
+    if (!offScreenCtx) {
+        throw new Error("offscreen canvas not supported");
+    }
+    offScreenCtx.clearRect(0, 0, cellSize, cellSize);
+    offScreenCtx.fillStyle = defaultColor;
+    offScreenCtx.fillRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+    offScreenCtx.strokeStyle = "#2E0A3E";
+    offScreenCtx.strokeRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+    return offScreenCtx.canvas;
+}
 
 export const renderGrid = ({ canvas, grid }: TDrawContext) => {
     const { width, height } = canvas;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
-    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+    const zoomLevel = getGameStore().zoomLevel.x;
+    const cellSize = MAX_CELL_SIZE * (zoomLevel / 100);
     const panOffset = getGameStore().panOffset;
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : [];
     const selectedHexColor = getGameStore().selectedHexColor;
@@ -123,14 +135,17 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
         y: Math.floor(viewEnd.y),
     };
 
+    // const pattern = createFillPattern(ctx, selectedHexColor);
+
     for (let row = start.x; row <= end.x; row++) {
         for (let col = start.y; col <= end.y; col++) {
+            if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
             const x = row * cellSize + panOffset.x;
             const y = col * cellSize + panOffset.y;
 
-            let pixelColor = "#2F1643"; // default color
+            let pixelColor = defaultColor; // default color
             let pixelText = "";
-
+            const isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
             const pixel = grid.get(`[${row},${col}]`) || undefined;
             if (pixel) {
                 /// if hexColor from the contract is empty, then use default color
@@ -142,14 +157,19 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
                 pixelColor = pixel.color;
             }
 
-            if (hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y) {
+            if (isHovered) {
                 pixelColor = selectedHexColor;
             }
 
-            ctx.fillStyle = pixelColor;
-            ctx.fillRect(x, y, cellSize, cellSize);
-            ctx.strokeStyle = "#2E0A3E";
-            ctx.strokeRect(x, y, cellSize, cellSize);
+            if (pixel || (!pixel && zoomLevel > 9) || isHovered) {
+                ctx.fillStyle = pixelColor;
+                ctx.fillRect(x, y, cellSize, cellSize);
+                ctx.strokeStyle = "#2E0A3E";
+                ctx.strokeRect(x, y, cellSize, cellSize);
+            }
+            // } else {
+            //     ctx.drawImage(pattern, x, y, cellSize, cellSize);
+            // }
 
             if (focus.length) {
                 // const pixelNeedAttention = focus.find(p => p.x === row && p.y === col)

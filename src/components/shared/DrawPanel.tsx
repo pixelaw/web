@@ -76,8 +76,8 @@ const DrawPanel = () => {
                 const maxOffsetX = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
                 const maxOffsetY = -(MAP_SIZE * cellSize - CANVAS_WIDTH);
 
-                panOffset.x = offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX;
-                panOffset.y = offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY;
+                panOffset.x = x;//offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX;
+                panOffset.y = y;//offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY;
             },
             onDragEnd: () => setIsPanning(false),
             onPinch: ({ delta: [ds] }) => {
