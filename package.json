@@ -3,7 +3,7 @@
   "private": false,
   "type": "module",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "dev": "rm -rf node_modules/.vite && vite",
     "build": "tsc && vite build",
