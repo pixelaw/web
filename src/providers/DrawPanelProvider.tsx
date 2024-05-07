@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { useEntityQuery } from "@dojoengine/react";
 import { getComponentValue, Has } from "@dojoengine/recs";
@@ -7,9 +7,11 @@ import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
 import { renderGrid, TPixel } from "@/drawing/renderGrid";
+import { createCamera } from "@/drawing/camera";
 
 type TDrawPanelType = {
-    setCanvasRef: React.Dispatch<React.SetStateAction<MutableRefObject<HTMLCanvasElement>>>;
+    setCanvas: (canvas: MutableRefObject<HTMLCanvasElement>) => void;
+    camera: ReturnType<typeof createCamera>;
     onCellClick?: (position: [number, number]) => void;
     onHover?: (coordinate: [number, number]) => void;
 };
@@ -31,6 +33,7 @@ export const DrawPanelContext = React.createContext<TDrawPanelType>({} as TDrawP
 
 export default function DrawPanelProvider({ children }: { children: React.ReactNode }) {
     const [canvasRef, setCanvasRef] = useState<MutableRefObject<HTMLCanvasElement>>(null!);
+    const [camera, setCamera] = useState<ReturnType<typeof createCamera>>(null!);
     const grid = useRef<Map<string, TPixel>>(new Map());
     const pixelData = useRef<Map<string, TPixelData>>(new Map());
     const {
@@ -153,16 +156,26 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             renderGrid({
                 canvas: canvasRef.current,
                 grid: grid.current,
+                camera
             });
         };
         animationId = requestAnimationFrame(render);
         return () => cancelAnimationFrame(animationId);
     }, [canvasRef, grid]);
 
+    const setCanvas = useCallback((canvas: MutableRefObject<HTMLCanvasElement>) => {
+        if (!canvas.current) return;
+        setCanvasRef(canvas);
+        const camera = createCamera(canvas.current);
+        setCamera(camera);
+        getGameStore().set({camera});
+    }, []);
+
     return (
         <DrawPanelContext.Provider
             value={{
-                setCanvasRef,
+                setCanvas,
+                camera,
                 onCellClick: handleCellClick,
                 onHover: handleHover,
             }}

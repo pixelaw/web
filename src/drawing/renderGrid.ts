@@ -1,12 +1,12 @@
-import { MutableRefObject, useCallback } from "react";
 import { felt252ToString } from "@/global/utils";
-import { Vector2 } from "threejs-math";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
+import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { getGameStore } from "@/global/game.store";
+import { createCamera } from "./camera";
 
 type TDrawContext = {
     canvas: HTMLCanvasElement;
     grid: Map<string, TPixel>;
+    camera: ReturnType<typeof createCamera>;
 };
 
 export type TPixel = {
@@ -64,40 +64,12 @@ export type TPixel = {
 //   ctx.strokeRect(x, y, cellSize, cellSize)
 // }
 
-const calculateVisibleArea = (cameraOffset: Vector2) => {
-    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    let visibleAreaXStart = Math.floor(-cameraOffset.x / cellSize);
-    let visibleAreaYStart = Math.floor(-cameraOffset.y / cellSize);
-    let visibleAreaXEnd = Math.ceil((CANVAS_WIDTH - cameraOffset.x) / cellSize);
-    let visibleAreaYEnd = Math.ceil((CANVAS_HEIGHT - cameraOffset.y) / cellSize);
-    // const bufferArea = 10;
-    // const minLimit = 0,
-    //     maxLimit = MAP_SIZE;
-
-    // const expandedMinX = visibleAreaXStart - bufferArea;
-    // const expandedMinY = visibleAreaYStart - bufferArea;
-
-    // const expandedMaxX = visibleAreaXEnd + bufferArea;
-    // const expandedMaxY = visibleAreaYEnd + bufferArea;
-
-    // visibleAreaXStart = expandedMinX < minLimit ? minLimit : expandedMinX;
-    // visibleAreaYStart = expandedMinX < minLimit ? minLimit : expandedMinY;
-
-    // visibleAreaXEnd = expandedMaxX > maxLimit ? maxLimit : expandedMaxX;
-    // visibleAreaYEnd = expandedMaxY > maxLimit ? maxLimit : expandedMaxY;
-
-    const viewStart = new Vector2(visibleAreaXStart, visibleAreaYStart);
-    const viewEnd = new Vector2(visibleAreaXEnd, visibleAreaYEnd);
-
-    return { viewStart, viewEnd };
-};
-
 const defaultColor = "#2F1643";
 // const offScreenCanvas = document.createElement("canvas");
 
 // TODO: this is template for eventual use of an offscreen renderer so we don't have to draw all the empty tiles individually but can copy them from the offscreen canvas
 // const createFillPattern = (ctx: CanvasRenderingContext2D, color: string) => {
-//     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+//     const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
 //     offScreenCanvas.width = cellSize-0.5;
 //     offScreenCanvas.height = cellSize-0.5;
 //     const offScreenCtx = offScreenCanvas.getContext("2d", { willReadFrequently: true });
@@ -112,27 +84,26 @@ const defaultColor = "#2F1643";
 //     return offScreenCtx.canvas;
 // }
 
-export const renderGrid = ({ canvas, grid }: TDrawContext) => {
+export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     const { width, height } = canvas;
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) return;
-    const zoomLevel = getGameStore().zoomLevel.x;
-    const cellSize = MAX_CELL_SIZE * (zoomLevel / 100);
-    const cameraOffset = getGameStore().cameraOffset;
+    if (!ctx || !camera) return;
+    const cameraPosition = camera.getPosition();
+    const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : [];
     const selectedHexColor = getGameStore().selectedHexColor;
     const hoveredPixel = getGameStore().hoveredPixel;
 
-    const { viewStart, viewEnd } = calculateVisibleArea(cameraOffset);
+    const bounds = camera.calculateViewport();
     ctx.clearRect(0, 0, width, height);
 
     const start = {
-        x: Math.floor(viewStart.x),
-        y: Math.floor(viewStart.y),
+        x: Math.floor(bounds.x),
+        y: Math.floor(bounds.y),
     };
     const end = {
-        x: Math.floor(viewEnd.x),
-        y: Math.floor(viewEnd.y),
+        x: Math.floor(bounds.z),
+        y: Math.floor(bounds.w),
     };
 
     // const pattern = createFillPattern(ctx, selectedHexColor);
@@ -140,8 +111,8 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
     for (let row = start.x; row <= end.x; row++) {
         for (let col = start.y; col <= end.y; col++) {
             if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
-            const x = row * cellSize + cameraOffset.x;
-            const y = col * cellSize + cameraOffset.y;
+            const x = row * cellSize + cameraPosition.x;
+            const y = col * cellSize + cameraPosition.y;
 
             let pixelColor = defaultColor; // default color
             let pixelText = "";
@@ -161,7 +132,7 @@ export const renderGrid = ({ canvas, grid }: TDrawContext) => {
                 pixelColor = selectedHexColor;
             }
 
-            if (pixel || (!pixel && zoomLevel > 9) || isHovered) {
+            if (pixel || (!pixel && cameraPosition.z > 9) || isHovered) {
                 ctx.fillStyle = pixelColor;
                 ctx.fillRect(x, y, cellSize, cellSize);
                 ctx.strokeStyle = "#2E0A3E";

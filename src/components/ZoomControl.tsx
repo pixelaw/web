@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
-import { getGameStore, useGameStore } from "@/global/game.store";
+import { getGameStore } from "@/global/game.store";
 import { INTERACTION } from "@/global/constants";
-import { deltaZoom } from "./shared/DrawPanel";
+import { createCamera } from "@/drawing/camera";
 
 type PropsType = {
   value?: number;
@@ -13,26 +13,33 @@ type PropsType = {
 const ZoomControl: React.FC<
   PropsType & React.HTMLAttributes<HTMLDivElement>
 > = (props) => {
-  const [zoom, setZoom] = React.useState<number>(0);  
-  const zoomLevel = getGameStore().zoomLevel;
+  const [zoom, setZoom] = React.useState<number>(0);
+  const [camera, setCamera] = React.useState<ReturnType<typeof createCamera>>(null!);
 
   const { MINZOOM, MAXZOOM, ZOOMSTEPS } = INTERACTION;
   const { className } = props;
 
   const handleClick = (dir: number) => {
-    deltaZoom(ZOOMSTEPS * dir);
+    camera.zoomBy(ZOOMSTEPS * dir);
   };
 
   useEffect(() => {
+    if (camera !== getGameStore().camera) { 
+      setCamera(getGameStore().camera!)  
+    }
+  }, [getGameStore().camera]);
+
+  useEffect(() => {
     const updateZoom = () => {
-      if (getGameStore().zoomLevel.x !== zoom) {
-        setZoom(getGameStore().zoomLevel.x);
+      if (getGameStore().camera?.position.z !== zoom) {
+        setZoom(getGameStore().camera?.position.z || 50);
       }
     }
     document.addEventListener("updateZoom", updateZoom);
     return () => document.removeEventListener("updateZoom", updateZoom);
   }, []);
 
+  if (!camera) return null;
   return (
     <div className={clsx(["h-[50px]", className])} {...props}>
       <div
@@ -46,7 +53,7 @@ const ZoomControl: React.FC<
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(-1)}
-          disabled={MINZOOM >= zoomLevel.x}
+          disabled={MINZOOM >= camera.position.z}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#8722;
@@ -56,14 +63,14 @@ const ZoomControl: React.FC<
           className={"text-brand-skyblue text-base font-silkscreen text-center"}
         >
           {" "}
-          {zoomLevel.x?.toFixed(0)}%{" "}
+          {camera.position.z?.toFixed(0)}%{" "}
         </span>
 
         <Button
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(1)}
-          disabled={MAXZOOM <= zoomLevel.x}
+          disabled={MAXZOOM <= camera.position.z}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#43;
