@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
 import { useDrawPanel } from "@/providers/DrawPanelProvider.tsx";
-import { getGameStore } from "@/global/game.store";
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from "@use-gesture/react";
 import { Vector2 } from "threejs-math";
 
@@ -12,30 +11,51 @@ type TMouseMemo = {
 };
 
 const DrawPanel = () => {
+    const [canvasDimensions, setCanvasDimensions] = useState({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
     const { setCanvas, onCellClick, onHover, camera } = useDrawPanel();
-    const gridCanvasRef = useRef<HTMLCanvasElement>(null!);
+    const canvasRef = useRef<HTMLCanvasElement>(null!);
 
     // @dev Hook up canvas ref to DrawPanelProvider
     useEffect(() => {
-        setCanvas(gridCanvasRef);
-    }, [gridCanvasRef, setCanvas]);
+        setCanvas(canvasRef);
+    }, [canvasRef, setCanvas]);
 
-    // @dev Cancel default gestures, use-gesture recommendation
     const ref = React.useRef<HTMLDivElement>(null);
     useEffect(() => {
+        // @dev Cancel default gestures, use-gesture recommendation
         const handler = (e: Event) => {
             e.preventDefault();
         };
+
+        // @dev Handle resize of canvas
+        const handleResize = () => {
+            if (canvasRef.current) {
+                const { clientWidth, clientHeight } = canvasRef.current.parentElement!;
+                setCanvasDimensions({ width: clientWidth, height: clientHeight });
+            }
+        };
+        handleResize();
+        window.addEventListener("resize", handleResize);
         document.addEventListener("gesturestart", handler);
         document.addEventListener("gesturechange", handler);
         document.addEventListener("gestureend", handler);
 
         return () => {
+            window.removeEventListener("resize", handleResize);
             document.removeEventListener("gesturestart", handler);
             document.removeEventListener("gesturechange", handler);
             document.removeEventListener("gestureend", handler);
         };
     }, []);
+
+    // @dev Handle resize of canvas
+    useEffect(() => {
+        if (canvasRef.current) {
+            const canvas = canvasRef.current;
+            canvas.width = canvasDimensions.width;
+            canvas.height = canvasDimensions.height;
+        }
+    }, [canvasDimensions]);
 
     // @dev Store mouse data
     const [mouseMemo, setMouseMemo] = React.useState<TMouseMemo>({
@@ -46,13 +66,14 @@ const DrawPanel = () => {
     createUseGesture([dragAction, pinchAction, wheelAction, hoverAction, moveAction])(
         {
             onMouseDown: ({ event: { clientX, clientY } }) => {
+                // @dev Track mousedown, disable click on panning
                 const memo = {
                     mouseDownPosition: new Vector2(clientX, clientY),
                 };
                 setMouseMemo({ ...mouseMemo, ...memo });
             },
             onClick: ({ event: { clientX, clientY }, ...rest }) => {
-                if (!gridCanvasRef.current || mouseMemo.isPanning) return;
+                if (!canvasRef.current || mouseMemo.isPanning) return;
                 const mousePos = new Vector2(clientX, clientY);
                 if (mouseMemo.mouseDownPosition && mousePos.distanceTo(mouseMemo.mouseDownPosition) > 1) {
                     return;
@@ -61,7 +82,7 @@ const DrawPanel = () => {
                 onCellClick?.([pos.x, pos.y]);
             },
             onMove: ({ dragging, event: { clientX, clientY } }) => {
-                if (!gridCanvasRef.current || dragging) return;
+                if (!canvasRef.current || dragging) return;
                 const pos = camera.canvasToGrid(new Vector2(clientX, clientY));
                 onHover?.([pos.x, pos.y]);
             },
@@ -69,7 +90,6 @@ const DrawPanel = () => {
                 if (pinching) return cancel();
                 if (mouseMemo.isPanning === undefined) setMouseMemo({ ...mouseMemo, ...{ isPanning: true } });
                 camera.moveBy(new Vector2(dx, dy));
-
             },
             onDragEnd: () => setMouseMemo({ ...mouseMemo, ...{ isPanning: false } }),
             onPinch: ({ delta: [ds] }) => {
@@ -91,18 +111,20 @@ const DrawPanel = () => {
     );
 
     return (
-        <div className={clsx(["w-full h-full pointer-events-none overflow-hidden touch-none"])}>
+        <div className={clsx(["w-full h-full pointer-events-none overflow-hidden touch-none overscroll-none"])}>
             <div
                 id={"canvas-container"}
-                className={clsx([`h-full w-full overflow-hidden pointer-events-auto touch-none`])}
+                className={clsx([`h-full w-full overflow-hidden pointer-events-none touch-none overscroll-none `])}
                 ref={ref}
             >
                 <canvas
-                    ref={gridCanvasRef}
-                    width={CANVAS_WIDTH}
-                    height={CANVAS_HEIGHT}
-                    className={clsx("cursor-pointer pointer-events-auto", mouseMemo.isPanning && "cursor-grab")}
-                    // TODO: implement onResize scaling
+                    ref={canvasRef}
+                    width={canvasDimensions.width}
+                    height={canvasDimensions.height}
+                    className={clsx(
+                        "cursor-pointer pointer-events-auto",
+                        mouseMemo.isPanning && "cursor-grab overflow-hidden",
+                    )}
                 />
             </div>
         </div>

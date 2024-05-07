@@ -1,12 +1,10 @@
 import { INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
-import { getGameStore } from "@/global/game.store";
-import { Matrix4, Vector2, Vector3, Vector4 } from "threejs-math";
+import { Vector2, Vector3, Vector4 } from "threejs-math";
 
 // const cameraFront = new Vector3(0, 0, 1);
 // const cameraUp = new Vector3(0, 1, 0);
 
 export const createCamera = (canvas: HTMLCanvasElement) => {
-    const { width, height } = canvas;
     const position = new Vector3(0, 0, 50); // Z is zoom
     // const projectionMatrix = new Matrix4();
     // const viewMatrix = new Matrix4();
@@ -58,11 +56,12 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     };
 
     const translate = (translationDelta: Vector3) => {
-      throw new Error("Method not implemented.");
+        throw new Error("Method not implemented.");
         // Translate the camera position
     };
 
     const calculateViewport = () => {
+        const { width, height } = canvas;
         const cellSize = MAX_CELL_SIZE * (position.z / 100);
         let xStart = Math.floor(-position.x / cellSize);
         let yStart = Math.floor(-position.y / cellSize);
@@ -73,31 +72,31 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     };
 
     const canvasToGrid = (point: Vector2) => {
-      const worldPos = canvasToCamera(point);
-      const viewWidth = (viewport.z + position.x);
-      const viewHeight = (viewport.w + position.y);
+        const worldPos = canvasToCamera(point);
+        const viewWidth = viewport.z + position.x;
+        const viewHeight = viewport.w + position.y;
 
-      const x = (worldPos.x) * viewWidth;
-      const y = (worldPos.y) * viewHeight;
+        const x = worldPos.x * viewWidth;
+        const y = worldPos.y * viewHeight;
 
-      const gridX = Math.floor(x);
-      const gridY = Math.floor(y);
-      return new Vector2(gridX, gridY);
-    }
+        const gridX = Math.floor(x);
+        const gridY = Math.floor(y);
+        return new Vector2(gridX, gridY);
+    };
 
     const canvasToCamera = (point: Vector2) => {
-      const rect = canvas.getBoundingClientRect();
-      // normalize point to camera space
-      const x = point.x - rect.left;
-      const y = point.y - rect.top;
+        const rect = canvas.getBoundingClientRect();
+        // normalize point to camera space
+        const x = point.x - rect.left;
+        const y = point.y - rect.top;
 
-      const xNormalized = x / rect.width;
-      const yNormalized = y / rect.height;
+        const xNormalized = x / rect.width;
+        const yNormalized = y / rect.height;
 
-      const z = position.z;
-      const p = new Vector3(xNormalized, yNormalized, z)
-      return p;
-    }
+        const z = position.z;
+        const p = new Vector3(xNormalized, yNormalized, z);
+        return p;
+    };
 
     return {
         position,
@@ -113,6 +112,6 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         setZoom,
         translate,
         calculateViewport,
-        canvasToGrid
+        canvasToGrid,
     };
 };

@@ -156,7 +156,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             renderGrid({
                 canvas: canvasRef.current,
                 grid: grid.current,
-                camera
+                camera,
             });
         };
         animationId = requestAnimationFrame(render);
@@ -168,7 +168,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         setCanvasRef(canvas);
         const camera = createCamera(canvas.current);
         setCamera(camera);
-        getGameStore().set({camera});
+        getGameStore().set({ camera });
     }, []);
 
     return (

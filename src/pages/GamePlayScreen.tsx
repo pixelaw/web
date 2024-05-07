@@ -15,8 +15,9 @@ export default function GamePlayScreen() {
             <div
                 className={cn(
                     [
-                        'flex-1',
-                        'bg-brand-body'
+                        'bg-brand-body',
+                        'w-full h-full',
+                        "overflow-hidden"
                     ]
                 )}
             >

@@ -74,6 +74,7 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
         className={cn(
           [
             'min-h-screen',
+            'h-screen',
             'flex flex-col',
             'bg-brand-body text-white',
             {'bg-main bg-cover bg-center': hasBackgroundImage},
