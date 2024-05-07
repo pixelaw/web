@@ -30,8 +30,6 @@ const DrawPanel = () => {
 
     const [isPanning, setIsPanning] = React.useState<boolean>(false); // this is for displaying the hand cursor
 
-    const [mouseDownTime, setMouseDownTime] = React.useState<number>(0); // Add a new state for storing the mousedown time
-
     // Cancel default gestures, use-gesture recommendation
     const ref = React.useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -52,7 +50,19 @@ const DrawPanel = () => {
     const useGesture = createUseGesture([dragAction, pinchAction, wheelAction, hoverAction, moveAction]);
     useGesture(
         {
-            // onMove: ({ event }) => console.log('move', event),
+            onClick: ({event: {clientX, clientY}}) => {
+                if (!gridCanvasRef.current) return;
+                const panOffset = getGameStore().panOffset;
+                const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+                const rect = gridCanvasRef.current.getBoundingClientRect();
+                const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
+                const y = Math.abs(panOffset.y) + clientY - rect.top; // pixel
+        
+                const gridX = Math.floor(x / cellSize);
+                const gridY = Math.floor(y / cellSize);
+        
+                onCellClick?.([gridX, gridY]);
+            },
             onMove: ({ dragging, event: { clientX, clientY } }) => {
                 if (!gridCanvasRef.current || dragging) return;
                 const panOffset = getGameStore().panOffset;
@@ -98,61 +108,6 @@ const DrawPanel = () => {
         },
     );
 
-    function onClickCoordinates(clientX: number, clientY: number) {
-        if (!gridCanvasRef.current) return;
-        const panOffset = getGameStore().panOffset;
-        const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-        const rect = gridCanvasRef.current.getBoundingClientRect();
-        const x = Math.abs(panOffset.x) + clientX - rect.left; // pixel
-        const y = Math.abs(panOffset.y) + clientY - rect.top; // pixel
-
-        const gridX = Math.floor(x / cellSize);
-        const gridY = Math.floor(y / cellSize);
-
-        onCellClick?.([gridX, gridY]);
-    }
-
-    function onMouseUp(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        // If the time difference between mouse down and up is less than a threshold (e.g., 200ms), it's a click
-        if (Date.now() - mouseDownTime < 300) {
-            onClickCoordinates(event.clientX, event.clientY);
-        }
-    }
-
-    function onMouseDown(clientX: number, clientY: number) {
-        setMouseDownTime(Date.now());
-    }
-
-    // function onMouseHover(clientX: number, clientY: number) {
-    //     if (!gridCanvasRef.current) return
-
-    //     const rect = gridCanvasRef.current.getBoundingClientRect()
-    //     const x = Math.abs(panOffsetX) + clientX - rect.left  // pixel
-    //     const y = Math.abs(panOffsetY) + clientY - rect.top  // pixel
-
-    //     const gridX = Math.floor(x / cellSize)
-    //     const gridY = Math.floor(y / cellSize)
-
-    //     // Now you have the grid coordinates on hover, you can use them as you need
-    //     onHover?.([gridX, gridY])
-    // }
-
-    // function onMouseMove(clientX: number, clientY: number) {
-    //     if (panning) {
-    //         // this is a negative value
-    //         const offsetX = clientX - initialPositionX;
-    //         const offsetY = clientY - initialPositionY;
-
-    //         const maxOffsetX = -(MAX_ROWS_COLS * cellSize - CANVAS_WIDTH); // Maximum allowed offset in X direction
-    //         const maxOffsetY = -(MAX_ROWS_COLS * cellSize - CANVAS_WIDTH); // Maximum allowed offset in Y direction
-
-    //         setPanOffsetX(offsetX > 0 ? 0 : Math.abs(offsetX) > Math.abs(maxOffsetX) ? maxOffsetX : offsetX)
-    //         setPanOffsetY(offsetY > 0 ? 0 : Math.abs(offsetY) > Math.abs(maxOffsetY) ? maxOffsetY : offsetY)
-    //     } else {
-    //         onMouseHover(clientX, clientY)
-    //     }
-    // }
-
     return (
         <div className={clsx(["w-full h-full pointer-events-none overflow-hidden touch-none"])}>
             <div
@@ -167,10 +122,6 @@ const DrawPanel = () => {
                     width={CANVAS_WIDTH}
                     height={CANVAS_HEIGHT}
                     className={clsx(["cursor-pointer pointer-events-auto", { "!cursor-grab": isPanning }])}
-                    onMouseDown={(event) => onMouseDown(event.clientX, event.clientY)}
-                    // onMouseMove={(event) => onMouseMove(event.clientX, event.clientY)}
-                    onMouseUp={(event) => onMouseUp(event)}
-                    onClick={(event) => onMouseUp(event)}
                 />
             </div>
         </div>

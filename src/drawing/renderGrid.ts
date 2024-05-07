@@ -92,25 +92,25 @@ const calculateVisibleArea = (panOffset: Vector2) => {
     return { viewStart, viewEnd };
 };
 
-const offScreenCanvas = document.createElement("canvas");
 const defaultColor = "#2F1643";
+// const offScreenCanvas = document.createElement("canvas");
 
 // TODO: this is template for eventual use of an offscreen renderer so we don't have to draw all the empty tiles individually but can copy them from the offscreen canvas
-export const createFillPattern = (ctx: CanvasRenderingContext2D, color: string) => {
-    const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
-    offScreenCanvas.width = cellSize-0.5;
-    offScreenCanvas.height = cellSize-0.5;
-    const offScreenCtx = offScreenCanvas.getContext("2d", { willReadFrequently: true });
-    if (!offScreenCtx) {
-        throw new Error("offscreen canvas not supported");
-    }
-    offScreenCtx.clearRect(0, 0, cellSize, cellSize);
-    offScreenCtx.fillStyle = defaultColor;
-    offScreenCtx.fillRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
-    offScreenCtx.strokeStyle = "#2E0A3E";
-    offScreenCtx.strokeRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
-    return offScreenCtx.canvas;
-}
+// const createFillPattern = (ctx: CanvasRenderingContext2D, color: string) => {
+//     const cellSize = MAX_CELL_SIZE * (getGameStore().zoomLevel.x / 100);
+//     offScreenCanvas.width = cellSize-0.5;
+//     offScreenCanvas.height = cellSize-0.5;
+//     const offScreenCtx = offScreenCanvas.getContext("2d", { willReadFrequently: true });
+//     if (!offScreenCtx) {
+//         throw new Error("offscreen canvas not supported");
+//     }
+//     offScreenCtx.clearRect(0, 0, cellSize, cellSize);
+//     offScreenCtx.fillStyle = defaultColor;
+//     offScreenCtx.fillRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+//     offScreenCtx.strokeStyle = "#2E0A3E";
+//     offScreenCtx.strokeRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+//     return offScreenCtx.canvas;
+// }
 
 export const renderGrid = ({ canvas, grid }: TDrawContext) => {
     const { width, height } = canvas;
