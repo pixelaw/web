@@ -28,11 +28,7 @@ export default defineConfig({
       '/world': {
         target: 'http://localhost:3000/',
         changeOrigin: true,
-      },
-      '/manifests': {
-        target: 'http://localhost:3000/',
-        changeOrigin: true,
-      },
+      }
     },
   },
   resolve: {
