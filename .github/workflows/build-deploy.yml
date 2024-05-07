@@ -53,6 +53,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Create GitHub Release
+        env:
+            GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           TAG=${{ github.ref }}
           VERSION=${TAG#refs/tags/}
