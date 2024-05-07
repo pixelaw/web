@@ -1,28 +1,25 @@
-# Use the official Node.js 20 image.
-FROM node:20
-
-# Set the working directory.
+FROM node:20 AS base
+ 
+FROM base AS deps
+ 
+RUN corepack enable
 WORKDIR /app
-
-# Copy package.json and yarn.lock
 COPY package.json yarn.lock ./
-
-# Install dependencies.
-RUN yarn install
-
-# Copy local code to the container image.
-COPY . .
-
-# Build the application
-RUN yarn build
-
-# Use a lightweight Node.js image for the runtime.
-FROM node:20-alpine
-
+RUN --mount=type=cache,id=yarn,target=/root/.cache/yarn/v6 yarn install --frozen-lockfile
+ 
+FROM base AS build
+ 
+RUN corepack enable
 WORKDIR /app
-
-# Copy build artifacts from the builder stage.
-COPY --from=0 /app/dist ./
-
-# Start the application
-CMD ["yarn", "serve"]
+COPY package.json yarn.lock ./
+RUN --mount=type=cache,id=yarn,target=/root/.cache/yarn/v6 yarn install --frozen-lockfile
+COPY . .
+RUN yarn build
+ 
+FROM base
+ 
+WORKDIR /app
+COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+ENV NODE_ENV production
+CMD ["node", "./dist/index.js"]
