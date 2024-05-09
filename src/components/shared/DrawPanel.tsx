@@ -89,7 +89,8 @@ const DrawPanel = () => {
             onDrag: ({ pinching, cancel, offset: [x, y], delta: [dx, dy], ...rest }) => {
                 if (pinching) return cancel();
                 if (mouseMemo.isPanning === undefined) setMouseMemo({ ...mouseMemo, ...{ isPanning: true } });
-                camera.moveBy(new Vector2(dx, dy));
+                // @dev inverted because drag movement
+                camera.moveBy(new Vector2(-dx, -dy));
             },
             onDragEnd: () => setMouseMemo({ ...mouseMemo, ...{ isPanning: false } }),
             onPinch: ({ delta: [ds] }) => {
