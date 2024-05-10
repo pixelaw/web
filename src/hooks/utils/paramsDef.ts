@@ -20,6 +20,7 @@ export default function getParamsDef (
 
     const interfaceName = `I${convertSnakeToPascal(contractName)}`
     const contract = manifest.contracts.find(c => c.name.includes(contractName))
+    if(!contract) return[]
     const abi = contract!.abi
     const methods = abi.find(x => x.type === 'interface' && x.name.includes(interfaceName)) as InterfaceType | undefined
 
