@@ -1,5 +1,5 @@
 # client
 The (browser) client
 
-Version 0.2.15
+Version 0.2.16
 
