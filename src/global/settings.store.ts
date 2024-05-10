@@ -28,7 +28,7 @@ export const defaultDojoConfig: DojoConfig = {
   rpcUrl: "http://localhost:5050",
   toriiUrl: "http://localhost:8080",
   manifest: manifest(
-    "0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e"
+    "0x308cf899b99ecd34b86ceed1d7ee1c1567cec44cff625bb732732a44c41a1b8"
   ),
   masterAddress:
     "0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486",
