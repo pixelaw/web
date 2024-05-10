@@ -2,6 +2,7 @@ import { felt252ToString } from "@/global/utils";
 import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { getGameStore } from "@/global/game.store";
 import { createCamera } from "./camera";
+import { Vector2 } from "threejs-math";
 
 type TDrawContext = {
     canvas: HTMLCanvasElement;
@@ -65,10 +66,11 @@ export type TPixel = {
 // }
 
 const defaultColor = "#2F1643";
-// const offScreenCanvas = document.createElement("canvas");
+const offScreenCanvas = document.createElement("canvas");
 
 // TODO: this is template for eventual use of an offscreen renderer so we don't have to draw all the empty tiles individually but can copy them from the offscreen canvas
-// const createFillPattern = (ctx: CanvasRenderingContext2D, color: string) => {
+// const createFillPattern = (camera: ReturnType<typeof createCamera>) => {
+//     const cameraPosition = camera.getPosition();
 //     const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
 //     offScreenCanvas.width = cellSize-0.5;
 //     offScreenCanvas.height = cellSize-0.5;
@@ -76,48 +78,74 @@ const defaultColor = "#2F1643";
 //     if (!offScreenCtx) {
 //         throw new Error("offscreen canvas not supported");
 //     }
+//     const bleed = 0.25;
+
 //     offScreenCtx.clearRect(0, 0, cellSize, cellSize);
 //     offScreenCtx.fillStyle = defaultColor;
-//     offScreenCtx.fillRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+//     offScreenCtx.fillRect(bleed, bleed, cellSize-bleed, cellSize-bleed);
 //     offScreenCtx.strokeStyle = "#2E0A3E";
-//     offScreenCtx.strokeRect(0.5, 0.5, cellSize-0.5, cellSize-0.5);
+//     offScreenCtx.strokeRect(bleed, bleed, cellSize-bleed, cellSize-bleed);
 //     return offScreenCtx.canvas;
 // }
 
+// const pattern = createFillPattern(camera);
+
+const colorBuffer = {
+
+}
+
 export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     const { width, height } = canvas;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    const ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
     if (!ctx || !camera) return;
+
     const cameraPosition = camera.getPosition();
-    const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
-    const focus = getGameStore().notificationData ? [getGameStore().notificationData] : [];
+    const zoomLevel = cameraPosition.z;
+    const focus = getGameStore().notificationData ? [getGameStore().notificationData] : []; // TODO: replace focus
+    
     const selectedHexColor = getGameStore().selectedHexColor;
     const hoveredPixel = getGameStore().hoveredPixel;
-
+    
     const bounds = camera.calculateViewport();
-    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = "#1B0C27";
+    ctx.fillRect(0, 0, width, height);
+    
+    const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
+    const bleed = 2;
 
+    // @dev map the camera bounds to grid and add some bleed
     const start = {
-        x: Math.floor(bounds.x),
-        y: Math.floor(bounds.y),
+        x: Math.floor(bounds.x/cellSize - bleed * cellSize),
+        y: Math.floor(bounds.y/cellSize - bleed * cellSize),
     };
     const end = {
-        x: Math.floor(bounds.z),
-        y: Math.floor(bounds.w),
+        x: Math.floor(bounds.z/cellSize + bleed * cellSize),
+        y: Math.floor(bounds.w/cellSize + bleed * cellSize),
     };
 
-    // const pattern = createFillPattern(ctx, selectedHexColor);
+    console.log(bounds, start, end);
 
-    for (let row = start.x; row <= end.x; row++) {
+    // @dev keep var definitions outside of loop
+    let pixel, isHovered, x, y, codePoint, path;
+    let pixelColor = defaultColor; // default color
+    let pixelText = "";
+
+    // @dev sneaky illustration of fucked up floating points and floor rounding
+    ctx.fillStyle = defaultColor;
+    
+    let pCount = 0;
+    let tCount = 0;
+    // @dev pamp it
+    for (let row = start.x; row <= end.x; row++) { 
         for (let col = start.y; col <= end.y; col++) {
             if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
-            const x = row * cellSize + cameraPosition.x;
-            const y = col * cellSize + cameraPosition.y;
+            x = row * cellSize - cameraPosition.x;
+            y = col * cellSize - cameraPosition.y;
+            pixelColor = defaultColor; // default color
+            isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
+            if (!grid.has(`[${row},${col}]`) && zoomLevel < 15 && !isHovered) continue;
+            pixel = grid.get(`[${row},${col}]`) || undefined;
 
-            let pixelColor = defaultColor; // default color
-            let pixelText = "";
-            const isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
-            const pixel = grid.get(`[${row},${col}]`) || undefined;
             if (pixel) {
                 /// if hexColor from the contract is empty, then use default color
                 pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color;
@@ -132,15 +160,23 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 pixelColor = selectedHexColor;
             }
 
-            if (pixel || (!pixel && cameraPosition.z > 9) || isHovered) {
+            ctx.beginPath();
+            path = new Path2D();
+            path.rect(x, y, cellSize, cellSize);
+            if (pixel || isHovered) {
                 ctx.fillStyle = pixelColor;
-                ctx.fillRect(x, y, cellSize, cellSize);
-                ctx.strokeStyle = "#2E0A3E";
-                ctx.strokeRect(x, y, cellSize, cellSize);
+                ctx.fill(path);
+                // ctx.fillRect(x, y, cellSize+b, cellSize+b); 
+                if (zoomLevel > 8) {
+                    ctx.strokeStyle = "#2E0A3E";
+                    ctx.stroke(path);
+                }
+                pCount++;
+            } 
+            else {
+                ctx.fillStyle = defaultColor;
+                ctx.fill(path);
             }
-            // } else {
-            //     ctx.drawImage(pattern, x, y, cellSize, cellSize);
-            // }
 
             if (focus.length) {
                 // const pixelNeedAttention = focus.find(p => p.x === row && p.y === col)
@@ -153,7 +189,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 // }
             }
 
-            if (pixelText) {
+            if (pixelText && pixelText.length > 0) {
                 ctx.textAlign = "center";
 
                 ctx.font = `${cellSize / 2}px Serif`;
@@ -165,7 +201,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
                 if (text.includes("U+")) {
                     text = text.replace("U+", "");
-                    const codePoint = parseInt(text, 16);
+                    codePoint = parseInt(text, 16);
                     text = String.fromCodePoint(codePoint);
                 } else {
                     // FIXME: make this scale better
@@ -179,7 +215,9 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 }
 
                 ctx.fillText(text, x + cellSize / 2, y + cellSize / 1.5);
+                tCount++;
             }
         }
     }
+    // console.log("pCount", pCount, "tCount", tCount)
 };
