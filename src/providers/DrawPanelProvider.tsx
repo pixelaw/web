@@ -2,7 +2,7 @@ import React, { MutableRefObject, useCallback, useEffect, useRef, useState } fro
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { useEntityQuery } from "@dojoengine/react";
 import { getComponentValue, Has } from "@dojoengine/recs";
-import { argbToHex } from "@/global/utils.ts";
+import { numRGBAToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
@@ -77,7 +77,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => !!entity)
             .filter((entity) => entity?.color !== 0)
             .forEach((pixel) => {
-                const color = argbToHex(pixel!.color);
+                const color = numRGBAToHex(pixel!.color)
                 const text = Number(pixel?.text) === 0 ? "" : pixel?.text?.toString() ?? "";
                 pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
                     x: pixel!.x,

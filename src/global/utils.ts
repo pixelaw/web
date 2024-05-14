@@ -83,6 +83,16 @@ export const getUrlParam = <T extends string | number>(param: string, defaultVal
   return paramValue as T
 }
 
+
+// Converts the numeric RGBA to a normal hex color
+// @dev this removes the Alpha channel.
+// TODO: Eventually convert to rgb(255 0 153 / 80%)
+// ref: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
+export const numRGBAToHex = (rgba: number) => {
+    let color = rgba >>> 8
+    return '#' + (color).toString(16).padStart(6,"0")
+}
+
 export const argbToHex = (argb: number) => {
   const hexCode = convertToHexadecimalAndLeadWithOx(argb)
   return hexCode.replace("0xff", "#")
