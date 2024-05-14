@@ -78,7 +78,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => entity?.color !== 0)
             .forEach((pixel) => {
                 const color = argbToHex(pixel!.color);
-                const text = pixel?.text?.toString() ?? "";
+                const text = Number(pixel?.text) === 0 ? "" : pixel?.text?.toString() ?? "";
                 pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
                     x: pixel!.x,
                     y: pixel!.y,
@@ -119,7 +119,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     };
 
     const handleCellClick = (coordinate: [number, number]) => {
-        const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
+        const pixel = pixelData.current.get(`[${coordinate[0]},${coordinate[1]}]`);
         console.log("💡 Pixel clicked", pixel);
         getGameStore().set({
             hoveredPixel: {
@@ -136,7 +136,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     const handleHover = (coordinate: [number, number]) => {
         // do not hover when the modal is open
         if (openModal) return;
-        const pixel = pixelData.current.get(`[${coordinate[0]}, ${coordinate[1]}]`);
+        const pixel = pixelData.current.get(`[${coordinate[0]},${coordinate[1]}]`);
         if (getGameStore().hoveredPixel.x === coordinate[0] && getGameStore().hoveredPixel.y === coordinate[1]) return;
         getGameStore().set({
             hoveredPixel: {
