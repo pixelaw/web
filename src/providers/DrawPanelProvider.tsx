@@ -186,7 +186,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         console.log("query", query);
         if (query.target) {
             const target = query.target.toString().split(",");
-            camera.setPosition(new Vector3(Number(target[0]), Number(target[1]), camera.getZoom()));
+            camera.setPosition(new Vector3(Number(target[0]), Number(target[1]), target[2] ? Number(target[2]) : camera.getZoom()));
         }
     }, [camera]);
 

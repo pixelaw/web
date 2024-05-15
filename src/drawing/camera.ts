@@ -58,6 +58,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
 
     const updateBoundingRect = () => {
         rect = canvas.getBoundingClientRect();
+        calculateViewport();
     };
 
     const calculateViewport = (): Vector4 => {

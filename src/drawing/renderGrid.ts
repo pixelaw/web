@@ -100,7 +100,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     const { width, height } = canvas;
     const ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
     if (!ctx || !camera) return;
-
+    
     const cameraPosition = camera.getPosition();
     const zoomLevel = cameraPosition.z;
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : []; // TODO: replace focus
@@ -179,10 +179,10 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 ctx.fillStyle = pixelColor;
                 ctx.fill(path);
                 // ctx.fillRect(x, y, cellSize+b, cellSize+b); 
-                // if (zoomLevel > 8) {
+                if (zoomLevel > 8) {
                     ctx.strokeStyle = "#2E0A3E";
                     ctx.stroke(path);
-                // }
+                }
                 pCount++;
             } 
             else {
