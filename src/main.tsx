@@ -20,7 +20,7 @@ function init() {
       <QueryClientProvider client={queryClient}>
         <PixelawProvider>
           <App />
-          <ReactQueryDevtools/>
+          {/*<ReactQueryDevtools/>*/}
         </PixelawProvider>
       </QueryClientProvider>
     </React.StrictMode>
