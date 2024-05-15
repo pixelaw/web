@@ -2,19 +2,21 @@ import { INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
 import { Vector2, Vector3, Vector4 } from "threejs-math";
 
 
-
 export const createCamera = (canvas: HTMLCanvasElement) => {
+    // @dev position is the camera position in world space
     const position = new Vector3(0, 0, 50); // Z is zoom level
     const viewport = new Vector4(0, 0, 0, 0);
+    const panSpeed = 0.0075;
     const minZoom = INTERACTION.MINZOOM;
     const maxZoom = INTERACTION.MAXZOOM;
     let rect = canvas.getBoundingClientRect();
+
     const getPosition = () => position.clone();
     const getViewport = () => viewport.clone();
 
     const moveBy = (delta: Vector2) => {
-        position.x += delta.x;
-        position.y += delta.y;
+        position.x += delta.x * panSpeed * 100/position.z;
+        position.y += delta.y * panSpeed * 100/position.z;
     };
 
     const setPosition = (newPosition: Vector3) => {
@@ -27,66 +29,74 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     };
 
     const setZoom = (zoomLevel: number, centerPoint?: Vector2): void => {
-        const { width, height } = getCanvasSize();
-        centerPoint = centerPoint || new Vector2(width / 2, height / 2);
-
-        const oldZoom = position.z;
-        const newZoom = Math.min(Math.max(zoomLevel, minZoom), maxZoom);
-
-        // Get the world position at the current center point before zooming
-        const worldBeforeZoom = canvasToWorld(centerPoint);
-        position.z = newZoom;
-
-        // Get the world position at the same center point after zooming
-        const worldAfterZoom = canvasToWorld(centerPoint);
-
-        // Offset the camera to keep the same world point centered
-        position.x += worldBeforeZoom.x - worldAfterZoom.x;
-        position.y += worldBeforeZoom.y - worldAfterZoom.y;
-
+        position.z = Math.max(Math.min(zoomLevel, maxZoom), minZoom);
         calculateViewport();
         document.dispatchEvent(new Event("updateZoom"));
     };
 
-    const getCanvasSize = () => {
-        return {
-            width: canvas.parentElement?.clientWidth ?? canvas.clientWidth,
-            height: canvas.parentElement?.clientHeight ?? canvas.clientHeight,
-        };
+    const cameraToWorld = (cameraPos: Vector2): Vector2 => {
+        const worldX = (cameraPos.x - rect.width / 2) / position.z + position.x;
+        const worldY = (cameraPos.y - rect.height / 2) / position.z + position.y;
+        return new Vector2(worldX, worldY);
     };
 
-    const calculateViewport = () => {
+    const worldToCamera = (worldPos: Vector2): Vector2 => {
+        const cameraX = (worldPos.x - position.x) * position.z + rect.width / 2;
+        const cameraY = (worldPos.y - position.y) * position.z + rect.height / 2;
+        return new Vector2(cameraX, cameraY);
+    };
+
+    const updateBoundingRect = () => {
         rect = canvas.getBoundingClientRect();
-        const {width, height} = getCanvasSize();
-        const start = new Vector2(position.x ,position.y);
-        const end = new Vector2(width + position.x, height + position.y);
-        viewport.set(start.x, start.y, end.x, end.y);
+    };
+
+    // const applyTransform = (context: CanvasRenderingContext2D): void => {
+    //     context.setTransform(position.z, 0, 0, position.z, rect.width / 2 - position.x * position.z, rect.height / 2 - position.y * position.z);
+    // };
+
+    // const resetTransform = (context: CanvasRenderingContext2D): void => {
+    //     context.setTransform(1, 0, 0, 1, 0, 0);
+    // };
+
+    const calculateViewport = (): Vector4 => {
+        const halfWidth = rect.width / 2 / position.z;
+        const halfHeight = rect.height / 2 / position.z;
+        viewport.set(
+            position.x - halfWidth,
+            position.y - halfHeight,
+            position.x + halfWidth,
+            position.y + halfHeight
+        );
+        console.log(viewport, rect.height, rect.width)
         return viewport;
     };
 
     const canvasToGrid = (point: Vector2) => {
-        const worldPos = canvasToWorld(point);
-        worldPos.divideScalar(MAX_CELL_SIZE);
+        const worldPos = cameraToWorld(point);
         return new Vector2(Math.floor(worldPos.x), Math.floor(worldPos.y));
     };
 
-    const canvasToWorld = (point: Vector2) => {
+    const getCanvasSize = () => {
         rect = canvas.getBoundingClientRect();
-        console.log(point)
-        const mouseX = (point.x - rect.left + position.x) * (100 / position.z);
-        const mouseY = (point.y - rect.top + position.y) * (100 / position.z);
-        return new Vector2(mouseX,mouseY);
+        return { width: rect.width, height: rect.height };
     };
 
+    window.addEventListener("updateCanvas", updateBoundingRect);
+
     return {
-        position,
         getPosition,
         getViewport,
         moveBy,
-        zoomBy,
         setPosition,
+        zoomBy,
         setZoom,
+        cameraToWorld,
+        worldToCamera,
+        // applyTransform,
+        // resetTransform,
         calculateViewport,
         canvasToGrid,
+        position
+
     };
 };

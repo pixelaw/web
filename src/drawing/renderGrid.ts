@@ -115,22 +115,19 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
     // @dev map the camera bounds to grid and add some bleed
     const start = {
-        x: Math.floor(bounds.x/cellSize - bleed * cellSize),
-        y: Math.floor(bounds.y/cellSize - bleed * cellSize),
+        x: Math.floor(bounds.x - bleed),
+        y: Math.floor(bounds.y - bleed),
     };
     const end = {
-        x: Math.floor(bounds.z/cellSize + bleed * cellSize),
-        y: Math.floor(bounds.w/cellSize + bleed * cellSize),
+        x: Math.floor(bounds.z + bleed * cellSize),
+        y: Math.floor(bounds.w + bleed * cellSize),
     };
-
-    console.log(bounds, start, end);
 
     // @dev keep var definitions outside of loop
     let pixel, isHovered, x, y, codePoint, path;
     let pixelColor = defaultColor; // default color
     let pixelText = "";
 
-    // @dev sneaky illustration of fucked up floating points and floor rounding
     ctx.fillStyle = defaultColor;
     
     let pCount = 0;
@@ -138,17 +135,19 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     // @dev pamp it
     for (let row = start.x; row <= end.x; row++) { 
         for (let col = start.y; col <= end.y; col++) {
-            if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
-            x = row * cellSize - cameraPosition.x;
-            y = col * cellSize - cameraPosition.y;
+            if (row < 0 || col < 0) continue;
+            
+            // @dev CAMERASPACE OR WORLDSPACE??
+            let {x,y} = camera.worldToCamera(new Vector2(row,col));
             pixelColor = defaultColor; // default color
+
             isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
-            if (!grid.has(`[${row},${col}]`) && zoomLevel < 15 && !isHovered) continue;
+            if (!grid.has(`[${row},${col}]`) && zoomLevel < 5 && !isHovered) continue;
             pixel = grid.get(`[${row},${col}]`) || undefined;
 
             if (pixel) {
                 /// if hexColor from the contract is empty, then use default color
-                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color;
+                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color.replace('0x', '#');
                 // Get the current color of the pixel
                 if (pixel.text && pixel.text !== "0x0") {
                     pixelText = pixel.text;

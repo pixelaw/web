@@ -54,6 +54,7 @@ const DrawPanel = () => {
             const canvas = canvasRef.current;
             canvas.width = canvasDimensions.width;
             canvas.height = canvasDimensions.height;
+            window.dispatchEvent(new Event("updateCanvas"));
         }
     }, [canvasDimensions]);
 

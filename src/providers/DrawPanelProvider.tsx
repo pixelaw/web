@@ -77,22 +77,22 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => !!entity)
             .filter((entity) => entity?.color !== 0)
             .forEach((pixel) => {
-                const color = argbToHex(pixel!.color);
+                const color = argbToHex(pixel.color);
                 const text = Number(pixel?.text) === 0 ? "" : pixel?.text?.toString() ?? "";
-                pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                    x: pixel!.x,
-                    y: pixel!.y,
-                    created_at: pixel!.created_at,
-                    updated_at: pixel!.updated_at,
-                    app: pixel!.app.toString(),
+                pixelData.current.set(`[${pixel.x},${pixel.y}]`, {
+                    x: pixel.x,
+                    y: pixel.y,
+                    created_at: pixel.created_at,
+                    updated_at: pixel.updated_at,
+                    app: pixel.app.toString(),
                     color,
-                    owner: pixel!.owner.toString(),
+                    owner: pixel.owner.toString(),
                     text,
-                    timestamp: pixel!.timestamp,
-                    action: pixel!.action,
+                    timestamp: pixel.timestamp,
+                    action: pixel.action,
                 });
-                grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                    position: [pixel!.x, pixel!.y],
+                grid.current.set(`[${pixel.x},${pixel.y}]`, {
+                    position: [pixel.x, pixel.y],
                     color,
                     text,
                 });
