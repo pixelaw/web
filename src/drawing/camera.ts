@@ -1,10 +1,12 @@
 import { INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
 import { Vector2, Vector3, Vector4 } from "threejs-math";
 
+// TODO: for performance increase can update functions that are frequently called here to get individual x,y,z values & avoid creating Vectors on the fly.
 
 export const createCamera = (canvas: HTMLCanvasElement) => {
     // @dev position is the camera position in world space
     const position = new Vector3(0, 0, 50); // Z is zoom level
+    // const cameraTarget = position.clone();
     const viewport = new Vector4(0, 0, 0, 0);
     const panSpeed = 0.0075;
     const minZoom = INTERACTION.MINZOOM;
@@ -13,6 +15,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     let cellSize = MAX_CELL_SIZE * (position.z / 100);
 
     const getPosition = () => position.clone();
+    // const getCameraTarget = () => cameraTarget.clone();
     const getViewport = () => viewport.clone();
     const getCellSize = () => cellSize;
     const getZoom = () => position.z;
@@ -21,6 +24,10 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         position.x += delta.x * panSpeed * 100/position.z;
         position.y += delta.y * panSpeed * 100/position.z;
     };
+
+    // const setCameraTarget = (target: Vector3) => {
+    //     cameraTarget.copy(target);
+    // }
 
     const setPosition = (newPosition: Vector3) => {
         position.copy(newPosition);
@@ -73,12 +80,19 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         return new Vector2(Math.floor(worldPos.x), Math.floor(worldPos.y));
     };
 
+    // TODO: update-loop for camera to move towards cameraTarget
+    const update = () => {
+
+    }
+
     // @dev listen for Canvas resize events
     window.addEventListener("updateCanvas", updateBoundingRect);
 
     return {
         getPosition,
         getViewport,
+        getCellSize,
+        getZoom,
         moveBy,
         setPosition,
         zoomBy,
@@ -87,7 +101,5 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         worldToCamera,
         calculateViewport,
         canvasToGrid,
-        getCellSize,
-        getZoom
     };
 };

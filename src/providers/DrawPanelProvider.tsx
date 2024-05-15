@@ -8,7 +8,7 @@ import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
 import { renderGrid, TPixel } from "@/drawing/renderGrid";
 import { createCamera } from "@/drawing/camera";
-import queryString from 'query-string';
+import queryString from "query-string";
 import { Vector2, Vector3 } from "threejs-math";
 
 type TDrawPanelType = {
@@ -183,14 +183,12 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
     useEffect(() => {
         if (!camera) return;
         const query = queryString.parse(window.location.search);
-        console.log("query", query) 
+        console.log("query", query);
         if (query.target) {
-            const target = query.target.split(',')
-            const x = Number(target[0])
-            const y = Number(target[1])
-            camera.setPosition(new Vector3(x, y, camera.getZoom()))
+            const target = query.target.toString().split(",");
+            camera.setPosition(new Vector3(Number(target[0]), Number(target[1]), camera.getZoom()));
         }
-    }, [camera])
+    }, [camera]);
 
     return (
         <DrawPanelContext.Provider
