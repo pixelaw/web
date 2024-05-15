@@ -1,4 +1,4 @@
-import { INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
+import { INTERACTION, MAX_CELL_SIZE } from "@/global/constants.drawing";
 import { Vector2, Vector3, Vector4 } from "threejs-math";
 
 // TODO: for performance increase can update functions that are frequently called here to get individual x,y,z values & avoid creating Vectors on the fly.
@@ -8,7 +8,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     const position = new Vector3(0, 0, 50); // Z is zoom level
     // const cameraTarget = position.clone();
     const viewport = new Vector4(0, 0, 0, 0);
-    const panSpeed = 0.0075;
+    const panSpeed = INTERACTION.PANSPEED;
     const minZoom = INTERACTION.MINZOOM;
     const maxZoom = INTERACTION.MAXZOOM;
     let rect = canvas.getBoundingClientRect();

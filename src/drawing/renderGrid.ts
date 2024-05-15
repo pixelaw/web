@@ -2,7 +2,7 @@ import { felt252ToString } from "@/global/utils";
 import { getGameStore } from "@/global/game.store";
 import { createCamera } from "./camera";
 import { Vector2 } from "threejs-math";
-import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
+import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants.drawing";
 
 type TDrawContext = {
     canvas: HTMLCanvasElement;
@@ -112,7 +112,6 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     ctx.fillStyle = "#1B0C27";
     ctx.fillRect(0, 0, width, height);
     
-    const cellSize = camera.getCellSize();
     const bleed = 2;
 
     // @dev map the camera bounds to grid and add some bleed
@@ -136,13 +135,23 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
     let pCount = 0;
     let tCount = 0;
+
+    let cSize = null; // cellsize
+
     // @dev pamp it
     for (let row = start.x; row <= end.x; row++) { 
         for (let col = start.y; col <= end.y; col++) {
             if (row < 0 || col < 0) continue;
             
-            // @dev CAMERASPACE > WORLDSPACE
+            // @dev CAMERASPACE > WORLDSPACE !important
             let {x,y} = camera.worldToCamera(new Vector2(row,col));
+
+            // @dev calculate real cellsize once
+            if (!cSize) {
+                let n = camera.worldToCamera(new Vector2(row+1,col+1));
+                cSize = n.x - x;
+            }
+
             pixelColor = defaultColor; // default color
 
             isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
@@ -165,7 +174,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
             ctx.beginPath();
             path = new Path2D();
-            path.rect(x, y, cellSize, cellSize);
+            path.rect(x, y, cSize, cSize);
             if (pixel || isHovered) {
                 ctx.fillStyle = pixelColor;
                 ctx.fill(path);
@@ -179,9 +188,9 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
             else {
                 ctx.fillStyle = defaultColor;
                 ctx.fill(path);
+                ctx.strokeStyle = "#2E0A3E";
+                ctx.stroke(path);
             }
-            ctx.strokeStyle = "#2E0A3E";
-            ctx.stroke(path);
 
             if (focus.length) {
                 // const pixelNeedAttention = focus.find(p => p.x === row && p.y === col)
@@ -197,7 +206,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
             if (pixelText && pixelText.length > 0) {
                 ctx.textAlign = "center";
 
-                ctx.font = `${cellSize / 2}px Serif`;
+                ctx.font = `${cSize / 2}px Serif`;
 
                 let text = felt252ToString(pixelText);
 
@@ -211,15 +220,15 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 } else {
                     // FIXME: make this scale better
                     if (text.length > 4 && text.length <= 8) {
-                        ctx.font = `${cellSize / 4}px Serif`;
+                        ctx.font = `${cSize / 4}px Serif`;
                     } else if (text.length > 8 && text.length <= 12) {
-                        ctx.font = `${cellSize / 6}px Serif`;
+                        ctx.font = `${cSize / 6}px Serif`;
                     } else if (text.length > 12) {
-                        ctx.font = `${cellSize / 8}px Serif`;
+                        ctx.font = `${cSize / 8}px Serif`;
                     }
                 }
 
-                ctx.fillText(text, x + cellSize / 2, y + cellSize / 1.5);
+                ctx.fillText(text, x + cSize / 2, y + cSize / 1.5);
                 tCount++;
             }
         }

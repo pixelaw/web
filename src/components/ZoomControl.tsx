@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { clsx } from "clsx";
 import { Button } from "@/components/ui/button";
 import { getGameStore } from "@/global/game.store";
-import { INTERACTION } from "@/global/constants";
+import { INTERACTION } from "@/global/constants.drawing";
 import { createCamera } from "@/drawing/camera";
 
 type PropsType = {
