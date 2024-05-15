@@ -72,7 +72,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
 
     const canvasToWorld = (point: Vector2) => {
         rect = canvas.getBoundingClientRect();
-        console.log(point)
+        // console.log(point)
         const mouseX = (point.x - rect.left + position.x) * (100 / position.z);
         const mouseY = (point.y - rect.top + position.y) * (100 / position.z);
         return new Vector2(mouseX,mouseY);

@@ -123,7 +123,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
         y: Math.floor(bounds.w/cellSize + bleed * cellSize),
     };
 
-    console.log(bounds, start, end);
+    // console.log(bounds, start, end);
 
     // @dev keep var definitions outside of loop
     let pixel, isHovered, x, y, codePoint, path;
@@ -148,7 +148,8 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
             if (pixel) {
                 /// if hexColor from the contract is empty, then use default color
-                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color;
+
+                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color.replace("0x", "#").substring(0,7);
                 // Get the current color of the pixel
                 if (pixel.text && pixel.text !== "0x0") {
                     pixelText = pixel.text;
