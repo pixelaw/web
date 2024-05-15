@@ -1,8 +1,7 @@
-import { ReactNode, createContext, useCallback, useContext, useMemo } from "react";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { IPixelawGameData, setupPixelaw, TPixelLawError } from "../dojo/setupPixelaw";
 import { useSettingsStore } from "@/global/settings.store.ts";
 import { createDojoConfig } from "@dojoengine/core";
-import { useQuery } from "@tanstack/react-query";
 
 export type IPixelLawContext = {
     clientState: "worldSelect" | "loading" | "error" | "gameActive";
@@ -12,8 +11,16 @@ export type IPixelLawContext = {
 
 export const PixelawContext = createContext<IPixelLawContext | null>(null);
 
+// @dev createDojoConfig can only be called once, or we get a full hangup
+let activeLoad = false;
+
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     const currentValue = useContext(PixelawContext);
+    const [contextValues, setContextValues] = useState<IPixelLawContext | null>({
+        clientState: "loading",
+        error: null,
+        gameData: undefined,
+    });
 
     if (currentValue) throw new Error("DojoProvider can only be used once");
 
@@ -25,37 +32,40 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         };
     });
 
-    const setupFunction = useCallback(async () => {
+    const setupDojo = useCallback(async () => {
         if (!config) {
             throw new Error("Missing valid Dojo config");
         }
         if (!config.masterAddress || !config.masterPrivateKey) {
-            // TODO move to checkdojoconfig, weirdly doesn't work?
             throw new Error("Missing master account, please set in settings");
         }
-        return await setupPixelaw(createDojoConfig(config));
-    }, [config]);
+        if (activeLoad) return;
+        activeLoad = true;
+        try {
+            const data = await setupPixelaw(createDojoConfig(config));
+            setContextValues({
+                clientState: "gameActive",
+                error: null,
+                gameData: data,
+            });
+            console.log("💡 PixelAW Provider", data);
+            activeLoad = false;
+        } catch (e) {
+            setContextValues({
+                clientState: "error",
+                error: e as Error,
+                gameData: undefined,
+            });
+            activeLoad = false;
+        }
 
-    const setupQuery = useQuery({
-        queryKey: ["setupQuery"],
-        queryFn: setupFunction,
-        enabled: config !== undefined && configIsValid,
-        staleTime: Infinity,
-        // important: when retrying, dojo can lock up in a setup loop and new queries will never be triggered
-        retry: false,
-    });
+    }, [config, configIsValid, setContextValues]);
 
-    const dojoValues = useMemo((): IPixelLawContext => {
-        const data: IPixelLawContext = {
-            error: setupQuery.error,
-            gameData: setupQuery.data,
-            setup: setupQuery.data?.setup,
-            clientState: setupQuery.isLoading ? "loading" : setupQuery.isSuccess ? "gameActive" : "worldSelect",
-        } as IPixelLawContext;
-        return data;
-    }, [setupQuery]);
+    useEffect(() => {
+        setupDojo();
+    }, [config, configIsValid, setupDojo, setContextValues]);
 
-    return <PixelawContext.Provider value={dojoValues}>{children}</PixelawContext.Provider>;
+    return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>;
 };
 
 export const usePixelawProvider = () => {

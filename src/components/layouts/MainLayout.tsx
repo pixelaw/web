@@ -56,12 +56,10 @@ export default function MainLayout({children}: { children: React.ReactNode }) {
     select(data)
   }, [select, account!.address, data, isSuccess])
 
-  if (isLoading) {
-    return <Loading>Deploying burner wallet</Loading>
-  }
-
-
-
+  // FIXME: burner wallet loading is slow, don't wait, just LFG
+  // if (isLoading) {
+  //   return <Loading>Deploying burner wallet</Loading>
+  // }
 
   return (
     <MainLayoutContext.Provider value={{

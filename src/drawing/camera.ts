@@ -30,6 +30,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     // }
 
     const setPosition = (newPosition: Vector3) => {
+        newPosition.z = Math.max(Math.min(newPosition.z, maxZoom), minZoom);
         position.copy(newPosition);
     };
 
