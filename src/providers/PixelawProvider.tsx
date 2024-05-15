@@ -62,7 +62,9 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     }, [config, configIsValid, setContextValues]);
 
     useEffect(() => {
-        setupDojo();
+        if (configIsValid && config) {
+            setupDojo();
+        }
     }, [config, configIsValid, setupDojo, setContextValues]);
 
     return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>;
