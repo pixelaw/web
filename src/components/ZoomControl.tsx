@@ -31,8 +31,8 @@ const ZoomControl: React.FC<
 
   useEffect(() => {
     const updateZoom = () => {
-      if (getGameStore().camera?.position.z !== zoom) {
-        setZoom(getGameStore().camera?.position.z || 50);
+      if (getGameStore().camera?.getPosition().z !== zoom) {
+        setZoom(getGameStore().camera?.getPosition().z || 50);
       }
     }
     document.addEventListener("updateZoom", updateZoom);
@@ -53,7 +53,7 @@ const ZoomControl: React.FC<
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(-1)}
-          disabled={MINZOOM >= camera.position.z}
+          disabled={MINZOOM >= camera.getPosition().z}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#8722;
@@ -63,14 +63,14 @@ const ZoomControl: React.FC<
           className={"text-brand-skyblue text-base font-silkscreen text-center"}
         >
           {" "}
-          {camera.position.z?.toFixed(0)}%{" "}
+          {camera.getPosition().z?.toFixed(0)}%{" "}
         </span>
 
         <Button
           variant={"icon"}
           size={"icon"}
           onClick={() => handleClick(1)}
-          disabled={MAXZOOM <= camera.position.z}
+          disabled={MAXZOOM <= camera.getPosition().z}
           className={"font-emoji font-bold text-brand-violetAccent text-[34px]"}
         >
           &#43;

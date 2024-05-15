@@ -1,8 +1,8 @@
 import { felt252ToString } from "@/global/utils";
-import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { getGameStore } from "@/global/game.store";
 import { createCamera } from "./camera";
 import { Vector2 } from "threejs-math";
+import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 
 type TDrawContext = {
     canvas: HTMLCanvasElement;
@@ -94,6 +94,8 @@ const colorBuffer = {
 
 }
 
+const WORLD_ZERO = new Vector2(0, 0);
+
 export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     const { width, height } = canvas;
     const ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
@@ -110,7 +112,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     ctx.fillStyle = "#1B0C27";
     ctx.fillRect(0, 0, width, height);
     
-    const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
+    const cellSize = camera.getCellSize();
     const bleed = 2;
 
     // @dev map the camera bounds to grid and add some bleed
@@ -119,8 +121,8 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
         y: Math.floor(bounds.y - bleed),
     };
     const end = {
-        x: Math.floor(bounds.z + bleed * cellSize),
-        y: Math.floor(bounds.w + bleed * cellSize),
+        x: Math.floor((bounds.z + bleed)),
+        y: Math.floor(bounds.w + bleed),
     };
 
     // @dev keep var definitions outside of loop
@@ -129,7 +131,9 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     let pixelText = "";
 
     ctx.fillStyle = defaultColor;
-    
+    const worldZero = camera.worldToCamera(WORLD_ZERO);
+    ctx.fillRect(worldZero.x, worldZero.y, MAP_SIZE, MAP_SIZE);
+
     let pCount = 0;
     let tCount = 0;
     // @dev pamp it
@@ -137,12 +141,12 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
         for (let col = start.y; col <= end.y; col++) {
             if (row < 0 || col < 0) continue;
             
-            // @dev CAMERASPACE OR WORLDSPACE??
+            // @dev CAMERASPACE > WORLDSPACE
             let {x,y} = camera.worldToCamera(new Vector2(row,col));
             pixelColor = defaultColor; // default color
 
             isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
-            if (!grid.has(`[${row},${col}]`) && zoomLevel < 5 && !isHovered) continue;
+            if (!grid.has(`[${row},${col}]`) && zoomLevel < 15 && !isHovered) continue;
             pixel = grid.get(`[${row},${col}]`) || undefined;
 
             if (pixel) {
@@ -166,16 +170,18 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 ctx.fillStyle = pixelColor;
                 ctx.fill(path);
                 // ctx.fillRect(x, y, cellSize+b, cellSize+b); 
-                if (zoomLevel > 8) {
+                // if (zoomLevel > 8) {
                     ctx.strokeStyle = "#2E0A3E";
                     ctx.stroke(path);
-                }
+                // }
                 pCount++;
             } 
             else {
                 ctx.fillStyle = defaultColor;
                 ctx.fill(path);
             }
+            ctx.strokeStyle = "#2E0A3E";
+            ctx.stroke(path);
 
             if (focus.length) {
                 // const pixelNeedAttention = focus.find(p => p.x === row && p.y === col)

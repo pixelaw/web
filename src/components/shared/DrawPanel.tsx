@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, INTERACTION, MAX_CELL_SIZE } from "@/global/constants";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "@/global/constants";
 import { useDrawPanel } from "@/providers/DrawPanelProvider.tsx";
 import { createUseGesture, dragAction, pinchAction, wheelAction, hoverAction, moveAction } from "@use-gesture/react";
 import { Vector2 } from "threejs-math";

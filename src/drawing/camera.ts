@@ -10,9 +10,11 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     const minZoom = INTERACTION.MINZOOM;
     const maxZoom = INTERACTION.MAXZOOM;
     let rect = canvas.getBoundingClientRect();
+    let cellSize = MAX_CELL_SIZE * (position.z / 100);
 
     const getPosition = () => position.clone();
     const getViewport = () => viewport.clone();
+    const getCellSize = () => cellSize;
 
     const moveBy = (delta: Vector2) => {
         position.x += delta.x * panSpeed * 100/position.z;
@@ -30,7 +32,9 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
 
     const setZoom = (zoomLevel: number, centerPoint?: Vector2): void => {
         position.z = Math.max(Math.min(zoomLevel, maxZoom), minZoom);
+        updateBoundingRect();
         calculateViewport();
+        cellSize = MAX_CELL_SIZE * (position.z / 100);
         document.dispatchEvent(new Event("updateZoom"));
     };
 
@@ -67,18 +71,15 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
             position.x + halfWidth,
             position.y + halfHeight
         );
-        console.log(viewport, rect.height, rect.width)
+        cellSize = MAX_CELL_SIZE * (position.z / 100);
         return viewport;
     };
 
     const canvasToGrid = (point: Vector2) => {
+        // @dev remove any canvas offsets
+        point.sub(new Vector2(rect.left, rect.top));
         const worldPos = cameraToWorld(point);
         return new Vector2(Math.floor(worldPos.x), Math.floor(worldPos.y));
-    };
-
-    const getCanvasSize = () => {
-        rect = canvas.getBoundingClientRect();
-        return { width: rect.width, height: rect.height };
     };
 
     window.addEventListener("updateCanvas", updateBoundingRect);
@@ -96,7 +97,6 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         // resetTransform,
         calculateViewport,
         canvasToGrid,
-        position
-
+        getCellSize
     };
 };
