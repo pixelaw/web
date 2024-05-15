@@ -8,6 +8,8 @@ import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
 import { renderGrid, TPixel } from "@/drawing/renderGrid";
 import { createCamera } from "@/drawing/camera";
+import queryString from 'query-string';
+import { Vector2, Vector3 } from "threejs-math";
 
 type TDrawPanelType = {
     setCanvas: (canvas: MutableRefObject<HTMLCanvasElement>) => void;
@@ -163,6 +165,10 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         return () => cancelAnimationFrame(animationId);
     }, [canvasRef, grid]);
 
+    /*
+     * @dev Handles the canvas setup of DrawPanelProvider
+     */
+
     const setCanvas = useCallback((canvas: MutableRefObject<HTMLCanvasElement>) => {
         if (!canvas.current) return;
         setCanvasRef(canvas);
@@ -170,6 +176,21 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         setCamera(camera);
         getGameStore().set({ camera });
     }, []);
+
+    /*
+     * @dev Fetches camera target from QueryString
+     */
+    useEffect(() => {
+        if (!camera) return;
+        const query = queryString.parse(window.location.search);
+        console.log("query", query) 
+        if (query.target) {
+            const target = query.target.split(',')
+            const x = Number(target[0])
+            const y = Number(target[1])
+            camera.setPosition(new Vector3(x, y, camera.getZoom()))
+        }
+    }, [camera])
 
     return (
         <DrawPanelContext.Provider

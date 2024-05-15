@@ -15,6 +15,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     const getPosition = () => position.clone();
     const getViewport = () => viewport.clone();
     const getCellSize = () => cellSize;
+    const getZoom = () => position.z;
 
     const moveBy = (delta: Vector2) => {
         position.x += delta.x * panSpeed * 100/position.z;
@@ -30,10 +31,8 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         setZoom(newZoom);
     };
 
-    const setZoom = (zoomLevel: number, centerPoint?: Vector2): void => {
+    const setZoom = (zoomLevel: number): void => {
         position.z = Math.max(Math.min(zoomLevel, maxZoom), minZoom);
-        updateBoundingRect();
-        calculateViewport();
         cellSize = MAX_CELL_SIZE * (position.z / 100);
         document.dispatchEvent(new Event("updateZoom"));
     };
@@ -53,14 +52,6 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     const updateBoundingRect = () => {
         rect = canvas.getBoundingClientRect();
     };
-
-    // const applyTransform = (context: CanvasRenderingContext2D): void => {
-    //     context.setTransform(position.z, 0, 0, position.z, rect.width / 2 - position.x * position.z, rect.height / 2 - position.y * position.z);
-    // };
-
-    // const resetTransform = (context: CanvasRenderingContext2D): void => {
-    //     context.setTransform(1, 0, 0, 1, 0, 0);
-    // };
 
     const calculateViewport = (): Vector4 => {
         const halfWidth = rect.width / 2 / position.z;
@@ -82,6 +73,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         return new Vector2(Math.floor(worldPos.x), Math.floor(worldPos.y));
     };
 
+    // @dev listen for Canvas resize events
     window.addEventListener("updateCanvas", updateBoundingRect);
 
     return {
@@ -93,10 +85,9 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
         setZoom,
         cameraToWorld,
         worldToCamera,
-        // applyTransform,
-        // resetTransform,
         calculateViewport,
         canvasToGrid,
-        getCellSize
+        getCellSize,
+        getZoom
     };
 };
