@@ -1,8 +1,8 @@
 import { felt252ToString } from "@/global/utils";
-import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants";
 import { getGameStore } from "@/global/game.store";
 import { createCamera } from "./camera";
 import { Vector2 } from "threejs-math";
+import { MAP_SIZE, MAX_CELL_SIZE } from "@/global/constants.drawing";
 
 type TDrawContext = {
     canvas: HTMLCanvasElement;
@@ -94,11 +94,13 @@ const colorBuffer = {
 
 }
 
+const WORLD_ZERO = new Vector2(0, 0);
+
 export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     const { width, height } = canvas;
     const ctx = canvas.getContext("2d", { willReadFrequently: true, alpha: false });
     if (!ctx || !camera) return;
-
+    
     const cameraPosition = camera.getPosition();
     const zoomLevel = cameraPosition.z;
     const focus = getGameStore().notificationData ? [getGameStore().notificationData] : []; // TODO: replace focus
@@ -110,46 +112,55 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
     ctx.fillStyle = "#1B0C27";
     ctx.fillRect(0, 0, width, height);
     
-    const cellSize = MAX_CELL_SIZE * (cameraPosition.z / 100);
     const bleed = 2;
 
     // @dev map the camera bounds to grid and add some bleed
     const start = {
-        x: Math.floor(bounds.x/cellSize - bleed * cellSize),
-        y: Math.floor(bounds.y/cellSize - bleed * cellSize),
+        x: Math.floor(bounds.x - bleed),
+        y: Math.floor(bounds.y - bleed),
     };
     const end = {
-        x: Math.floor(bounds.z/cellSize + bleed * cellSize),
-        y: Math.floor(bounds.w/cellSize + bleed * cellSize),
+        x: Math.floor((bounds.z + bleed)),
+        y: Math.floor(bounds.w + bleed),
     };
-
-    // console.log(bounds, start, end);
 
     // @dev keep var definitions outside of loop
     let pixel, isHovered, x, y, codePoint, path;
     let pixelColor = defaultColor; // default color
     let pixelText = "";
 
-    // @dev sneaky illustration of fucked up floating points and floor rounding
     ctx.fillStyle = defaultColor;
-    
+    const worldZero = camera.worldToCamera(WORLD_ZERO);
+    ctx.fillRect(worldZero.x, worldZero.y, MAP_SIZE, MAP_SIZE);
+
     let pCount = 0;
     let tCount = 0;
+
+    let cSize = null; // cellsize
+
     // @dev pamp it
     for (let row = start.x; row <= end.x; row++) { 
         for (let col = start.y; col <= end.y; col++) {
-            if (row < 0 || col < 0 || row >= MAP_SIZE || col >= MAP_SIZE) continue;
-            x = row * cellSize - cameraPosition.x;
-            y = col * cellSize - cameraPosition.y;
+            if (row < 0 || col < 0) continue;
+            
+            // @dev CAMERASPACE > WORLDSPACE !important
+            let {x,y} = camera.worldToCamera(new Vector2(row,col));
+
+            // @dev calculate real cellsize once
+            if (!cSize) {
+                let n = camera.worldToCamera(new Vector2(row+1,col+1));
+                cSize = n.x - x;
+            }
+
             pixelColor = defaultColor; // default color
+
             isHovered = hoveredPixel && row === hoveredPixel.x && col === hoveredPixel.y;
             if (!grid.has(`[${row},${col}]`) && zoomLevel < 15 && !isHovered) continue;
             pixel = grid.get(`[${row},${col}]`) || undefined;
 
             if (pixel) {
                 /// if hexColor from the contract is empty, then use default color
-
-                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color.replace("0x", "#").substring(0,7);
+                pixel.color = pixel.color === "0x0" ? pixelColor : pixel.color.replace('0x', '#');
                 // Get the current color of the pixel
                 if (pixel.text && pixel.text !== "0x0") {
                     pixelText = pixel.text;
@@ -163,7 +174,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
 
             ctx.beginPath();
             path = new Path2D();
-            path.rect(x, y, cellSize, cellSize);
+            path.rect(x, y, cSize, cSize);
             if (pixel || isHovered) {
                 ctx.fillStyle = pixelColor;
                 ctx.fill(path);
@@ -177,6 +188,8 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
             else {
                 ctx.fillStyle = defaultColor;
                 ctx.fill(path);
+                ctx.strokeStyle = "#2E0A3E";
+                ctx.stroke(path);
             }
 
             if (focus.length) {
@@ -193,7 +206,7 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
             if (pixelText && pixelText.length > 0) {
                 ctx.textAlign = "center";
 
-                ctx.font = `${cellSize / 2}px Serif`;
+                ctx.font = `${cSize / 2}px Serif`;
 
                 let text = felt252ToString(pixelText);
 
@@ -207,15 +220,15 @@ export const renderGrid = ({ canvas, grid, camera }: TDrawContext) => {
                 } else {
                     // FIXME: make this scale better
                     if (text.length > 4 && text.length <= 8) {
-                        ctx.font = `${cellSize / 4}px Serif`;
+                        ctx.font = `${cSize / 4}px Serif`;
                     } else if (text.length > 8 && text.length <= 12) {
-                        ctx.font = `${cellSize / 6}px Serif`;
+                        ctx.font = `${cSize / 6}px Serif`;
                     } else if (text.length > 12) {
-                        ctx.font = `${cellSize / 8}px Serif`;
+                        ctx.font = `${cSize / 8}px Serif`;
                     }
                 }
 
-                ctx.fillText(text, x + cellSize / 2, y + cellSize / 1.5);
+                ctx.fillText(text, x + cSize / 2, y + cSize / 1.5);
                 tCount++;
             }
         }

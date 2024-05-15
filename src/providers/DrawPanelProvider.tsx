@@ -2,12 +2,14 @@ import React, { MutableRefObject, useCallback, useEffect, useRef, useState } fro
 import { usePixelaw } from "@/dojo/usePixelaw.ts";
 import { useEntityQuery } from "@dojoengine/react";
 import { getComponentValue, Has } from "@dojoengine/recs";
-import { numRGBAToHex } from "@/global/utils.ts";
+import { argbToHex } from "@/global/utils.ts";
 import useInteract from "@/hooks/systems/useInteract";
 import ParamPicker from "@/components/ParamPicker";
 import { getGameStore, useGameStore } from "@/global/game.store";
 import { renderGrid, TPixel } from "@/drawing/renderGrid";
 import { createCamera } from "@/drawing/camera";
+import queryString from "query-string";
+import { Vector2, Vector3 } from "threejs-math";
 
 type TDrawPanelType = {
     setCanvas: (canvas: MutableRefObject<HTMLCanvasElement>) => void;
@@ -77,22 +79,22 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => !!entity)
             .filter((entity) => entity?.color !== 0)
             .forEach((pixel) => {
-                const color = numRGBAToHex(pixel!.color)
+                const color = argbToHex(pixel.color);
                 const text = Number(pixel?.text) === 0 ? "" : pixel?.text?.toString() ?? "";
-                pixelData.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                    x: pixel!.x,
-                    y: pixel!.y,
-                    created_at: pixel!.created_at,
-                    updated_at: pixel!.updated_at,
-                    app: pixel!.app.toString(),
+                pixelData.current.set(`[${pixel.x},${pixel.y}]`, {
+                    x: pixel.x,
+                    y: pixel.y,
+                    created_at: pixel.created_at,
+                    updated_at: pixel.updated_at,
+                    app: pixel.app.toString(),
                     color,
-                    owner: pixel!.owner.toString(),
+                    owner: pixel.owner.toString(),
                     text,
-                    timestamp: pixel!.timestamp,
-                    action: pixel!.action,
+                    timestamp: pixel.timestamp,
+                    action: pixel.action,
                 });
-                grid.current.set(`[${pixel!.x},${pixel!.y}]`, {
-                    position: [pixel!.x, pixel!.y],
+                grid.current.set(`[${pixel.x},${pixel.y}]`, {
+                    position: [pixel.x, pixel.y],
                     color,
                     text,
                 });
@@ -163,6 +165,10 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         return () => cancelAnimationFrame(animationId);
     }, [canvasRef, grid]);
 
+    /*
+     * @dev Handles the canvas setup of DrawPanelProvider
+     */
+
     const setCanvas = useCallback((canvas: MutableRefObject<HTMLCanvasElement>) => {
         if (!canvas.current) return;
         setCanvasRef(canvas);
@@ -170,6 +176,19 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
         setCamera(camera);
         getGameStore().set({ camera });
     }, []);
+
+    /*
+     * @dev Fetches camera target from QueryString
+     */
+    useEffect(() => {
+        if (!camera) return;
+        const query = queryString.parse(window.location.search);
+        console.log("query", query);
+        if (query.target) {
+            const target = query.target.toString().split(",");
+            camera.setPosition(new Vector3(Number(target[0]), Number(target[1]), target[2] ? Number(target[2]) : camera.getZoom()));
+        }
+    }, [camera]);
 
     return (
         <DrawPanelContext.Provider
