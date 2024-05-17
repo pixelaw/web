@@ -5,7 +5,7 @@ import { Vector2, Vector3, Vector4 } from "threejs-math";
 
 export const createCamera = (canvas: HTMLCanvasElement) => {
     // @dev position is the camera position in world space
-    const position = new Vector3(0, 0, 50); // Z is zoom level
+    const position = new Vector3(120, 60, 7); // Z is zoom level
     // const cameraTarget = position.clone();
     const viewport = new Vector4(0, 0, 0, 0);
     const panSpeed = INTERACTION.PANSPEED;
@@ -20,6 +20,7 @@ export const createCamera = (canvas: HTMLCanvasElement) => {
     const getCellSize = () => cellSize;
     const getZoom = () => position.z;
 
+    console.log("a")
     const moveBy = (delta: Vector2) => {
         position.x += delta.x * panSpeed * 100/position.z;
         position.y += delta.y * panSpeed * 100/position.z;
