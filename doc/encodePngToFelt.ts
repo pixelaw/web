@@ -1,9 +1,15 @@
 import {PNG} from 'pngjs';
 import fs from 'fs';
 import {Buffer} from 'buffer';
-import {Account, CallData, Contract, Provider, RpcProvider} from "starknet";
+import {Account, CallData, Contract, RpcProvider} from "starknet";
 
-async function processImage(imageFile: string, origin: { x: number, y: number }, write: boolean) {
+const entrypoint = 'pixel_row'
+type PixelRow = { position: { x: number, y: number }, image_data: string[] }
+type PixelRows = PixelRow[]
+
+async function generatePixelRows(imageFile: string, origin: { x: number, y: number }): Promise<PixelRows> {
+
+    let pixelRows = []
     const png = PNG.sync.read(fs.readFileSync(imageFile));
 
     const pixels = [];
@@ -16,7 +22,7 @@ async function processImage(imageFile: string, origin: { x: number, y: number },
     const PIXELS_PER_FELT = 7
     let x_offset = 0
     for (let last_pixel = 0; last_pixel < pixels.length; last_pixel++) {
-        let x = last_pixel % (png.width );
+        let x = last_pixel % (png.width);
         let y = Math.floor(last_pixel / png.width);
 
         buffer.push(pixels[last_pixel])
@@ -25,7 +31,7 @@ async function processImage(imageFile: string, origin: { x: number, y: number },
         if (
             buffer.length === BUFFER_SIZE
             || x == png.width - 1
-            || last_pixel === pixels.length -1
+            || last_pixel === pixels.length - 1
         ) {
 
             // Chop in rows of 7
@@ -42,21 +48,39 @@ async function processImage(imageFile: string, origin: { x: number, y: number },
             });
 
             buffer = []
-            if (write) await submit({x: origin.x + x_offset, y: origin.y + y}, image_data)
+
+            pixelRows.push({position: {x: origin.x + x_offset, y: origin.y + y}, image_data})
 
             // Adjust the offset if we didnt finish the row (so the row is wider than 1000 pixels
-            if(x == png.width - 1){
+            if (x == png.width - 1) {
                 x_offset = 0
-            }else{
+            } else {
                 x_offset = x
             }
 
+
         }
     }
+    return pixelRows
 }
 
 
-async function submit(position: { x: number; y: number; }, image_data: string[]) {
+
+function generateSozo(pixelRows: PixelRows): string {
+    let result = ""
+    for (let {position, image_data} of pixelRows) {
+
+        result += `sozo \
+--profile dev-pop \
+execute \
+0x1f04b61e71f2afa9610c422db007807f73ebad6b4c069e72bb6e22ff032a93c \
+pixel_row \
+-c 0,0,${position.x},${position.y},0,${image_data.length},${image_data.join(',')}\nsleep 0.2\n`
+    }
+    return result
+}
+
+async function execute(pixelRows: PixelRows) {
 
     const provider = new RpcProvider({nodeUrl: "http://127.0.0.1:5050",})
 
@@ -72,40 +96,48 @@ async function submit(position: { x: number; y: number; }, image_data: string[])
     }
     const myTestContract = new Contract(abi, contractAddress, provider);
     myTestContract.connect(account0);
-    console.log({position})
-    const defaultParams = {
-        for_player: 0,
-        for_system: 0,
-        position,
-        color: "0xAFAFAF"
-    }
-    try {
-        const entrypoint = 'pixel_row'
+
+    for (let {position, image_data} of pixelRows) {
+        const defaultParams = {
+            for_player: 0,
+            for_system: 0,
+            position,
+            color: "0xAFAFAF"
+        }
+
         const calldata = CallData.compile({
             defaultParams,
             image_data
         })
 
-        const {suggestedMaxFee: estimatedFee1} = await account0.estimateInvokeFee({
-            contractAddress,
-            entrypoint,
-            calldata,
-        });
+        try {
+            // const {suggestedMaxFee: estimatedFee1} = await account0.estimateInvokeFee({
+            //     contractAddress,
+            //     entrypoint,
+            //     calldata,
+            // });
 
-        const result = await account0.execute({
-            contractAddress,
-            entrypoint,
-            calldata,
-        });
-        await provider.waitForTransaction(result.transaction_hash);
+            // TODO probably need to sleep() here
 
-        console.log({result});
+            const result = await account0.execute({
+                contractAddress,
+                entrypoint,
+                calldata,
+            });
+            await provider.waitForTransaction(result.transaction_hash);
 
-    } catch (e) {
-        console.error(e)
+            console.log({result});
+        } catch (e) {
+            console.error({calldata}, e)
+        }
     }
-
 }
 
-// Usage
-processImage('doc/coast.png', {x: 0, y: 0}, true);
+async function main() {
+
+    const pixelRows = await generatePixelRows('doc/coast.png', {x: 0, y: 0})
+    console.log(generateSozo(pixelRows))
+    await execute(pixelRows)
+}
+
+await main()
