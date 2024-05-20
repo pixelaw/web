@@ -79,6 +79,7 @@ export default function DrawPanelProvider({ children }: { children: React.ReactN
             .filter((entity) => !!entity)
             .filter((entity) => entity?.color !== 0)
             .forEach((pixel) => {
+                if(!pixel) return
                 const color = argbToHex(pixel.color);
                 const text = Number(pixel?.text) === 0 ? "" : pixel?.text?.toString() ?? "";
                 pixelData.current.set(`[${pixel.x},${pixel.y}]`, {
