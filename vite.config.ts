@@ -1,24 +1,20 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import {defineConfig} from "vite"
-import wasm from 'vite-plugin-wasm'
+import {defineConfig} from 'vite';
+import react from '@vitejs/plugin-react';
+import graphqlLoader from "vite-plugin-graphql-loader";
+import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
+import {fileURLToPath, URL} from 'url';
 
 export default defineConfig({
-    build: {
-        sourcemap: true
-    },
     plugins: [
         react(),
+        graphqlLoader(),
         wasm(),
-        topLevelAwait(),
+        topLevelAwait()
     ],
-    optimizeDeps: {},
-    server: {},
     resolve: {
         alias: {
-            "@": path.resolve(__dirname, "./src"),
+            "@": fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
-
-})
+});
