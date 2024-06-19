@@ -123,6 +123,7 @@ export const numRGBAToHex = (rgba: number | undefined) => {
     const color = rgba >>> 8
     return '#' + (color).toString(16).padStart(6, "0")
 }
+/*
 
 export async function fillPixelData(imageUrl: string, setPixels: (pixels: { key: string, pixel: Pixel }[]) => void) {
     // Fetch PNG file
@@ -156,6 +157,7 @@ export async function fillPixelData(imageUrl: string, setPixels: (pixels: { key:
     }
     setPixels(pixels)
 }
+*/
 
 
 export async function clearIdb() {

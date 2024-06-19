@@ -39,7 +39,7 @@ function App() {
         setClickedCell
     } = useViewStateStore();
 
-    useDojoInteractHandler(pixelStore, gameData);
+    useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
     //</editor-fold>
 

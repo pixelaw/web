@@ -46,7 +46,7 @@ export interface AppStore {
 }
 
 export interface TileStore {
-    prepare: (bounds: Bounds) => void;
+    prepare: (scaleFactor: number, bounds: Bounds) => void;
     getTile: (key: string) => Tile | undefined | "";
     setTile: (key: string, tile: Tile) => Promise<void>;
     setTiles: (tiles: { key: string, tile: Tile }[]) => Promise<void>;

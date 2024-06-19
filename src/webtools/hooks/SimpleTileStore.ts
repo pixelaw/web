@@ -72,6 +72,9 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
 
     }, []);
 
+    const prepare = (_scaleFactor: number, _bounds: Bounds): void => {
+        // TODO not yet implemented
+    }
     const getTileset = (_scaleFactor: number, bounds: Bounds): Tileset | undefined => {
 
         const [topLeft, bottomRight] = bounds
@@ -169,7 +172,7 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
         setState(newTiles);
     };
 
-    return {getTile, setTile, setTiles, getTileset};
+    return {getTile, setTile, setTiles, getTileset, prepare};
 }
 
 
