@@ -20,7 +20,7 @@ const MenuBar: React.FC = () => {
     return (
         <div className={styles.inner}>
             <div className={styles.logoContainer}>
-                <img src="/src/assets/logo/pixeLaw-logo.png" alt="logo"/>
+                <img src="/assets/logo/pixeLaw-logo.png" alt="logo"/>
             </div>
             <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
         </div>
