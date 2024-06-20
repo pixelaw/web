@@ -5,7 +5,15 @@ import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql";
 import { GraphQLClient } from 'graphql-request';
 import { areBoundsEqual, MAX_VIEW_SIZE } from "@/webtools/utils.ts";
 import { shortString } from "starknet";
-import {World__Query} from "@/generated/graphql.js";
+
+// TODO local declaration to deal with typing. Should come from World__Query but thats very generic
+type GetPixelsResponse = {
+    pixelModels: {
+        edges: Array<{
+            node: Pixel;
+        }>;
+    };
+};
 
 type State = { [key: string]: Pixel | undefined };
 
@@ -23,7 +31,7 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         if (left > MAX_VIEW_SIZE && left > right) right = MAX_UINT32;
         if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_UINT32;
 
-        gqlClient.request<World__Query>(GET_PIXELS_QUERY, {
+        gqlClient.request<GetPixelsResponse>(GET_PIXELS_QUERY, {
             first: 50000,
             where: {
                 "xGTE": left,
