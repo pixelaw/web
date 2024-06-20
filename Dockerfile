@@ -1,7 +1,7 @@
 FROM node:20 AS base
- 
-FROM base AS deps
 RUN corepack enable
+
+FROM base AS deps
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN mkdir /app/node_modules
@@ -9,7 +9,6 @@ RUN --mount=type=cache,id=node_modules,target=/app/node_modules yarn install --f
  
 
 FROM deps AS build
-RUN corepack enable
 COPY . .
 RUN --mount=type=cache,id=node_modules,target=/app/node_modules yarn build
  

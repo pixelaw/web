@@ -23,9 +23,9 @@ function App() {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    const updateService = useUpdateService(`ws://localhost:3001/tiles`)  // TODO url configurable
+    const updateService = useUpdateService(`ws://localhost:3001/tiles`)
     const pixelStore = useDojoPixelStore();
-    const tileStore = useSimpleTileStore("localhost:3001/tiles");   // TODO url configurable
+    const tileStore = useSimpleTileStore("localhost:3001/tiles")
     const appStore = useDojoAppStore();
     const {clientState, error, gameData} = usePixelawProvider();
     const {

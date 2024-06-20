@@ -32,16 +32,16 @@ export interface ISettingsStore {
 }
 
 export const defaultDojoConfig: DojoConfig = {
-    relayUrl: "http://localhost:8080",
-    rpcUrl: "http://localhost:5050",
-    toriiUrl: "http://localhost:8080",
+    relayUrl: import.meta.env.RELAY_URL,
+    rpcUrl: import.meta.env.RPC_URL ?? "http://localhost:5050",
+    toriiUrl: import.meta.env.TORII_URL ?? "http://localhost:8080",
     manifest: manifest(
-        "0x308cf899b99ecd34b86ceed1d7ee1c1567cec44cff625bb732732a44c41a1b8"
+        import.meta.env.WORLD_ADDRESS ?? "0x308cf899b99ecd34b86ceed1d7ee1c1567cec44cff625bb732732a44c41a1b8"
     ),
     masterAddress:
-        "0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486",
+        import.meta.env.MASTER_ADDRESS ?? "0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486",
     masterPrivateKey:
-        "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
+        import.meta.env.MASTER_PRIVATE_KEY ?? "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
 };
 
 const checkUrl = async (url: string) => {

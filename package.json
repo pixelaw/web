@@ -3,7 +3,7 @@
     "private": true,
     "version": "0.3.4",
     "type": "module",
-    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+    "packageManager": "yarn@1.22.19",
     "scripts": {
         "dev": "vite",
         "build-prod": "tsc && vite build",
@@ -26,6 +26,7 @@
         "@types/upng-js": "^2.1.5",
         "autoprefixer": "^10.4.19",
         "browserify-zlib": "^0.2.0",
+        "dotenv": "^16.4.5",
         "graphql": "^16.8.1",
         "graphql-request": "^7.0.1",
         "idb-keyval": "^6.2.1",
@@ -42,6 +43,7 @@
         "zustand": "^4.5.2"
     },
     "devDependencies": {
+        "@import-meta-env/unplugin": "^0.5.1",
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@typescript-eslint/eslint-plugin": "^7.2.0",

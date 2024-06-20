@@ -16,11 +16,11 @@ const MenuBar: React.FC = () => {
             navigate('/settings'); // Navigate to settings if not currently showing
         }
     };
-
     return (
         <div className={styles.inner}>
             <div className={styles.logoContainer}>
                 <img src="/assets/logo/pixeLaw-logo.png" alt="logo"/>
+
             </div>
             <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
         </div>
