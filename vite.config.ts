@@ -4,7 +4,8 @@ import graphqlLoader from "vite-plugin-graphql-loader";
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
 import {fileURLToPath, URL} from 'url';
-import ImportMetaEnvPlugin from "@import-meta-env/unplugin";
+import {viteEnvs} from 'vite-envs'
+
 
 export default defineConfig({
     plugins: [
@@ -12,16 +13,14 @@ export default defineConfig({
         graphqlLoader(),
         wasm(),
         topLevelAwait(),
-        ImportMetaEnvPlugin.vite({
-            example: ".env.example",
-        }),
+        viteEnvs({
+            declarationFile: ".env.example"
+        })
+
     ],
     resolve: {
         alias: {
             "@": fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
-    define: {
-        'import.meta.env.WORLD_ADDRESS': JSON.stringify(process.env.WORLD_ADDRESS)
-    }
 });

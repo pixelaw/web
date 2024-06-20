@@ -1,47 +1,40 @@
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
 import manifest from "@/dojo/manifest";
+import {DojoConfig} from "@dojoengine/core";
 
-type DojoConfig = {
-    rpcUrl: string;
-    toriiUrl: string;
-    relayUrl?: string;
-    masterAddress?: string;
-    masterPrivateKey?: string;
-    accountClassHash?: string;
-    feeTokenAddress?: string;
-    manifest: any;
-};
+
+interface PixelawConfig extends DojoConfig {
+    serverUrl?: string;
+}
 
 interface DojoConfigResult {
-    config: DojoConfig;
+    config: PixelawConfig;
     isSuccess: boolean;
     error: Error | string | undefined;
 }
 
 export interface ISettingsStore {
-    config: DojoConfig | undefined;
+    config: PixelawConfig | undefined;
     configIsValid: boolean;
     configError?: Error | string | undefined;
     worldAddress?: string;
 
-    setDojoConfig(data: Partial<DojoConfig>): Promise<void>;
-
+    setDojoConfig(data: Partial<PixelawConfig>): Promise<void>;
     setSettings(data: Partial<ISettingsStore>): void; // catch all
     setWorldAddress(address: string): Promise<void>;
 }
 
-export const defaultDojoConfig: DojoConfig = {
+export const defaultDojoConfig: PixelawConfig = {
+    serverUrl: import.meta.env.SERVER_URL,
     relayUrl: import.meta.env.RELAY_URL,
-    rpcUrl: import.meta.env.RPC_URL ?? "http://localhost:5050",
-    toriiUrl: import.meta.env.TORII_URL ?? "http://localhost:8080",
-    manifest: manifest(
-        import.meta.env.WORLD_ADDRESS ?? "0x308cf899b99ecd34b86ceed1d7ee1c1567cec44cff625bb732732a44c41a1b8"
-    ),
-    masterAddress:
-        import.meta.env.MASTER_ADDRESS ?? "0x003c4dd268780ef738920c801edc3a75b6337bc17558c74795b530c0ff502486",
-    masterPrivateKey:
-        import.meta.env.MASTER_PRIVATE_KEY ?? "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
+    rpcUrl: import.meta.env.RPC_URL,
+    toriiUrl: import.meta.env.TORII_URL,
+    manifest: manifest(import.meta.env.WORLD_ADDRESS),
+    masterAddress: import.meta.env.MASTER_ADDRESS,
+    masterPrivateKey: import.meta.env.MASTER_PRIVATE_KEY,
+    accountClassHash: import.meta.env.ACCOUNT_CLASS_HASH,
+    feeTokenAddress: import.meta.env.FEETOKEN_ADDRESS,
 };
 
 const checkUrl = async (url: string) => {
@@ -62,9 +55,7 @@ const checkUrls = async (urls: string[]): Promise<boolean> => {
     }
 };
 
-const checkDojoConfig = async (
-    config: DojoConfig
-): Promise<DojoConfigResult> => {
+const checkConfig = async (config: DojoConfig): Promise<DojoConfigResult> => {
     const result = {
         config,
         isSuccess: true,
@@ -84,14 +75,14 @@ const useSettingsStore = create<ISettingsStore>()(
         configIsValid: true,
         worldAddress:
             "0xfea84b178ab1dc982ef9e369246f8c4d53aea52ea7af08879911f436313e4e",
-        setDojoConfig: async (data: Partial<DojoConfig>) => {
+        setDojoConfig: async (data: Partial<PixelawConfig>) => {
             try {
                 const newConfig = {
                     ...defaultDojoConfig,
                     ...get().config,
                     ...data,
                 } as DojoConfig;
-                await checkDojoConfig(newConfig);
+                await checkConfig(newConfig);
                 set((state) => {
                     Object.assign(state, {config: newConfig, configIsValid: true});
                 });
@@ -109,7 +100,7 @@ const useSettingsStore = create<ISettingsStore>()(
                 Object.assign(state, data);
             });
         },
-        setWorldAddress: async (address: string) => {
+        setWorldAddress: async (_address: string) => {
             console.warn("unimplemented");
             // TODO: update the world address
         },

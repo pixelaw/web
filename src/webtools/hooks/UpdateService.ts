@@ -16,6 +16,7 @@ export const useUpdateService = (url: string): UpdateService => {
     const [tileChanged, setTileChanged] = useState<TileChangedMessage | null>(null)
 
     useEffect(() => {
+        if(!url) return
         if (!socket) {
             socket = new WebSocket(url);
 

@@ -5,6 +5,8 @@ import '@/index.css'
 import {BrowserRouter} from 'react-router-dom';
 import {PixelawProvider} from "@/providers/PixelawProvider.tsx";
 
+console.log(import.meta.env)
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <PixelawProvider>

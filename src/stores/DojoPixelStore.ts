@@ -4,28 +4,29 @@ import {produce} from 'immer';
 import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql";
 import {ApolloClient, InMemoryCache} from "@apollo/client";
 import {areBoundsEqual, MAX_VIEW_SIZE} from "@/webtools/utils.ts";
-import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {shortString} from "starknet";
 
 
 type State = { [key: string]: Pixel | undefined };
 
-export function useDojoPixelStore(): PixelStore {
-    const {gameData} = usePixelawProvider();
+export function useDojoPixelStore(baseUrl?: string): PixelStore {
+
     const [state, setState] = useState<State>({});
     const [bounds, setBounds] = useState<Bounds>([[0, 0], [MAX_VIEW_SIZE, MAX_VIEW_SIZE]]);
 
-    const baseUrl = gameData?.setup.config.toriiUrl
-
     // Initialize ApolloClient with dynamic baseUrl
-    const gqlClient = new ApolloClient({
-        uri: `${baseUrl}/graphql`,
-        cache: new InMemoryCache(),
-        connectToDevTools: false,
-    });
+    const gqlClient = baseUrl
+        ? new ApolloClient({
+            uri: `${baseUrl}/graphql`,
+            cache: new InMemoryCache(),
+            connectToDevTools: false,
+        })
+        : null
 
     // Kick off data fetching. It will write the retrieved Pixel data to the state by itself, and report errors in console.
     function fetchData(bounds: Bounds): void {
+        if (!gqlClient) return; // Guard against undefined gqlClient
+
         // eslint-disable-next-line prefer-const
         let [[left, top], [right, bottom]] = bounds
 

@@ -15,6 +15,7 @@ import Settings from "@/components/Settings/Settings.tsx";
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {useViewStateStore, useSyncedViewStateStore} from "@/stores/ViewStateStore.ts";
 import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
+import {useSettingsStore} from "@/stores/SettingsStore.ts";
 
 function App() {
     //<editor-fold desc="State">
@@ -23,9 +24,10 @@ function App() {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    const updateService = useUpdateService(`ws://localhost:3001/tiles`)
-    const pixelStore = useDojoPixelStore();
-    const tileStore = useSimpleTileStore("localhost:3001/tiles")
+    const settings = useSettingsStore()
+    const updateService = useUpdateService(settings.config?.serverUrl!)
+    const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!);
+    const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
     const appStore = useDojoAppStore();
     const {clientState, error, gameData} = usePixelawProvider();
     const {

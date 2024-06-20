@@ -43,7 +43,6 @@
         "zustand": "^4.5.2"
     },
     "devDependencies": {
-        "@import-meta-env/unplugin": "^0.5.1",
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -58,6 +57,7 @@
         "vite-plugin-graphql-loader": "^3.0.1",
         "vite-plugin-top-level-await": "^1.4.1",
         "vite-plugin-wasm": "^3.3.0",
-        "vitest": "^1.6.0"
+        "vitest": "^1.6.0",
+        "vite-envs": "^4.3.2"
     }
 }
