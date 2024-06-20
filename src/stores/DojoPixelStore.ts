@@ -32,7 +32,7 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
                 "yLTE": bottom
             }
         }).then((data) => {
-            data!.pixelModels.edges.map(({ node }: { node: Pixel }) => {
+            data!.pixelModels!.edges!.map(({ node }: { node: Pixel }) => {
                 const pixel: Pixel = {
                     ...node,
                     text: shortString.decodeShortString(node.text),
