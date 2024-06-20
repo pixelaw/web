@@ -1,55 +1,38 @@
-import {useState} from 'react';
-import {Bounds, Coordinate, MAX_UINT32, Pixel, PixelStore} from "@/webtools/types.ts";
-import {produce} from 'immer';
+import { useState } from 'react';
+import { Bounds, Coordinate, MAX_UINT32, Pixel, PixelStore } from "@/webtools/types.ts";
+import { produce } from 'immer';
 import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql";
-import {ApolloClient, InMemoryCache} from "@apollo/client";
-import {areBoundsEqual, MAX_VIEW_SIZE} from "@/webtools/utils.ts";
-import {shortString} from "starknet";
-
+import { GraphQLClient } from 'graphql-request';
+import { areBoundsEqual, MAX_VIEW_SIZE } from "@/webtools/utils.ts";
+import { shortString } from "starknet";
+import {World__Query} from "@/generated/graphql.js";
 
 type State = { [key: string]: Pixel | undefined };
 
 export function useDojoPixelStore(baseUrl?: string): PixelStore {
-
     const [state, setState] = useState<State>({});
     const [bounds, setBounds] = useState<Bounds>([[0, 0], [MAX_VIEW_SIZE, MAX_VIEW_SIZE]]);
 
-    // Initialize ApolloClient with dynamic baseUrl
-    const gqlClient = baseUrl
-        ? new ApolloClient({
-            uri: `${baseUrl}/graphql`,
-            cache: new InMemoryCache(),
-            connectToDevTools: false,
-        })
-        : null
+    const gqlClient = baseUrl ? new GraphQLClient(`${baseUrl}/graphql`) : null;
 
-    // Kick off data fetching. It will write the retrieved Pixel data to the state by itself, and report errors in console.
     function fetchData(bounds: Bounds): void {
-        if (!gqlClient) return; // Guard against undefined gqlClient
+        if (!gqlClient) return;
 
-        // eslint-disable-next-line prefer-const
-        let [[left, top], [right, bottom]] = bounds
+        let [[left, top], [right, bottom]] = bounds;
 
-        // Adjust to wrapping
-        if (left > MAX_VIEW_SIZE && left > right) right = MAX_UINT32
-        if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_UINT32
-        // console.log("fetchData", left,top,right,bottom )
+        if (left > MAX_VIEW_SIZE && left > right) right = MAX_UINT32;
+        if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_UINT32;
 
-        gqlClient.query({
-            query: GET_PIXELS_QUERY,
-            variables: {
-                first: 50000,
-                where: {
-                    "xGTE": left,
-                    "xLTE": right,
-                    "yGTE": top,
-                    "yLTE": bottom
-                }
+        gqlClient.request<World__Query>(GET_PIXELS_QUERY, {
+            first: 50000,
+            where: {
+                "xGTE": left,
+                "xLTE": right,
+                "yGTE": top,
+                "yLTE": bottom
             }
         }).then((data) => {
-            data.data.pixelModels.edges.map(({node}: { node: Pixel }) => {
-                // Write the retrieved Pixel to state
-                // TODO, we may run out of memory in State if the user retrieves too many?
+            data!.pixelModels.edges.map(({ node }: { node: Pixel }) => {
                 const pixel: Pixel = {
                     ...node,
                     text: shortString.decodeShortString(node.text),
@@ -66,40 +49,36 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         })
     }
 
-
     const refresh = (): void => {
-        const [[left, top], [right, bottom]] = bounds
-        console.log("refresh")
-        // Determine if the coords wrap
-        const xWraps = right - left < 0
-        const yWraps = bottom - top < 0
+        const [[left, top], [right, bottom]] = bounds;
+        const xWraps = right - left < 0;
+        const yWraps = bottom - top < 0;
 
         if (xWraps && yWraps) {
-            // We need to do 4 queries, each quadrant
-            fetchData([[left, top], [0, 0]])  // top-left quad
-            fetchData([[left, 0], [0, bottom]])  // bottom-left quad
-            fetchData([[0, top], [right, 0]])  // top-right quad
-            fetchData([[0, 0], [right, bottom]])  // bottom-right quad
+            fetchData([[left, top], [0, 0]]);
+            fetchData([[left, 0], [0, bottom]]);
+            fetchData([[0, top], [right, 0]]);
+            fetchData([[0, 0], [right, bottom]]);
         } else if (xWraps) {
-            fetchData([[left, top], [0, bottom]])  // left half
-            fetchData([[0, top], [right, bottom]])  // right half
+            fetchData([[left, top], [0, bottom]]);
+            fetchData([[0, top], [right, bottom]]);
         } else if (yWraps) {
-            fetchData([[left, top], [right, 0]])  // top half
-            fetchData([[left, 0], [right, bottom]])  // bottom half
+            fetchData([[left, top], [right, 0]]);
+            fetchData([[left, 0], [right, bottom]]);
         } else {
-            fetchData([[left, top], [right, bottom]])  // all
+            fetchData([[left, top], [right, bottom]]);
         }
     }
 
     const prepare = (newBounds: Bounds): void => {
         if (!areBoundsEqual(bounds, newBounds)) {
-            setBounds(bounds);
-            refresh()
+            setBounds(newBounds);
+            refresh();
         }
     };
 
     const getPixel = (coord: Coordinate): Pixel | undefined => {
-        const key = `${coord[0]}_${coord[1]}`
+        const key = `${coord[0]}_${coord[1]}`;
 
         return state[key];
     };
@@ -112,12 +91,11 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
 
     const setPixels = (pixels: { key: string, pixel: Pixel }[]): void => {
         setState(produce(draft => {
-            pixels.forEach(({key, pixel}) => {
+            pixels.forEach(({ key, pixel }) => {
                 draft[key] = pixel;
             });
         }));
     };
 
-    return {getPixel, setPixel, setPixels, prepare, refresh};
+    return { getPixel, setPixel, setPixels, prepare, refresh };
 }
-
