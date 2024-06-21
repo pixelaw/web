@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import React, {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Bounds, Coordinate} from "@/webtools/types.ts";
 import {useSimpleTileStore} from "@/webtools/hooks/SimpleTileStore.ts";
 import {useDojoPixelStore} from "@/stores/DojoPixelStore.ts";
@@ -44,6 +44,10 @@ function App() {
         setClickedCell
     } = useViewStateStore();
 
+    // FIXME: should be in the ViewStateStore??
+    const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+    const colorPickerRef = useRef<HTMLDivElement>(null);
+
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
     //</editor-fold>
@@ -76,6 +80,26 @@ function App() {
         color = color.replace('#', '')
         setColor(color)
     }
+
+    function toggleColorPicker() {
+        setIsColorPickerVisible(prevState => !prevState);
+    }
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+                setIsColorPickerVisible(false);
+            }
+        }
+        if (isColorPickerVisible) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isColorPickerVisible]);
 
     //</editor-fold>
 
@@ -143,9 +167,15 @@ function App() {
                                 onCellClick={onCellClick}
                                 onCellHover={onCellHover}
                             />
-                            <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}>
-                            {/* <div ref={colorPickerRef} className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}> */}
+                            {/* <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}> */}
+                            <div ref={colorPickerRef} className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
+                            </div>
+
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.placePixelButton} onClick={toggleColorPicker} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                    Place a Pixel
+                                </button>
                             </div>
 
                             {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
