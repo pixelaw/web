@@ -41,7 +41,9 @@ function App() {
         zoom,
         setZoom,
         setHoveredCell,
-        setClickedCell
+        setClickedCell,
+        selectedApp, // added
+        setSelectedApp, // added
     } = useViewStateStore();
 
     // FIXME: should be in the ViewStateStore??
@@ -173,7 +175,7 @@ function App() {
                             </div>
 
                             <div className={styles.buttonContainer}>
-                                <button className={styles.placePixelButton} onClick={toggleColorPicker} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('paint');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
                                     Place a Pixel
                                 </button>
                             </div>
