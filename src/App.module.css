@@ -49,6 +49,27 @@ body {
     z-index: 10; /* Ensure it is on top */
 }
 
+.buttonContainer {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10rem; /* Space between the buttons */
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .placePixelButton, .governPixelsButton {
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    color: #000000;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 100; /* Ensure it's above other elements */
+  }
+  
+
 .apps {
     position: absolute;
     top: calc(50px + 1rem);
@@ -61,11 +82,15 @@ body {
     height: calc(100vh - 50px - 2rem);
 }
 
+.blur-background {
+    filter: blur(5px);
+  }
+
 .container {
-    background-color: darkblue; /* Replace with the actual color value */
-    min-height: 100vh; /* Equivalent to min-h-screen */
-    display: flex;
-    flex-direction: column; /* Equivalent to flex-col */
+  background-color: var(--bg-primary); /* Replace with the actual color value if different */
+  min-height: 100vh; /* Equivalent to min-h-screen */
+  display: flex;
+  flex-direction: column; /* Equivalent to flex-col */
 }
 
 .errorContainer {

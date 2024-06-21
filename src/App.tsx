@@ -122,7 +122,8 @@ function App() {
     document.title = "PixeLAW: World";
 
     return (
-        <div className={styles.container}>
+        // <div className={styles.container}>
+        <div className='bg-bg-primary min-h-screen flex flex-col'>
             <MenuBar/>
 
             <div className={styles.main}>
@@ -143,14 +144,15 @@ function App() {
                                 onCellHover={onCellHover}
                             />
                             <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}>
+                            {/* <div ref={colorPickerRef} className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}> */}
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
                             </div>
 
-                            <div className={styles.apps} style={{left: zoombasedAdjustment}}>
+                            {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
                                 <Apps
                                     appStore={appStore}
                                 />
-                            </div>
+                            </div> */}
                         </>
                     }/>
                     <Route path="/governance" element={<Governance />} />
