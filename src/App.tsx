@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import React, {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Bounds, Coordinate} from "@/webtools/types.ts";
 import {useSimpleTileStore} from "@/webtools/hooks/SimpleTileStore.ts";
 import {useDojoPixelStore} from "@/stores/DojoPixelStore.ts";
@@ -41,8 +41,14 @@ function App() {
         zoom,
         setZoom,
         setHoveredCell,
-        setClickedCell
+        setClickedCell,
+        selectedApp, // added
+        setSelectedApp, // added
     } = useViewStateStore();
+
+    // FIXME: should be in the ViewStateStore??
+    const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+    const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
@@ -76,6 +82,26 @@ function App() {
         color = color.replace('#', '')
         setColor(color)
     }
+
+    function toggleColorPicker() {
+        setIsColorPickerVisible(prevState => !prevState);
+    }
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+                setIsColorPickerVisible(false);
+            }
+        }
+        if (isColorPickerVisible) {
+            document.addEventListener("mousedown", handleClickOutside);
+        } else {
+            document.removeEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isColorPickerVisible]);
 
     //</editor-fold>
 
@@ -122,7 +148,8 @@ function App() {
     document.title = "PixeLAW: World";
 
     return (
-        <div className={styles.container}>
+        // <div className={styles.container}>
+        <div className='bg-bg-primary min-h-screen flex flex-col'>
             <MenuBar/>
 
             <div className={styles.main}>
@@ -142,15 +169,22 @@ function App() {
                                 onCellClick={onCellClick}
                                 onCellHover={onCellHover}
                             />
-                            <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}>
+                            {/* <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}> */}
+                            <div ref={colorPickerRef} className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
                             </div>
 
-                            <div className={styles.apps} style={{left: zoombasedAdjustment}}>
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('paint');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                    Place a Pixel
+                                </button>
+                            </div>
+
+                            {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
                                 <Apps
                                     appStore={appStore}
                                 />
-                            </div>
+                            </div> */}
                         </>
                     }/>
                     <Route path="/governance" element={<Governance />} />

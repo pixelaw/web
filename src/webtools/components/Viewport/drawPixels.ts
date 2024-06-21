@@ -32,6 +32,7 @@ export function drawPixels(
         const pixel = getPixel(worldCoords);
         if (!pixel) return;
 
+        // FIXME: Shows a different color from original web_client.
         context.fillStyle = numRGBAToHex(pixel.color);
 
         const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment)
