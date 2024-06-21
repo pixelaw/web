@@ -2,6 +2,8 @@
 
 import { AccountInterface, BigNumberish} from 'starknet'
 import {DojoProvider} from "@dojoengine/core";
+import {PROPOSAL_CONTRACT_ADDRESS, VOTING_CONTRACT_ADDRESS} from "@/global/constants.js";
+import {ProposalArgs, ProposalType} from "@/global/types.js";
 
 export type IWorld = Awaited<ReturnType<typeof setupWorld>>;
 
@@ -14,9 +16,11 @@ export async function setupWorld(provider: DojoProvider) {
       try {
         return await provider.execute(
           account,
-          contract_name,
-          call,
-          calldata
+            [{
+                contractName: contract_name,
+                entrypoint: call,
+                calldata
+            }]
         );
       } catch (error) {
         console.error("Error executing interact:", error);
@@ -24,7 +28,59 @@ export async function setupWorld(provider: DojoProvider) {
       }
     };
 
-    return { interact };
+
+      const vote = async (
+          { account, gameId, index, usePx, isInFavor }: { account: AccountInterface, gameId: number, index: number, usePx: number, isInFavor: boolean }
+      ) => {
+          try {
+              return await provider.execute(
+                  account,
+                  {
+                      contractName: VOTING_CONTRACT_ADDRESS,
+                      entrypoint: 'vote',
+                      calldata: [
+                          gameId,
+                          index,
+                          usePx,
+                          isInFavor
+                      ]
+                  }
+              )
+          } catch (e) {
+              console.error("Error executing voting:", e);
+              throw e
+          }
+      }
+
+      const createProposal = async (
+          { account, gameId, proposalType, args }: { account: AccountInterface, gameId: number, proposalType: ProposalType, args: ProposalArgs }
+      ) => {
+          try {
+              return await provider.execute(
+                  account,
+                  {
+                      contractAddress: PROPOSAL_CONTRACT_ADDRESS,
+                      entrypoint: 'create_proposal',
+                      calldata: [
+                          gameId,
+                          proposalType,
+                          args.address,
+                          args.arg1,
+                          args.arg2
+                      ]
+                  },
+                  {
+                      skipValidate: true
+                  }
+              )
+          } catch (e) {
+              console.error("Error executing createProposal:", e);
+              throw e
+          }
+      }
+
+
+      return { interact, vote, createProposal };
   }
   return {
     actions: actions(),

@@ -16,6 +16,9 @@ import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {useViewStateStore, useSyncedViewStateStore} from "@/stores/ViewStateStore.ts";
 import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
 import {useSettingsStore} from "@/stores/SettingsStore.ts";
+import Governance from "@/pages/Governance.js";
+import NewProposal from "@/pages/NewProposal.js";
+import ProposalDetails from "@/pages/ProposalDetails.js";
 
 function App() {
     //<editor-fold desc="State">
@@ -150,6 +153,9 @@ function App() {
                             </div>
                         </>
                     }/>
+                    <Route path="/governance" element={<Governance />} />
+                    <Route path="/new-proposal" element={<NewProposal />} />
+                    <Route path="/proposal/:id" element={<ProposalDetails />} />
 
                 </Routes>
             </div>
