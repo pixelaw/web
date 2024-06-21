@@ -46,11 +46,14 @@ export interface AppStore {
 }
 
 export interface TileStore {
-    prepare: (scaleFactor: number, bounds: Bounds) => void;
-    getTile: (key: string) => Tile | undefined | "";
-    setTile: (key: string, tile: Tile) => Promise<void>;
+    refresh: () => void;
+    prepare: (bounds: Bounds) => void;
+    fetchTile: (key: string) => void;
+    // getTile: (key: string) => Tile | undefined | "";
+    // setTile: (key: string, tile: Tile) => Promise<void>;
     setTiles: (tiles: { key: string, tile: Tile }[]) => Promise<void>;
-    getTileset: (scaleFactor: number, bounds: Bounds) => Tileset | undefined;
+    tileset: Tileset | null;
+    cacheUpdated: number;
 }
 
 export interface Tileset {
@@ -66,3 +69,7 @@ export type Bounds = [topLeft: Coordinate, bottomRight: Coordinate];
 
 export const MAX_UINT32: number = 4_294_967_295
 
+export const TILESIZE = 100
+
+// TODO handle scalefactor 10 later
+export const DEFAULT_SCALEFACTOR = 1

@@ -1,6 +1,7 @@
 # dev
 src/assets/tiles
 coverage/
+.env
 
 # Logs
 logs

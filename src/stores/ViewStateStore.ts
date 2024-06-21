@@ -3,7 +3,7 @@ import {create} from 'zustand';
 import {useLocation} from 'react-router-dom';
 import {Coordinate} from "@/webtools/types.ts";
 
-const ZOOM_PRESETS = {tile: 100, pixel: 3100}
+const ZOOM_PRESETS = {tile: 100, pixel: 2800}
 const DEFAULT_ZOOM = ZOOM_PRESETS.pixel
 const DEFAULT_CENTER: Coordinate = [4294967194, 0]
 

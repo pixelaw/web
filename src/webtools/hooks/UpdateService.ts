@@ -20,7 +20,10 @@ export const useUpdateService = (url: string): UpdateService => {
         if (!socket) {
             socket = new WebSocket(url);
 
-            socket.onopen = () => setIsReady(true);
+            socket.onopen = () => {
+                setIsReady(true);
+                console.log("sopen", url)
+            }
 
             socket.onclose = () => {
                 setIsReady(false);

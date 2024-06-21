@@ -1,4 +1,4 @@
-import {Bounds, Coordinate, MAX_UINT32, Pixel} from "./types.ts";
+import {Bounds, Coordinate, DEFAULT_SCALEFACTOR, MAX_UINT32, Pixel, TILESIZE} from "./types.ts";
 import {ZOOM_FACTOR} from "./components/Viewport/constants.ts";
 import UPNG from "upng-js";
 import {shortString} from "starknet";
@@ -228,6 +228,31 @@ export function relative2uint(nr: number): number {
     }
     return nr;
 }
+
+export function calculateTileBounds(inputBounds: Bounds): Bounds{
+    const [topLeft, bottomRight] = inputBounds
+
+
+
+    // Determine the world coordinate size of each tile
+    // Example, when tilesize is 100 and tileScaleFactor is 10, there will be 1000 world coordinates in one tile's width/height
+    // and, when tilesize is 100 and tileScaleFactor is 1, there will be 100 world coordinates in one tile's width/height
+    const tileWorldSize = TILESIZE * DEFAULT_SCALEFACTOR
+
+    // snap the left/top borders to tilesizes to find the tile names
+    // Simple example: if requested left world coord is 523 and tileWorldsize is 100, we "snap" to 500
+    const [left, top] = topLeft
+    const leftTileCoord = left - (left % tileWorldSize)
+    const topTileCoord = top - (top % tileWorldSize)
+
+    const [right, bottom] = bottomRight
+    const rightTileCoord = right + (tileWorldSize - right % tileWorldSize)
+    const bottomTileCoord = bottom + (tileWorldSize - bottom % tileWorldSize)
+
+    return [[leftTileCoord, topTileCoord], [rightTileCoord, bottomTileCoord]]
+
+}
+
 
 export function areBoundsEqual(boundsA: Bounds, boundsB: Bounds): boolean {
     // Compare top-left coordinates

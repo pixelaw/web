@@ -25,7 +25,7 @@ function App() {
 
     //<editor-fold desc="Hooks">
     const settings = useSettingsStore()
-    const updateService = useUpdateService(settings.config?.serverUrl!)
+    const updateService = useUpdateService(`${settings.config?.serverUrl!}/tiles`)
     const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!);
     const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
     const appStore = useDojoAppStore();
@@ -47,12 +47,16 @@ function App() {
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
+        console.log("updateService.tileChanged", updateService.tileChanged)
         pixelStore.refresh()
+        tileStore.fetchTile("")
     }, [updateService.tileChanged]);
 
     function onWorldviewChange(newWorldview: Bounds) {
+        // console.log("onWorldviewChange", newWorldview)
         updateService.setBounds(newWorldview)
         pixelStore.prepare(newWorldview)
+        tileStore.prepare(newWorldview)
     }
 
     function onCellHover(coordinate: Coordinate | undefined) {
@@ -125,7 +129,7 @@ function App() {
                     <Route path="/" element={
                         <>
                             <Viewport
-                                tileStore={tileStore}
+                                tileset={tileStore.tileset!}
                                 pixelStore={pixelStore}
                                 zoom={zoom}
                                 setZoom={setZoom}

@@ -1,4 +1,4 @@
-import {Coordinate, Dimension, MAX_UINT32, TileStore} from "../../types.ts";
+import {Coordinate, Dimension, MAX_UINT32, Tileset} from "../../types.ts";
 import {
     cellForPosition,
     applyWorldOffset,
@@ -15,7 +15,7 @@ export function drawTiles(
     pixelOffset: Coordinate,
     dimensions: Dimension,
     worldOffset: Coordinate,
-    tileStore: TileStore
+    tileset: Tileset
 ) {
 
     // moved one tile and 5 pixels to the right
@@ -31,20 +31,20 @@ export function drawTiles(
     const scaleFactor = zoom / ZOOM_FACTOR
     const [cellOffsetX, cellOffsetY] = pixelOffset
 
-    const tileset = tileStore.getTileset(
-        zoom / ZOOM_FACTOR,
-        [topleftWorld, bottomrightWorld]
-    )
+    // const tileset = tileStore.getTileset(
+    //     zoom / ZOOM_FACTOR,
+    //     [topleftWorld, bottomrightWorld]
+    // )
     if (!tileset) return
 
     // tileTopLeft is the world position of the topleft tile returned for the given world coord (which is not "snapped" to a tile yet)
     const {tileRows, tileSize, bounds: [tileTopLeft]} = tileset
 
+
     if(!tileRows.length) {
         console.log("norows");
         return
     }
-
     // TODO deal with tileScaleFactor other than 1 (when zoomed out very far)
 
     const tileCoords = [...tileTopLeft]
@@ -66,6 +66,7 @@ export function drawTiles(
 
 
         let destX = 0 - (initialOffsets[0] * scaleFactor) - cellOffsetX
+
 
         tileCoords[0] = tileTopLeft[0]
         tileSizes[0]  = (tileTopLeft[0] + tileSize > MAX_UINT32)?MAX_UINT32 % tileSize:tileSize
