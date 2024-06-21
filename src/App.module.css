@@ -47,6 +47,7 @@ body {
     justify-content: center;
     background-color: transparent; /* Background for entire container is transparent */
     z-index: 10; /* Ensure it is on top */
+    padding-bottom: 1rem; /* Added for spacing */
 }
 
 .buttonContainer {
@@ -57,7 +58,22 @@ body {
     bottom: 1rem;
     left: 50%;
     transform: translateX(-50%);
-  }
+}
+
+.closeButton {
+    background-color: white; /* Example background color */
+    color: black;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    cursor: pointer;
+    margin-left: 1rem; /* Add some space between color picker and button */
+    /* border-radius: 4px; */
+}
+
+.closeButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
 
   .placePixelButton, .governPixelsButton {
     padding: 0.5rem 1rem;

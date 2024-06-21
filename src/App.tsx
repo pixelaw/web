@@ -19,6 +19,8 @@ import {useSettingsStore} from "@/stores/SettingsStore.ts";
 import Governance from "@/pages/Governance.js";
 import NewProposal from "@/pages/NewProposal.js";
 import ProposalDetails from "@/pages/ProposalDetails.js";
+import { RiArrowGoBackFill } from "react-icons/ri";
+
 
 function App() {
     //<editor-fold desc="State">
@@ -48,7 +50,7 @@ function App() {
 
     // FIXME: should be in the ViewStateStore??
     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
-    const colorPickerRef = useRef<HTMLDivElement>(null);
+    // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
@@ -87,21 +89,21 @@ function App() {
         setIsColorPickerVisible(prevState => !prevState);
     }
 
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
-                setIsColorPickerVisible(false);
-            }
-        }
-        if (isColorPickerVisible) {
-            document.addEventListener("mousedown", handleClickOutside);
-        } else {
-            document.removeEventListener("mousedown", handleClickOutside);
-        }
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isColorPickerVisible]);
+    // useEffect(() => {
+    //     function handleClickOutside(event: MouseEvent) {
+    //         if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+    //             setIsColorPickerVisible(false);
+    //         }
+    //     }
+    //     if (isColorPickerVisible) {
+    //         document.addEventListener("mousedown", handleClickOutside);
+    //     } else {
+    //         document.removeEventListener("mousedown", handleClickOutside);
+    //     }
+    //     return () => {
+    //         document.removeEventListener("mousedown", handleClickOutside);
+    //     };
+    // }, [isColorPickerVisible]);
 
     //</editor-fold>
 
@@ -170,15 +172,20 @@ function App() {
                                 onCellHover={onCellHover}
                             />
                             {/* <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}> */}
-                            <div ref={colorPickerRef} className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
+                            <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
+                                <button className={styles.closeButton} onClick={toggleColorPicker}>
+                                    <RiArrowGoBackFill size={22}/>
+                                </button>
                             </div>
 
                             <div className={styles.buttonContainer}>
-                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('paint');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('p_war');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
                                     Place a Pixel
                                 </button>
                             </div>
+
+
 
                             {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
                                 <Apps
