@@ -112,7 +112,7 @@ const Viewport: React.FC<ViewportProps> = (
     }, [
         // dimensions,
         // zoom,
-        // pixelOffset,
+        pixelOffset,
         hoveredCell,
         pixelStore.cacheUpdated
     ]);
