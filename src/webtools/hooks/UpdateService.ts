@@ -45,6 +45,7 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
 
             socket.current.onmessage = (event) => {
                 const msg: Message = JSON.parse(event.data);
+                console.log(msg)
                 if (msg.cmd === "tileChanged") {
                     const tileChangedMsg = msg.data as TileChangedMessage;
 
@@ -60,13 +61,14 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
     const setBounds = (newBounds: Bounds) => {
         if(!url) return
 
+        bounds.current = newBounds
         if(!socket.current || socket.current.readyState !== WebSocket.OPEN){
+            console.log("early")
             initializeSocket(url)
         }else{
             if(!bounds.current || !areBoundsEqual(newBounds, bounds.current)){
                 const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: newBounds}})
                 socket.current!.send(message)
-                bounds.current = newBounds
             }
         }
     }
