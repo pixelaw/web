@@ -20,6 +20,7 @@ type State = { [key: string]: Pixel | undefined };
 export function useDojoPixelStore(baseUrl?: string): PixelStore {
     const [state, setState] = useState<State>({});
     const [bounds, setBounds] = useState<Bounds>([[0, 0], [MAX_VIEW_SIZE, MAX_VIEW_SIZE]]);
+    const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now());
 
     const gqlClient = baseUrl ? new GraphQLClient(`${baseUrl}/graphql`) : null;
 
@@ -52,6 +53,8 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
                     draftState[`${node.x}_${node.y}`] = pixel;
                 }));
             })
+            setCacheUpdated(Date.now())
+
         }).catch((e) => {
             console.error("Error retrieving pixels from torii for", bounds, e.message)
         })
@@ -76,6 +79,7 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         } else {
             fetchData([[left, top], [right, bottom]]);
         }
+
     }
 
     const prepare = (newBounds: Bounds): void => {
@@ -105,5 +109,5 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         }));
     };
 
-    return { getPixel, setPixel, setPixels, prepare, refresh };
+    return { getPixel, setPixel, setPixels, prepare, refresh, cacheUpdated };
 }

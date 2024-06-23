@@ -18,6 +18,7 @@ import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
 import {useSettingsStore} from "@/stores/SettingsStore.ts";
 
 function App() {
+    // console.log("App")
     //<editor-fold desc="State">
 
 
@@ -25,7 +26,10 @@ function App() {
 
     //<editor-fold desc="Hooks">
     const settings = useSettingsStore()
-    const updateService = useUpdateService(`${settings.config?.serverUrl!}/tiles`)
+
+    // console.log("serverUrl", settings.config?.serverUrl)
+
+    const updateService = useUpdateService(settings.config?.serverUrl!)
     const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!);
     const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
     const appStore = useDojoAppStore();
@@ -47,9 +51,10 @@ function App() {
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
+        if(!updateService.tileChanged) return
         console.log("updateService.tileChanged", updateService.tileChanged)
+        tileStore.fetchTile(updateService.tileChanged!.tileName)
         pixelStore.refresh()
-        tileStore.fetchTile("")
     }, [updateService.tileChanged]);
 
     function onWorldviewChange(newWorldview: Bounds) {

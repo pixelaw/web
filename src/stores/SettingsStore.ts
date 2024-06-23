@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
-import manifest from "@/dojo/manifest";
+import manifest from '@/dojo/manifest';
 import {DojoConfig} from "@dojoengine/core";
 
 

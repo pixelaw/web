@@ -6,6 +6,7 @@ type State = { [key: string]: Pixel };
 
 export function useSimplePixelStore(): PixelStore {
     const [state, setState] = useState<State>({});
+    const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now());
 
 
     const getPixel = (coord: Coordinate): Pixel | undefined => {
@@ -36,5 +37,5 @@ export function useSimplePixelStore(): PixelStore {
         // No implementation for now, SimplePixelStore is a dev tool
     }
 
-    return {getPixel, setPixel, setPixels, prepare, refresh};
+    return {getPixel, setPixel, setPixels, prepare, refresh, cacheUpdated};
 }

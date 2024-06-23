@@ -74,11 +74,7 @@ const Viewport: React.FC<ViewportProps> = (
             bufferContextRef.current = bufferCanvasRef.current.getContext('2d');
         }
 
-        // const wv = getWorldViewBounds()
-        // setWorldView(wv)
-
         isLoaded.current = true
-
 
     }, [])
 
@@ -113,7 +109,13 @@ const Viewport: React.FC<ViewportProps> = (
         }
 
 
-    }, [dimensions, zoom, pixelOffset, hoveredCell, pixelStore.refresh]);
+    }, [
+        dimensions,
+        zoom,
+        pixelOffset,
+        hoveredCell,
+        pixelStore.cacheUpdated
+    ]);
 
 
     // Render when in Tile mode
@@ -131,6 +133,7 @@ const Viewport: React.FC<ViewportProps> = (
     //</editor-fold>
 
     //<editor-fold desc="Helpers">
+
     const prepareCanvas = () => {
         const [width, height] = dimensions
 
@@ -146,6 +149,7 @@ const Viewport: React.FC<ViewportProps> = (
         bufferContextRef.current!.clearRect(0, 0, width, height);
 
     }
+
     const calculateCenter = () => {
         const [width, height] = dimensions;
         // Calculate the viewport's center point in pixels
@@ -189,13 +193,13 @@ const Viewport: React.FC<ViewportProps> = (
     //</editor-fold>
 
     //<editor-fold desc="Mouse Handlers">
+
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
 
-
         const handleWheel = (e: WheelEvent) => {
-
+            console.log("w")
             e.preventDefault();
 
             const rect = canvas.getBoundingClientRect();
@@ -239,11 +243,6 @@ const Viewport: React.FC<ViewportProps> = (
 
         canvas.addEventListener('wheel', handleWheel, {passive: false});
 
-        // const newWorldview = getWorldViewBounds()
-        // if (!areBoundsEqual(newWorldview, worldView)) {
-        //     setWorldView(getWorldViewBounds())
-        //     onWorldviewChange(newWorldview)
-        // }
 
         return () => {
             canvas.removeEventListener('wheel', handleWheel);
