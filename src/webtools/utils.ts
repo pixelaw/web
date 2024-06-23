@@ -232,8 +232,6 @@ export function relative2uint(nr: number): number {
 export function calculateTileBounds(inputBounds: Bounds): Bounds{
     const [topLeft, bottomRight] = inputBounds
 
-
-
     // Determine the world coordinate size of each tile
     // Example, when tilesize is 100 and tileScaleFactor is 10, there will be 1000 world coordinates in one tile's width/height
     // and, when tilesize is 100 and tileScaleFactor is 1, there will be 100 world coordinates in one tile's width/height

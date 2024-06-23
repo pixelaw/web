@@ -11,7 +11,6 @@ export function drawPixels(
     hoveredCell: Coordinate | undefined,
     getPixel: (coord: Coordinate) => Pixel | undefined
 ) {
-
     const cellSize = getCellSize(zoom);
     const gridDimensions = [
         Math.ceil(dimensions[0] / cellSize),
@@ -26,6 +25,7 @@ export function drawPixels(
         0 - pixelOffset[1]
     ]
 
+    // console.log("p", cellSize)
     const drawPixel = (cellX: number, cellY: number, sizeAdjustment: number = 0) => {
         const worldCoords = applyWorldOffset(worldTranslation, [cellX, cellY])
 

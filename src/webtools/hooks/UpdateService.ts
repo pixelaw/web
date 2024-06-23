@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import {Bounds, TILESIZE, UpdateService} from "../types.ts";
-import {areBoundsEqual} from "@/webtools/utils.js";
+import {areBoundsEqual, calculateTileBounds} from "@/webtools/utils.js";
 
 
 type Message = {
@@ -67,12 +67,7 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
         } else {
             // Expand the newBounds to include the whole tile (top-right coord) because
             // that is what triggers the update right now.
-            newBounds = [
-                [
-                    newBounds[0][0] - TILESIZE, // left
-                    newBounds[0][1] - TILESIZE, // top
-                ], newBounds[1]
-            ]
+            newBounds = calculateTileBounds(newBounds)
 
             if (!bounds.current || !areBoundsEqual(newBounds, bounds.current)) {
 

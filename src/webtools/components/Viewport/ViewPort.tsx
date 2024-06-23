@@ -85,7 +85,7 @@ const Viewport: React.FC<ViewportProps> = (
             setWorldView(getWorldViewBounds())
             onWorldviewChange(newWorldview)
         }
-    }, [dimensions, zoom, worldOffset, pixelOffset]);
+    }, [dimensions, worldOffset, pixelOffset]);
 
 
     // Render when in pixel mode
@@ -110,9 +110,9 @@ const Viewport: React.FC<ViewportProps> = (
 
 
     }, [
-        dimensions,
-        zoom,
-        pixelOffset,
+        // dimensions,
+        // zoom,
+        // pixelOffset,
         hoveredCell,
         pixelStore.cacheUpdated
     ]);
@@ -199,7 +199,7 @@ const Viewport: React.FC<ViewportProps> = (
         if (!canvas) return;
 
         const handleWheel = (e: WheelEvent) => {
-            console.log("w")
+
             e.preventDefault();
 
             const rect = canvas.getBoundingClientRect();
@@ -228,6 +228,11 @@ const Viewport: React.FC<ViewportProps> = (
             const cellDiffX = mouseCellAfterZoom[0] - mouseCellBeforeZoom[0];
             const cellDiffY = mouseCellAfterZoom[1] - mouseCellBeforeZoom[1];
 
+            // Update state with new zoom and world offset
+            setZoom(newZoom);
+            setCenter(center)
+
+
             // Adjust the worldOffset by the difference in cell positions
             // This keeps the content under the mouse stationary by adjusting the world offset
             setWorldOffset((currentWorldOffset) => [
@@ -235,9 +240,6 @@ const Viewport: React.FC<ViewportProps> = (
                 currentWorldOffset[1] + cellDiffY,
             ]);
 
-            // Update state with new zoom and world offset
-            setZoom(newZoom);
-            setCenter(center)
 
         };
 
