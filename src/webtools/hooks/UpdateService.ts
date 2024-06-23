@@ -1,5 +1,5 @@
-import { useRef, useState} from "react";
-import {Bounds, UpdateService} from "../types.ts";
+import {useRef, useState} from "react";
+import {Bounds, TILESIZE, UpdateService} from "../types.ts";
 import {areBoundsEqual} from "@/webtools/utils.js";
 
 
@@ -18,7 +18,7 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
 
 
     const initializeSocket = (url: string) => {
-        if(!url) return
+        if (!url) return
 
         if (!socket.current) {
 
@@ -31,7 +31,7 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
 
                 console.log("sopen", socket.current!.readyState)
 
-                if(bounds.current){
+                if (bounds.current) {
                     const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: bounds.current}})
                     socket.current!.send(message)
                 }
@@ -59,18 +59,29 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
 
 
     const setBounds = (newBounds: Bounds) => {
-        if(!url) return
+        if (!url) return
 
-        bounds.current = newBounds
-        if(!socket.current || socket.current.readyState !== WebSocket.OPEN){
-            console.log("early")
+        if (!socket.current || socket.current.readyState !== WebSocket.OPEN) {
+
             initializeSocket(url)
-        }else{
-            if(!bounds.current || !areBoundsEqual(newBounds, bounds.current)){
+        } else {
+            // Expand the newBounds to include the whole tile (top-right coord) because
+            // that is what triggers the update right now.
+            newBounds = [
+                [
+                    newBounds[0][0] - TILESIZE, // left
+                    newBounds[0][1] - TILESIZE, // top
+                ], newBounds[1]
+            ]
+
+            if (!bounds.current || !areBoundsEqual(newBounds, bounds.current)) {
+
                 const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: newBounds}})
                 socket.current!.send(message)
             }
         }
+
+        bounds.current = newBounds
     }
 
 
