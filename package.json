@@ -1,7 +1,7 @@
 {
   "name": "pixelaw-web",
   "private": true,
-  "version": "0.3.6",
+  "version": "0.3.7",
   "type": "module",
   "packageManager": "yarn@1.22.19",
   "scripts": {
