@@ -3,7 +3,7 @@
 import { AccountInterface, BigNumberish} from 'starknet'
 import {DojoProvider} from "@dojoengine/core";
 import {PROPOSAL_CONTRACT_ADDRESS, VOTING_CONTRACT_ADDRESS} from "@/global/constants.js";
-import {ProposalArgs, ProposalType} from "@/global/types.js";
+import {ProposalType} from "@/global/types.js";
 
 export type IWorld = Awaited<ReturnType<typeof setupWorld>>;
 
@@ -36,7 +36,7 @@ export async function setupWorld(provider: DojoProvider) {
               return await provider.execute(
                   account,
                   {
-                      contractName: VOTING_CONTRACT_ADDRESS,
+                      contractAddress: VOTING_CONTRACT_ADDRESS,
                       entrypoint: 'vote',
                       calldata: [
                           gameId,
@@ -53,7 +53,7 @@ export async function setupWorld(provider: DojoProvider) {
       }
 
       const createProposal = async (
-          { account, gameId, proposalType, args }: { account: AccountInterface, gameId: number, proposalType: ProposalType, args: ProposalArgs }
+          { account, gameId, proposalType, targetColor }: { account: AccountInterface, gameId: number, proposalType: ProposalType, targetColor: number }
       ) => {
           try {
               return await provider.execute(
@@ -64,9 +64,7 @@ export async function setupWorld(provider: DojoProvider) {
                       calldata: [
                           gameId,
                           proposalType,
-                          args.address,
-                          args.arg1,
-                          args.arg2
+                          targetColor
                       ]
                   },
                   {
@@ -79,8 +77,32 @@ export async function setupWorld(provider: DojoProvider) {
           }
       }
 
+      const activateProposal = async (
+          { account, gameId, index }: { account: AccountInterface, gameId: number, index: number }
+      ) => {
+          try {
+              return await provider.execute(
+                  account,
+                  {
+                      contractAddress: PROPOSAL_CONTRACT_ADDRESS,
+                      entrypoint: 'activate_proposal',
+                      calldata: [
+                          gameId,
+                          index
+                      ]
+                  },
+                  {
+                      skipValidate: true
+                  }
+              )
+          } catch (e) {
+              console.error("Error executing activateProposal:", e);
+              throw e
+          }
+      }
 
-      return { interact, vote, createProposal };
+
+      return { interact, vote, createProposal, activateProposal };
   }
   return {
     actions: actions(),

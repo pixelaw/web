@@ -4,14 +4,13 @@ import { SketchPicker } from 'react-color';
 import Select from 'react-select';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {ProposalType} from "@/global/types";
-import {GAME_ID, ZERO_ADDRESS} from "@/global/constants";
+import {GAME_ID} from "@/global/constants";
 import {hexRGBtoNumber} from "@/global/utils.ts";
 
 const NewProposal: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF');
   const [disasterColor, setDisasterColor] = useState('#FFFFFF');
-  const [comments, setComments] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorPickerRef = useRef(null);
   const navigate = useNavigate();
@@ -40,13 +39,6 @@ const NewProposal: React.FC = () => {
   const {gameData} = usePixelawProvider();
 
   const handleSubmit = () => {
-    const proposalData = {
-      proposalType,
-      color: hexRGBtoNumber(color.replace('#', '')),
-      disasterColor,
-      comments,
-    };
-    console.log(proposalData);
     const type = proposalType ===
         'Add Color' ? ProposalType.AddNewColor : ProposalType.MakeADisasterByColor;
     const colorArg = type === ProposalType.AddNewColor ? color : disasterColor
@@ -55,11 +47,7 @@ const NewProposal: React.FC = () => {
         gameData.account.account,
         GAME_ID,
         type,
-        {
-          address: ZERO_ADDRESS,
-          arg1: hexRGBtoNumber(colorArg.replace('#', '')),
-          arg2: 0
-        }
+        hexRGBtoNumber(colorArg.replace('#', ''))
       ).then(() => navigate('/governance'))
     }
   };

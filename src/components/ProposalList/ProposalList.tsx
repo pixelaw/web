@@ -1,14 +1,28 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { FaSearch, FaFilter } from 'react-icons/fa';
+import React, {useEffect, useRef, useState} from 'react';
+import {FaFilter, FaSearch} from 'react-icons/fa';
 import FilterMenu from '../FilterMenu/FilterMenu';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {useEntityQuery} from "@dojoengine/react";
 import {getComponentValue, Has} from "@dojoengine/recs";
-import {proposals} from "@/global/constants";
+import {ProposalType} from "@/global/types.ts";
+import {numRGBAToHex} from "@/webtools/utils.ts";
+import {GAME_ID} from "@/global/constants.ts";
 
 interface ProposalListProps {
   headerHeight: number;
+}
+
+const createProposalTitle = (proposalType: ProposalType, targetColor: number) => {
+    const hexColor = numRGBAToHex(targetColor)
+    switch (proposalType) {
+        case ProposalType.AddNewColor: return `Adding A New Color: ${hexColor}`
+        case ProposalType.MakeADisasterByColor: return `Make a Disaster by Color: ${hexColor}`
+        default: {
+            console.error('unhandled proposal type: ', proposalType)
+            return ''
+        }
+    }
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
@@ -20,7 +34,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
 
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
   const [voteType, setVoteType] = useState<'for' | 'against'>('for');
-  const [votePoints, setVotePoints] = useState<number | string>(0);
+  const [votePoints, setVotePoints] = useState<number>(0);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,14 +56,39 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
     };
   }, []);
 
+    const createProposalStatus = (start: number, end: number) => {
+        const current = Math.floor(Date.now() / 1_000)
+        if (current < start) {
+            return `starts in ${start - current}s`
+        } else if (current > start && current < end) {
+            return `ends in ${end - current}s`
+        } else {
+            return 'closed'
+        }
+    }
+
   const { gameData } = usePixelawProvider();
   const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)])
-      .map(entity => getComponentValue(gameData!.setup.contractComponents.Proposal, entity));
-  console.log({ proposalArray })
+      .map(entity => getComponentValue(gameData!.setup.contractComponents.Proposal, entity))
+      .filter(value => !!value)
+      .map(value => {
+          const status = createProposalStatus(Number(value!.start), Number(value!.end))
+          return {
+              id: value!.index,
+              title: createProposalTitle(value!.proposal_type, value!.target_color),
+              proposer: value!.author.toString(),
+              forPoints: value!.yes_px,
+              againstPoints: value!.no_px,
+              status,
+              statusColor: `bg-${status.includes('ends in') ? 'green' : 'purple'}-500`,
+              comments: ""
+          }
+      })
+  ;
 
-  const filteredProposals = proposals.filter(proposal => {
+  const filteredProposals = proposalArray.filter(proposal => {
     if (statusFilter !== 'All') {
-      if (statusFilter === 'Active' && !proposal.status.startsWith('end in')) {
+      if (statusFilter === 'Active' && !proposal.status.startsWith('ends in')) {
         return false;
       }
       if (statusFilter === 'Closed' && proposal.status !== 'closed') {
@@ -64,7 +103,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
   });
 
   const getStatusColor = (status: string) => {
-    if (status.startsWith('end in')) {
+    if (status.startsWith('ends in')) {
       return 'bg-green-500';
     } else if (status === 'closed') {
       return 'bg-purple-500';
@@ -77,6 +116,45 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
     setSelectedProposal(proposal);
     setVotePoints(0);
   };
+
+  const handleActivateProposal = (proposal: any) => {
+      if (!gameData?.account.account) return
+      gameData.setup.systemCalls.activateProposal(
+          gameData.account.account,
+          GAME_ID,
+          proposal.id,
+      )
+          .then(() => console.log('activateProposal'))
+          .catch((e) => {
+              // toast error message
+              console.error(e)
+          })
+  }
+
+  const handleVoteProposal = () => {
+      if (!gameData?.account.account) return
+      console.log(
+          {
+              arg1: gameData.account.account,
+              arg2: GAME_ID,
+              arg3: selectedProposal.id,
+              arg4: votePoints,
+              arg5: voteType === 'for'
+          }
+      )
+      gameData.setup.systemCalls.vote(
+          gameData.account.account,
+          GAME_ID,
+          selectedProposal.id,
+          votePoints,
+          voteType === 'for'
+      )
+          .then(() => setSelectedProposal(null))
+          .catch((e) => {
+              // toast error message
+              console.error(e)
+          })
+  }
 
   const extractHexColor = (title: string) => {
     const match = title.match(/#[0-9A-Fa-f]{6}/);
@@ -139,73 +217,73 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
           {filteredProposals.map((proposal, index) => {
             const hexColor = extractHexColor(proposal.title);
             return (
-              <div key={index} className='relative bg-gray-800 p-4 rounded-md border border-gray-700 hover:border-gray-600 transition-colors duration-300'>
-                <div className='block'>
-                  <div className='flex justify-between items-center mb-1'>
-                    <div className='text-xl font-bold text-white flex items-center'>
-                      {proposal.title}
-                      {hexColor && (
-                        <div 
-                          className='w-6 h-6 rounded-md ml-2' 
-                          style={{ backgroundColor: hexColor }}
-                        ></div>
-                      )}
+                <div key={index}
+                     className='relative bg-gray-800 p-4 rounded-md border border-gray-700 hover:border-gray-600 transition-colors duration-300'>
+                    <div className='block'>
+                        <div className='flex justify-between items-center mb-1'>
+                            <div className='text-xl font-bold text-white flex items-center'>
+                                {proposal.title}
+                                {hexColor && (
+                                    <div
+                                        className='w-6 h-6 rounded-md ml-2'
+                                        style={{backgroundColor: hexColor}}
+                                    ></div>
+                                )}
+                            </div>
+                            <div
+                                className={`px-2 py-1 rounded-md text-white text-sm ${getStatusColor(proposal.status)}`}>
+                                {proposal.status.startsWith('ends in') ? proposal.status : 'closed'}
+                            </div>
+                        </div>
+                        <div className='text-gray-400 text-sm mb-2'>
+                            proposed by {proposal.proposer}
+                        </div>
+                        <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-20'>
+                            <div
+                                className='bg-green-500 h-full rounded-l-full'
+                                style={{width: `${(proposal.forPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%`}}
+                            ></div>
+                            <div
+                                className='bg-red-500 h-full rounded-r-full'
+                                style={{width: `${(proposal.againstPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%`}}
+                            ></div>
+                        </div>
+                        <div className='flex justify-between text-sm text-gray-300 mr-20'>
+                            <div>
+                                For {proposal.forPoints} points
+                            </div>
+                            <div>
+                                Against {proposal.againstPoints} points
+                            </div>
+                        </div>
                     </div>
-                    <div className={`px-2 py-1 rounded-md text-white text-sm ${getStatusColor(proposal.status)}`}>
-                      {proposal.status.startsWith('end in') ? proposal.status : 'closed'}
-                    </div>
-                  </div>
-                  <div className='text-gray-400 text-sm mb-2'>
-                    proposed by {proposal.proposer}
-                  </div>
-                  <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-20'>
-                    <div 
-                      className='bg-green-500 h-full rounded-l-full'
-                      style={{ width: `${(proposal.forPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%` }}
-                    ></div>
-                    <div 
-                      className='bg-red-500 h-full rounded-r-full'
-                      style={{ width: `${(proposal.againstPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%` }}
-                    ></div>
-                  </div>
-                  <div className='flex justify-between text-sm text-gray-300 mr-20'>
-                    <div>
-                      For {proposal.forPoints} points
-                    </div>
-                    <div>
-                      Against {proposal.againstPoints} points
-                    </div>
-                  </div>
+                    <button
+                        className={`absolute bottom-4 right-4 px-4 py-2 rounded-md transition duration-300 bg-blue-600 hover:bg-blue-500 text-white`}
+                        onClick={() => proposal.status === 'closed' ? handleActivateProposal(proposal) : handleVote(proposal)}
+                        disabled={proposal.status.includes('starts')}
+                    >
+                        {proposal.status === 'closed' ? 'Start' : 'Vote'}
+                    </button>
                 </div>
-                <button 
-                  className={`absolute bottom-4 right-4 px-4 py-2 rounded-md transition duration-300 ${
-                    proposal.status === 'closed' ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
-                  }`}
-                  onClick={() => handleVote(proposal)}
-                  disabled={proposal.status === 'closed'}
-                >
-                  Vote
-                </button>
-              </div>
             );
           })}
         </div>
       </div>
-      {selectedProposal && (
-        <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20'>
-          <div ref={modalRef} className='bg-gray-800 text-white p-6 rounded-lg shadow-lg w-1/3'>
-            <h2 className='text-xl font-bold mb-4 flex items-center'>
-              {selectedProposal.title}
-              {extractHexColor(selectedProposal.title) && (
-                <div 
-                  className='w-6 h-6 rounded-md ml-2' 
+        {selectedProposal && (
+            <div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20'>
+                <div ref={modalRef} className='bg-gray-800 text-white p-6 rounded-lg shadow-lg w-1/3'>
+                    <h2 className='text-xl font-bold mb-4 flex items-center'>
+                        {selectedProposal.title}
+                        {extractHexColor(selectedProposal.title) && (
+                <div
+                  className='w-6 h-6 rounded-md ml-2'
                   style={{ backgroundColor: extractHexColor(selectedProposal.title) || undefined }}
                 ></div>
               )}
             </h2>
             <div className='flex justify-between items-center mb-4'>
-              <button 
-                className={`w-full p-2 rounded-md ${voteType === 'for' ? 'bg-blue-600' : 'bg-gray-600'}`} 
+              <button
+                className={`w-full p-2 rounded-md ${voteType === 'for' ? 'bg-blue-600' : 'bg-gray-600'}`}
                 onClick={toggleVoteType}
               >
                 For
@@ -228,7 +306,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
             </div>
             <div className='flex justify-end'>
               <button className='bg-gray-600 text-white px-4 py-2 rounded-md mr-2' onClick={closeModal}>Cancel</button>
-              <button className='bg-blue-600 text-white px-4 py-2 rounded-md'>Submit</button>
+              <button className='bg-blue-600 text-white px-4 py-2 rounded-md' onClick={handleVoteProposal}>Submit</button>
             </div>
           </div>
         </div>

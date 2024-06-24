@@ -144,16 +144,16 @@ export type Position = {
 
 export enum ProposalType {
     Unknown,
-    ToggleAllowedApp,
+    // ToggleAllowedApp,
     AddNewColor,
-    ChangeGameDuration,
-    ChangePixelRecovery,
-    ExpandArea,
-    BanPlayerAddress,
-    ChangeMaxPXConfig,
-    ChangeWinnerConfig,
-    ChangePaintCost,
-    MakeADisasterByCoordinates,
+    // ChangeGameDuration,
+    // ChangePixelRecovery,
+    // ExpandArea,
+    // BanPlayerAddress,
+    // ChangeMaxPXConfig,
+    // ChangeWinnerConfig,
+    // ChangePaintCost,
+    // MakeADisasterByCoordinates,
     MakeADisasterByColor,
 }
 

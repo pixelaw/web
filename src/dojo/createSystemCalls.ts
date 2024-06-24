@@ -1,7 +1,7 @@
 import {AccountInterface, num} from 'starknet'
 import {ZERO_ADDRESS} from '@/global/constants'
 import {IWorld} from '@/dojo/generated'
-import {ProposalArgs, ProposalType} from "@/global/types.js";
+import {ProposalType} from "@/global/types.js";
 
 const FAILURE_REASON_REGEX = /Failure reason: ".+"/;
 
@@ -67,34 +67,28 @@ export function createSystemCalls(
     }
 
     const vote = async (account: AccountInterface, gameId: number, index: number, usePx: number, isInFavor: boolean) => {
-        try {
-            const { transaction_hash } = await client.actions.vote({
-                account,
-                gameId,
-                index,
-                usePx,
-                isInFavor
-            });
 
-            console.log(
-                await account.waitForTransaction(transaction_hash, {
-                    retryInterval: 100,
-                })
-            );
+        const { transaction_hash } = await client.actions.vote({
+            account,
+            gameId,
+            index,
+            usePx,
+            isInFavor
+        });
 
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        } catch (e) {
-            console.error(e);
-        }
+        await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+        })
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     };
 
-    const createProposal = async (account: AccountInterface, gameId: number, proposalType: ProposalType, args: ProposalArgs) => {
+    const createProposal = async (account: AccountInterface, gameId: number, proposalType: ProposalType, targetColor: number) => {
         if (proposalType === ProposalType.Unknown) throw new Error('Unknown proposal type supplied')
         const { transaction_hash } = await client.actions.createProposal({
             account,
             gameId,
             proposalType,
-            args
+            targetColor
         });
 
         await account.waitForTransaction(transaction_hash, {
@@ -104,9 +98,24 @@ export function createSystemCalls(
         await new Promise((resolve) => setTimeout(resolve, 1000));
     };
 
+    const activateProposal = async (account: AccountInterface, gameId: number, index: number) => {
+
+        const { transaction_hash } = await client.actions.activateProposal({
+            account,
+            gameId,
+            index,
+        });
+
+        await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+        })
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    };
+
     return {
         interact,
         vote,
-        createProposal
+        createProposal,
+        activateProposal
     }
 }

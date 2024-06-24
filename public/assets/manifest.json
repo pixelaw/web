@@ -890,8 +890,8 @@
         {
             "kind": "DojoContract",
             "address": "0x2dc8bfc2e33f2e6966cbd9c2e0856d63250549c2a8258884cacb7ba35c427de",
-            "class_hash": "0x9f6ec4da8588539e62052d64cc6330d644f2c8f53c99ebe000626ac00994da",
-            "original_class_hash": "0x9f6ec4da8588539e62052d64cc6330d644f2c8f53c99ebe000626ac00994da",
+            "class_hash": "0x777fd0c408dd44d17a85cc1553b3396c4645ce3ab6a11edb26bf1a0a68b1ced",
+            "original_class_hash": "0x777fd0c408dd44d17a85cc1553b3396c4645ce3ab6a11edb26bf1a0a68b1ced",
             "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
             "abi": [
                 {
@@ -1411,8 +1411,8 @@
         {
             "kind": "DojoContract",
             "address": "0x481aadb9eab76d625be9d0ab0af0155c9f162fd3af1113abd0d0308ddb9346e",
-            "class_hash": "0x1cd1d059a4c31c6654b606c24f59feeedd55caf40cb4289aa015d9885543735",
-            "original_class_hash": "0x1cd1d059a4c31c6654b606c24f59feeedd55caf40cb4289aa015d9885543735",
+            "class_hash": "0x6e6d6a29fbc36a115862e1a56aa53f56a91f5efe4d000eb694ea29a7e3cb0b0",
+            "original_class_hash": "0x6e6d6a29fbc36a115862e1a56aa53f56a91f5efe4d000eb694ea29a7e3cb0b0",
             "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
             "abi": [
                 {
@@ -1475,78 +1475,6 @@
                     "interface_name": "p_war::systems::propose::IPropose"
                 },
                 {
-                    "type": "enum",
-                    "name": "p_war::models::proposal::ProposalType",
-                    "variants": [
-                        {
-                            "name": "Unknown",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ToggleAllowedApp",
-                            "type": "()"
-                        },
-                        {
-                            "name": "AddNewColor",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeGameDuration",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangePixelRecovery",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ExpandArea",
-                            "type": "()"
-                        },
-                        {
-                            "name": "BanPlayerAddress",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeMaxPXConfig",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeWinnerConfig",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangePaintCost",
-                            "type": "()"
-                        },
-                        {
-                            "name": "MakeADisasterByCoordinates",
-                            "type": "()"
-                        },
-                        {
-                            "name": "MakeADisasterByColor",
-                            "type": "()"
-                        }
-                    ]
-                },
-                {
-                    "type": "struct",
-                    "name": "p_war::models::proposal::Args",
-                    "members": [
-                        {
-                            "name": "address",
-                            "type": "core::starknet::contract_address::ContractAddress"
-                        },
-                        {
-                            "name": "arg1",
-                            "type": "core::integer::u64"
-                        },
-                        {
-                            "name": "arg2",
-                            "type": "core::integer::u64"
-                        }
-                    ]
-                },
-                {
                     "type": "interface",
                     "name": "p_war::systems::propose::IPropose",
                     "items": [
@@ -1560,11 +1488,11 @@
                                 },
                                 {
                                     "name": "proposal_type",
-                                    "type": "p_war::models::proposal::ProposalType"
+                                    "type": "core::integer::u8"
                                 },
                                 {
-                                    "name": "args",
-                                    "type": "p_war::models::proposal::Args"
+                                    "name": "target_color",
+                                    "type": "core::integer::u32"
                                 }
                             ],
                             "outputs": [
@@ -1660,8 +1588,8 @@
         {
             "kind": "DojoContract",
             "address": "0x405fdfa192f0a756c50dc081d0a4a10afbc5ed29a774665ab6a34cef4d4a549",
-            "class_hash": "0x56e288285ce2691525865da6a175e35c1a57d83c1d29bd4b173d0e710b44b3b",
-            "original_class_hash": "0x56e288285ce2691525865da6a175e35c1a57d83c1d29bd4b173d0e710b44b3b",
+            "class_hash": "0x3b790ce44a2ef898c321ad2f78ec295227b88808b5ffbe35c40dddf91d6c77a",
+            "original_class_hash": "0x3b790ce44a2ef898c321ad2f78ec295227b88808b5ffbe35c40dddf91d6c77a",
             "base_class_hash": "0x22f3e55b61d86c2ac5239fa3b3b8761f26b9a5c0b5f61ddbd5d756ced498b46",
             "abi": [
                 {
@@ -5178,12 +5106,12 @@
                 },
                 {
                     "name": "proposal_type",
-                    "type": "ProposalType",
+                    "type": "u8",
                     "key": false
                 },
                 {
-                    "name": "args",
-                    "type": "Args",
+                    "name": "target_color",
+                    "type": "u32",
                     "key": false
                 },
                 {
@@ -5207,8 +5135,8 @@
                     "key": false
                 }
             ],
-            "class_hash": "0x2990f2162e60836c0a1a9eb010e7824dbec48fe9533186a2f12ba2f4f2bc9b9",
-            "original_class_hash": "0x2990f2162e60836c0a1a9eb010e7824dbec48fe9533186a2f12ba2f4f2bc9b9",
+            "class_hash": "0x31fd3ed7df9d9be7114e7fd70930f39d8993502737046d3c007d5e1768da238",
+            "original_class_hash": "0x31fd3ed7df9d9be7114e7fd70930f39d8993502737046d3c007d5e1768da238",
             "abi": [
                 {
                     "type": "impl",
@@ -5384,78 +5312,6 @@
                     "interface_name": "p_war::models::proposal::Iproposal"
                 },
                 {
-                    "type": "enum",
-                    "name": "p_war::models::proposal::ProposalType",
-                    "variants": [
-                        {
-                            "name": "Unknown",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ToggleAllowedApp",
-                            "type": "()"
-                        },
-                        {
-                            "name": "AddNewColor",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeGameDuration",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangePixelRecovery",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ExpandArea",
-                            "type": "()"
-                        },
-                        {
-                            "name": "BanPlayerAddress",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeMaxPXConfig",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangeWinnerConfig",
-                            "type": "()"
-                        },
-                        {
-                            "name": "ChangePaintCost",
-                            "type": "()"
-                        },
-                        {
-                            "name": "MakeADisasterByCoordinates",
-                            "type": "()"
-                        },
-                        {
-                            "name": "MakeADisasterByColor",
-                            "type": "()"
-                        }
-                    ]
-                },
-                {
-                    "type": "struct",
-                    "name": "p_war::models::proposal::Args",
-                    "members": [
-                        {
-                            "name": "address",
-                            "type": "core::starknet::contract_address::ContractAddress"
-                        },
-                        {
-                            "name": "arg1",
-                            "type": "core::integer::u64"
-                        },
-                        {
-                            "name": "arg2",
-                            "type": "core::integer::u64"
-                        }
-                    ]
-                },
-                {
                     "type": "struct",
                     "name": "p_war::models::proposal::Proposal",
                     "members": [
@@ -5473,11 +5329,11 @@
                         },
                         {
                             "name": "proposal_type",
-                            "type": "p_war::models::proposal::ProposalType"
+                            "type": "core::integer::u8"
                         },
                         {
-                            "name": "args",
-                            "type": "p_war::models::proposal::Args"
+                            "name": "target_color",
+                            "type": "core::integer::u32"
                         },
                         {
                             "name": "start",

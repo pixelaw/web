@@ -26,6 +26,7 @@ const MenuBar: React.FC = () => {
             </div>
             <div>
                 {showGovernance && <button className={styles.menuButton} onClick={() => navigate('/governance')}>Governance</button>}
+                {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
                 <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
             </div>
         </div>
