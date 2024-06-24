@@ -40,14 +40,17 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter }) =>
     const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
     const [proposalStatus, setProposalStatus] = React.useState('')
 
+    const start = Number(proposal?.start ?? 0)
+    const end = Number(proposal?.end ?? 0)
+
     React.useEffect(() => {
+
         if (proposalStatus === 'closed') return
 
         // Function to update the seconds state every second
         const interval = setInterval(() => {
             const current = Math.floor(Date.now() / 1_000)
-            const start = Number(proposal?.start ?? 0)
-            const end = Number(proposal?.end ?? 0)
+
             if (current < start) {
                 setProposalStatus(`starts in ${start - current}s`)
             } else if (current > start && current < end) {
@@ -59,7 +62,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter }) =>
 
         // Cleanup function to clear the interval when the component unmounts or when dependencies change
         return () => clearInterval(interval);
-    }, []); // Empty dependency array ensures this effect runs only once
+    }, [start, end, proposalStatus]); // Empty dependency array ensures this effect runs only once
 
     if (!proposal || (filter === 'Closed' && proposalStatus !== 'closed') || (filter === 'Active' && !proposalStatus.includes('ends in'))) return <></>
 
