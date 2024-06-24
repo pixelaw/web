@@ -123,6 +123,12 @@ export const numRGBAToHex = (rgba: number | undefined) => {
     const color = rgba >>> 8
     return '#' + (color).toString(16).padStart(6, "0")
 }
+
+// Converts the numeric RGB to a normal hex color
+export const numRGBToHex = (rgb: number) => {
+    return '#' + (rgb).toString(16).padStart(6, "0")
+}
+
 /*
 
 export async function fillPixelData(imageUrl: string, setPixels: (pixels: { key: string, pixel: Pixel }[]) => void) {
