@@ -8,10 +8,10 @@ type ImportMetaEnv = {
   MODE: string
   DEV: boolean
   PROD: boolean
-  RPC_URL: string
-  TORII_URL: string
-  RELAY_URL: string
-  SERVER_URL: string
+  PUBLIC_RPC_URL: string
+  PUBLIC_TORII_URL: string
+  PUBLIC_RELAY_URL: string
+  PUBLIC_SERVER_URL: string
   MASTER_ADDRESS: string
   MASTER_PRIVATE_KEY: string
   WORLD_ADDRESS: string

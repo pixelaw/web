@@ -1,7 +1,7 @@
-import {useEffect, useState} from "react";
-import {Bounds, UpdateService} from "../types.ts";
+import {useRef, useState} from "react";
+import {Bounds, TILESIZE, UpdateService} from "../types.ts";
+import {areBoundsEqual, calculateTileBounds} from "@/webtools/utils.js";
 
-let socket: WebSocket | null = null;
 
 type Message = {
     cmd: string, data: unknown | TileChangedMessage
@@ -11,28 +11,41 @@ type TileChangedMessage = {
     tileName: string, timestamp: number
 }
 
-export const useUpdateService = (url: string): UpdateService => {
-    const [isReady, setIsReady] = useState(false)
+export const useUpdateService = (url: string | undefined): UpdateService => {
     const [tileChanged, setTileChanged] = useState<TileChangedMessage | null>(null)
+    const bounds = useRef<Bounds | null>(null)
+    const socket = useRef<WebSocket | null>(null)
 
-    useEffect(() => {
-        if(!url) return
-        if (!socket) {
-            socket = new WebSocket(url);
 
-            socket.onopen = () => {
-                setIsReady(true);
-                console.log("sopen", url)
+    const initializeSocket = (url: string) => {
+        if (!url) return
+
+        if (!socket.current) {
+
+            socket.current = new WebSocket(`${url}/tiles`);
+
+            socket.current.onerror = () => {
+                console.log("err")
+            }
+            socket.current.onopen = () => {
+
+                console.log("sopen", socket.current!.readyState)
+
+                if (bounds.current) {
+                    const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: bounds.current}})
+                    socket.current!.send(message)
+                }
             }
 
-            socket.onclose = () => {
-                setIsReady(false);
-                // Reset the socket to null when it's closed to allow reconnection attempts
-                socket = null;
+            socket.current.onclose = () => {
+                console.log("sclose");
+                socket.current = null
+                setTimeout(() => initializeSocket(url), 10000);
             };
 
-            socket.onmessage = (event) => {
+            socket.current.onmessage = (event) => {
                 const msg: Message = JSON.parse(event.data);
+                console.log(msg)
                 if (msg.cmd === "tileChanged") {
                     const tileChangedMsg = msg.data as TileChangedMessage;
 
@@ -42,25 +55,32 @@ export const useUpdateService = (url: string): UpdateService => {
                 }
             };
         }
-
-        // Return a cleanup function that does not close the socket but cleans up if the component unmounts
-        return () => {
-            // Cleanup logic here if necessary, but avoid closing the WebSocket
-        };
-    }, [])
-
-    const setBounds = (newBounds: Bounds) => {
-        if (isReady && socket) {
-            const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: newBounds}})
-            socket.send(message)
-        }
-
     }
 
 
-    // bind is needed to make sure `send` references correct `this`
+    const setBounds = (newBounds: Bounds) => {
+        if (!url) return
+
+        if (!socket.current || socket.current.readyState !== WebSocket.OPEN) {
+
+            initializeSocket(url)
+        } else {
+            // Expand the newBounds to include the whole tile (top-right coord) because
+            // that is what triggers the update right now.
+            newBounds = calculateTileBounds(newBounds)
+
+            if (!bounds.current || !areBoundsEqual(newBounds, bounds.current)) {
+
+                const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: newBounds}})
+                socket.current!.send(message)
+            }
+        }
+
+        bounds.current = newBounds
+    }
+
+
     return {
-        isReady,
         tileChanged,
         setBounds
     }

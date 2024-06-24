@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {immer} from "zustand/middleware/immer";
-import manifest from "@/dojo/manifest";
+import manifest from '@/dojo/manifest';
 import {DojoConfig} from "@dojoengine/core";
 
 
@@ -26,10 +26,10 @@ export interface ISettingsStore {
 }
 
 export const defaultDojoConfig: PixelawConfig = {
-    serverUrl: import.meta.env.SERVER_URL,
-    relayUrl: import.meta.env.RELAY_URL,
-    rpcUrl: import.meta.env.RPC_URL,
-    toriiUrl: import.meta.env.TORII_URL,
+    serverUrl: import.meta.env.PUBLIC_SERVER_URL,
+    relayUrl: import.meta.env.PUBLIC_RELAY_URL,
+    rpcUrl: import.meta.env.PUBLIC_RPC_URL,
+    toriiUrl: import.meta.env.PUBLIC_TORII_URL,
     manifest: manifest(import.meta.env.WORLD_ADDRESS),
     masterAddress: import.meta.env.MASTER_ADDRESS,
     masterPrivateKey: import.meta.env.MASTER_PRIVATE_KEY,

@@ -25,28 +25,20 @@ export function drawPixels(
         0 - pixelOffset[1]
     ]
 
+    // console.log("p", cellSize)
     const drawPixel = (cellX: number, cellY: number, sizeAdjustment: number = 0) => {
-
         const worldCoords = applyWorldOffset(worldTranslation, [cellX, cellY])
 
         const pixel = getPixel(worldCoords);
         if (!pixel) return;
 
-        // FIXME: Shows a different color from original web_client.
-        context.fillStyle = numRGBAToHex(pixel.color);
+        context.fillStyle = numRGBAToHex(pixel.color as number);
+        // context.fillStyle = numRGBAToHex(pixel.color);
 
         const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment)
 
         context.fillRect(x, y, w, h);
     };
-
-    // const worldCoords = viewToWorld(worldTranslation, [0, 0])
-
-    // console.log(
-    //     "offsets", offsets[0],
-    //     "pixelOffset", pixelOffset[0],
-    //     "wt", worldTranslation[0]
-    // )
 
     for (let x = 0; x <= gridDimensions[0]; x++) {
         for (let y = 0; y <= gridDimensions[1]; y++) {

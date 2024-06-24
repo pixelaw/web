@@ -26,9 +26,14 @@ export type TileChangedMessage = {
 }
 
 export interface UpdateService {
-    isReady: boolean
     tileChanged: TileChangedMessage | null
     setBounds: (newBounds: Bounds) => void
+}
+
+export interface AppStore {
+    getByName: (name: string) => App | undefined;
+    getAll: () => App[]
+    prepare: () => void;
 }
 
 export interface PixelStore {
@@ -37,12 +42,7 @@ export interface PixelStore {
     getPixel: (coordinate: Coordinate) => Pixel | undefined;
     setPixel: (key: string, pixel: Pixel) => void;
     setPixels: (pixels: { key: string, pixel: Pixel }[]) => void;
-}
-
-export interface AppStore {
-    getByName: (name: string) => App | undefined;
-    getAll: () => App[]
-    prepare: () => void;
+    cacheUpdated: number;
 }
 
 export interface TileStore {
