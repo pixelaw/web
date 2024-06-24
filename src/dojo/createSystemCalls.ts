@@ -2,6 +2,7 @@ import {AccountInterface, num} from 'starknet'
 import {ZERO_ADDRESS} from '@/global/constants'
 import {IWorld} from '@/dojo/generated'
 import {ProposalArgs, ProposalType} from "@/global/types.js";
+import { hexRGBtoNumber } from '@/global/utils';
 
 const FAILURE_REASON_REGEX = /Failure reason: ".+"/;
 
@@ -31,7 +32,9 @@ export function createSystemCalls(
         otherParams?: num.BigNumberish[]
     ) => {
         try {
-
+            // console.log("interact:");
+            // console.log(color);
+            // console.log(hexRGBtoNumber(color.toString(16)));
             const tx = await client.actions.interact({
                 account: signer,
                 contract_name: contractName,
