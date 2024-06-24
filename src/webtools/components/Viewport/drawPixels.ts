@@ -33,6 +33,7 @@ export function drawPixels(
         if (!pixel) return;
 
         context.fillStyle = numRGBAToHex(pixel.color as number);
+        // context.fillStyle = numRGBAToHex(pixel.color);
 
         const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment)
 

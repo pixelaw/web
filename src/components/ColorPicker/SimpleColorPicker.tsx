@@ -19,19 +19,24 @@ export interface ColorPickerProps {
 
 const SimpleColorPicker: React.FC<ColorPickerProps> = ({onColorSelect, color: selectedColor}) => {
     selectedColor = `#${selectedColor}`
+
     return (
         <div className={styles.inner}>
-            {colors.map((color, index) => (
-                <button
-                    key={index}
-                    style={{backgroundColor: color, outline: selectedColor === color ? '4px solid black' : 'none'}}
-                    className={`${styles.button} ${color === '#FFFFFF' ? styles['button-white'] : ''}`}
-                    aria-label={`Color ${color}`}
-                    onClick={() => onColorSelect(color)}
-                ></button>
-            ))}
+          {colors.map((color, index) => (
+            <button
+              key={index}
+              style={{ backgroundColor: color }}
+              className={`${styles.button} ${color === '#FFFFFF' ? styles['button-white'] : ''} ${color === selectedColor ? styles.selected : ''}`}
+              aria-label={`Color ${color}`}
+              onClick={() => onColorSelect(color)}
+            >
+              <span className={styles.label}>
+                {index === 0 ? 'New' : index === 8 ? 'Old' : ''}
+              </span>
+            </button>
+          ))}
         </div>
-    );
+      );
 };
 
 export default SimpleColorPicker;

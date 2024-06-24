@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import React, {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Bounds, Coordinate} from "@/webtools/types.ts";
 import {useSimpleTileStore} from "@/webtools/hooks/SimpleTileStore.ts";
 import {useDojoPixelStore} from "@/stores/DojoPixelStore.ts";
@@ -16,6 +16,11 @@ import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {useViewStateStore, useSyncedViewStateStore} from "@/stores/ViewStateStore.ts";
 import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
 import {useSettingsStore} from "@/stores/SettingsStore.ts";
+import Governance from "@/pages/Governance.js";
+import NewProposal from "@/pages/NewProposal.js";
+import ProposalDetails from "@/pages/ProposalDetails.js";
+import { RiArrowGoBackFill } from "react-icons/ri";
+
 
 function App() {
     // console.log("App")
@@ -42,8 +47,14 @@ function App() {
         zoom,
         setZoom,
         setHoveredCell,
-        setClickedCell
+        setClickedCell,
+        selectedApp, // added
+        setSelectedApp, // added
     } = useViewStateStore();
+
+    // FIXME: should be in the ViewStateStore??
+    const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+    // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
@@ -78,6 +89,26 @@ function App() {
         color = color.replace('#', '')
         setColor(color)
     }
+
+    function toggleColorPicker() {
+        setIsColorPickerVisible(prevState => !prevState);
+    }
+
+    // useEffect(() => {
+    //     function handleClickOutside(event: MouseEvent) {
+    //         if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
+    //             setIsColorPickerVisible(false);
+    //         }
+    //     }
+    //     if (isColorPickerVisible) {
+    //         document.addEventListener("mousedown", handleClickOutside);
+    //     } else {
+    //         document.removeEventListener("mousedown", handleClickOutside);
+    //     }
+    //     return () => {
+    //         document.removeEventListener("mousedown", handleClickOutside);
+    //     };
+    // }, [isColorPickerVisible]);
 
     //</editor-fold>
 
@@ -124,7 +155,8 @@ function App() {
     document.title = "PixeLAW: World";
 
     return (
-        <div className={styles.container}>
+        // <div className={styles.container}>
+        <div className='bg-bg-primary min-h-screen flex flex-col'>
             <MenuBar/>
 
             <div className={styles.main}>
@@ -144,17 +176,32 @@ function App() {
                                 onCellClick={onCellClick}
                                 onCellHover={onCellHover}
                             />
-                            <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}>
+                            {/* <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}> */}
+                            <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
+                                <button className={styles.closeButton} onClick={toggleColorPicker}>
+                                    <RiArrowGoBackFill size={22}/>
+                                </button>
                             </div>
 
-                            <div className={styles.apps} style={{left: zoombasedAdjustment}}>
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('p_war');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                    Place a Pixel
+                                </button>
+                            </div>
+
+
+
+                            {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
                                 <Apps
                                     appStore={appStore}
                                 />
-                            </div>
+                            </div> */}
                         </>
                     }/>
+                    <Route path="/governance" element={<Governance />} />
+                    <Route path="/new-proposal" element={<NewProposal />} />
+                    <Route path="/proposal/:id" element={<ProposalDetails />} />
 
                 </Routes>
             </div>
