@@ -4,25 +4,12 @@ import FilterMenu from '../FilterMenu/FilterMenu';
 import {Link} from 'react-router-dom';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {useEntityQuery} from "@dojoengine/react";
-import {getComponentValue, Has} from "@dojoengine/recs";
-import {ProposalType} from "@/global/types.ts";
-import {numRGBAToHex} from "@/webtools/utils.ts";
+import {Has} from "@dojoengine/recs";
 import {GAME_ID} from "@/global/constants.ts";
+import ProposalItem from "@/components/ProposalList/ProposalItem.tsx";
 
 interface ProposalListProps {
   headerHeight: number;
-}
-
-const createProposalTitle = (proposalType: ProposalType, targetColor: number) => {
-    const hexColor = numRGBAToHex(targetColor)
-    switch (proposalType) {
-        case ProposalType.AddNewColor: return `Adding A New Color: ${hexColor}`
-        case ProposalType.MakeADisasterByColor: return `Make a Disaster by Color: ${hexColor}`
-        default: {
-            console.error('unhandled proposal type: ', proposalType)
-            return ''
-        }
-    }
 }
 
 const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
@@ -34,7 +21,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
 
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
   const [voteType, setVoteType] = useState<'for' | 'against'>('for');
-  const [votePoints, setVotePoints] = useState<number>(0);
+  const [votePoints, setVotePoints] = useState<number | ''>(0);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,97 +43,21 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
     };
   }, []);
 
-    const createProposalStatus = (start: number, end: number) => {
-        const current = Math.floor(Date.now() / 1_000)
-        if (current < start) {
-            return `starts in ${start - current}s`
-        } else if (current > start && current < end) {
-            return `ends in ${end - current}s`
-        } else {
-            return 'closed'
-        }
-    }
-
   const { gameData } = usePixelawProvider();
-  const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)])
-      .map(entity => getComponentValue(gameData!.setup.contractComponents.Proposal, entity))
-      .filter(value => !!value)
-      .map(value => {
-          const status = createProposalStatus(Number(value!.start), Number(value!.end))
-          return {
-              id: value!.index,
-              title: createProposalTitle(value!.proposal_type, value!.target_color),
-              proposer: value!.author.toString(),
-              forPoints: value!.yes_px,
-              againstPoints: value!.no_px,
-              status,
-              statusColor: `bg-${status.includes('ends in') ? 'green' : 'purple'}-500`,
-              comments: ""
-          }
-      })
-  ;
-
-  const filteredProposals = proposalArray.filter(proposal => {
-    if (statusFilter !== 'All') {
-      if (statusFilter === 'Active' && !proposal.status.startsWith('ends in')) {
-        return false;
-      }
-      if (statusFilter === 'Closed' && proposal.status !== 'closed') {
-        return false;
-      }
-    }
-    if (searchTerm) {
-      return proposal.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-             proposal.proposer.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-    return true;
-  });
-
-  const getStatusColor = (status: string) => {
-    if (status.startsWith('ends in')) {
-      return 'bg-green-500';
-    } else if (status === 'closed') {
-      return 'bg-purple-500';
-    } else {
-      return 'bg-gray-500';
-    }
-  };
+  const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)], { updateOnValueChange: true })
 
   const handleVote = (proposal: any) => {
     setSelectedProposal(proposal);
     setVotePoints(0);
   };
 
-  const handleActivateProposal = (proposal: any) => {
-      if (!gameData?.account.account) return
-      gameData.setup.systemCalls.activateProposal(
-          gameData.account.account,
-          GAME_ID,
-          proposal.id,
-      )
-          .then(() => console.log('activateProposal'))
-          .catch((e) => {
-              // toast error message
-              console.error(e)
-          })
-  }
-
   const handleVoteProposal = () => {
       if (!gameData?.account.account) return
-      console.log(
-          {
-              arg1: gameData.account.account,
-              arg2: GAME_ID,
-              arg3: selectedProposal.id,
-              arg4: votePoints,
-              arg5: voteType === 'for'
-          }
-      )
       gameData.setup.systemCalls.vote(
           gameData.account.account,
           GAME_ID,
           selectedProposal.id,
-          votePoints,
+          votePoints === '' ? 0 : votePoints,
           voteType === 'for'
       )
           .then(() => setSelectedProposal(null))
@@ -214,58 +125,8 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
       </div>
       <div className={`overflow-y-auto px-6 ${selectedProposal ? 'blur' : ''}`} style={{ height: `calc(100vh - ${headerHeight}px - 112px)` }}>
         <div className='space-y-4'>
-          {filteredProposals.map((proposal, index) => {
-            const hexColor = extractHexColor(proposal.title);
-            return (
-                <div key={index}
-                     className='relative bg-gray-800 p-4 rounded-md border border-gray-700 hover:border-gray-600 transition-colors duration-300'>
-                    <div className='block'>
-                        <div className='flex justify-between items-center mb-1'>
-                            <div className='text-xl font-bold text-white flex items-center'>
-                                {proposal.title}
-                                {hexColor && (
-                                    <div
-                                        className='w-6 h-6 rounded-md ml-2'
-                                        style={{backgroundColor: hexColor}}
-                                    ></div>
-                                )}
-                            </div>
-                            <div
-                                className={`px-2 py-1 rounded-md text-white text-sm ${getStatusColor(proposal.status)}`}>
-                                {proposal.status.startsWith('ends in') ? proposal.status : 'closed'}
-                            </div>
-                        </div>
-                        <div className='text-gray-400 text-sm mb-2'>
-                            proposed by {proposal.proposer}
-                        </div>
-                        <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-20'>
-                            <div
-                                className='bg-green-500 h-full rounded-l-full'
-                                style={{width: `${(proposal.forPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%`}}
-                            ></div>
-                            <div
-                                className='bg-red-500 h-full rounded-r-full'
-                                style={{width: `${(proposal.againstPoints / (proposal.forPoints + proposal.againstPoints)) * 100}%`}}
-                            ></div>
-                        </div>
-                        <div className='flex justify-between text-sm text-gray-300 mr-20'>
-                            <div>
-                                For {proposal.forPoints} points
-                            </div>
-                            <div>
-                                Against {proposal.againstPoints} points
-                            </div>
-                        </div>
-                    </div>
-                    <button
-                        className={`absolute bottom-4 right-4 px-4 py-2 rounded-md transition duration-300 bg-blue-600 hover:bg-blue-500 text-white`}
-                        onClick={() => proposal.status === 'closed' ? handleActivateProposal(proposal) : handleVote(proposal)}
-                        disabled={proposal.status.includes('starts')}
-                    >
-                        {proposal.status === 'closed' ? 'Start' : 'Vote'}
-                    </button>
-                </div>
-            );
+          {proposalArray.map((proposal) => {
+              return <ProposalItem entityId={proposal} key={proposal} onStartVote={handleVote} filter={statusFilter} />
           })}
         </div>
       </div>
