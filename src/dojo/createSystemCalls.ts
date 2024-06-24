@@ -90,7 +90,6 @@ export function createSystemCalls(
 
     const createProposal = async (account: AccountInterface, gameId: number, proposalType: number, target_color: number) => {
         // if (proposalType === ProposalType.Unknown) throw new Error('Unknown proposal type supplied')
-        console.log("HEREEREREER");
         const { transaction_hash } = await client.actions.createProposal({
             account,
             gameId,
