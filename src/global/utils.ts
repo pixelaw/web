@@ -76,14 +76,14 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
     return {x: coord[0], y: coord[1]}
 }
 
-// export const hexRGBtoNumber = (color: string) => {
-//     return parseInt(`0x${color}00`, 16)
-// }
+export const hexRGBtoNumber = (color: string) => {
+    return parseInt(`0x${color}00`, 16)
+}
 
 // Fixed here to remove the alpha channel. (which caused the color error.)
-export const hexRGBtoNumber = (color: string) => {
-    return parseInt(`0x00${color}`, 16)
-}
+// export const hexRGBtoNumber = (color: string) => {
+//     return parseInt(`0x00${color}`, 16)
+// }
 
 // Converts the numeric RGBA to a normal hex color
 // @dev this removes the Alpha channel.
