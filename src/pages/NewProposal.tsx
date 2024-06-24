@@ -10,7 +10,6 @@ import {hexRGBtoNumber} from "@/global/utils.ts";
 const NewProposal: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF');
-  const [comments, setComments] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorPickerRef = useRef(null);
   const navigate = useNavigate();
@@ -155,8 +154,8 @@ const NewProposal: React.FC = () => {
             <div className='mb-4'>
               <label className='block text-lg mb-2'>Choose a color to turn white on the canvas.</label>
               <Select 
-                value={colorOptionsFormatted.find(option => option.value === disasterColor)}
-                onChange={handleColorChange}
+                value={colorOptionsFormatted.find(option => option.value === color)}
+                onChange={(color: { value: string} | null) => handleColorChange({ hex: color?.value ?? '' })}
                 options={colorOptionsFormatted}
                 styles={customStyles}
                 className='w-full rounded-md bg-gray-700 text-white'
