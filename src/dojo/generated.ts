@@ -53,7 +53,7 @@ export async function setupWorld(provider: DojoProvider) {
       }
 
       const createProposal = async (
-          { account, gameId, proposalType, args }: { account: AccountInterface, gameId: number, proposalType: ProposalType, args: ProposalArgs }
+          { account, gameId, proposalType, target_color }: { account: AccountInterface, gameId: number, proposalType: number, target_color: number }
       ) => {
           try {
               return await provider.execute(
@@ -64,9 +64,7 @@ export async function setupWorld(provider: DojoProvider) {
                       calldata: [
                           gameId,
                           proposalType,
-                          args.address,
-                          args.arg1,
-                          args.arg2
+                          target_color
                       ]
                   },
                   {
