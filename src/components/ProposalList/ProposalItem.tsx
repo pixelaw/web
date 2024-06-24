@@ -9,7 +9,8 @@ import {GAME_ID, NEEDED_YES_PX} from "@/global/constants.ts";
 type PropsType = {
     entityId: Entity,
     onStartVote?: (proposal: any) => void,
-    filter?: 'All' | 'Active' | 'Closed'
+    filter?: 'All' | 'Active' | 'Closed',
+    searchTerm?: string
 }
 
 
@@ -35,7 +36,7 @@ const getStatusColor = (status: string) => {
     }
 };
 
-const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter }) => {
+const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, searchTerm }) => {
     const { gameData } = usePixelawProvider();
     const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
     const [proposalStatus, setProposalStatus] = React.useState('')
@@ -64,11 +65,17 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter }) =>
         return () => clearInterval(interval);
     }, [start, end, proposalStatus]); // Empty dependency array ensures this effect runs only once
 
-    if (!proposal || (filter === 'Closed' && proposalStatus !== 'closed') || (filter === 'Active' && !proposalStatus.includes('ends in'))) return <></>
+    if (!proposal) return <></>
 
     const hexColor = numRGBAToHex(proposal.target_color)
     const title = createProposalTitle(proposal.proposal_type, hexColor)
     const canActivateProposal = proposal.yes_px >= NEEDED_YES_PX
+
+    if (
+        (filter === 'Closed' && proposalStatus !== 'closed') ||
+        (filter === 'Active' && !proposalStatus.includes('ends in')) ||
+        (!!searchTerm?.trim() && !title.toLowerCase().includes(searchTerm?.toLowerCase()))
+    ) return <></>
 
     const onStartVoteParam = {
         id: proposal.index,

@@ -126,7 +126,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
       <div className={`overflow-y-auto px-6 ${selectedProposal ? 'blur' : ''}`} style={{ height: `calc(100vh - ${headerHeight}px - 112px)` }}>
         <div className='space-y-4'>
           {proposalArray.map((proposal) => {
-              return <ProposalItem entityId={proposal} key={proposal} onStartVote={handleVote} filter={statusFilter} />
+              return <ProposalItem entityId={proposal} key={proposal} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
           })}
         </div>
       </div>
