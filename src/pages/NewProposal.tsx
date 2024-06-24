@@ -10,7 +10,7 @@ import {hexRGBtoNumber} from "@/global/utils.ts";
 const NewProposal: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF');
-  const [disasterColor, setDisasterColor] = useState('#FFFFFF');
+  // const [disasterColor, setDisasterColor] = useState('#FFFFFF');
   const [comments, setComments] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorPickerRef = useRef(null);
@@ -20,9 +20,9 @@ const NewProposal: React.FC = () => {
     setColor(color.hex);
   };
 
-  const handleDisasterColorChange = (selectedOption: any) => {
-    setDisasterColor(selectedOption.value);
-  };
+  // const handleDisasterColorChange = (selectedOption: any) => {
+  //   setDisasterColor(selectedOption.value);
+  // };
 
   const handleClickOutside = (event: MouseEvent) => {
     if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
@@ -43,23 +43,24 @@ const NewProposal: React.FC = () => {
     const proposalData = {
       proposalType,
       color: hexRGBtoNumber(color.replace('#', '')),
-      disasterColor,
+      // disasterColor,
       comments,
     };
     console.log(proposalData);
     const type = proposalType ===
         'Add Color' ? ProposalType.AddNewColor : ProposalType.MakeADisasterByColor;
-    const colorArg = type === ProposalType.AddNewColor ? color : disasterColor
+    // const colorArg = type === ProposalType.AddNewColor ? color : disasterColor
     if (gameData && gameData.account.account) {
       gameData.setup.systemCalls.createProposal(
         gameData.account.account,
         GAME_ID,
         type,
-        {
-          address: ZERO_ADDRESS,
-          arg1: hexRGBtoNumber(colorArg.replace('#', '')),
-          arg2: 0
-        }
+        hexRGBtoNumber(color.replace('#', '')),
+        // {
+        //   address: ZERO_ADDRESS,
+        //   arg1: hexRGBtoNumber(colorArg.replace('#', '')),
+        //   arg2: 0
+        // }
       ).then(() => navigate('/governance'))
     }
   };
@@ -172,7 +173,7 @@ const NewProposal: React.FC = () => {
               <label className='block text-lg mb-2'>Choose a color to turn white on the canvas.</label>
               <Select 
                 value={colorOptionsFormatted.find(option => option.value === disasterColor)}
-                onChange={handleDisasterColorChange}
+                onChange={handleColorChange}
                 options={colorOptionsFormatted}
                 styles={customStyles}
                 className='w-full rounded-md bg-gray-700 text-white'

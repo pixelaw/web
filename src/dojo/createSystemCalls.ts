@@ -88,13 +88,13 @@ export function createSystemCalls(
         }
     };
 
-    const createProposal = async (account: AccountInterface, gameId: number, proposalType: ProposalType, args: ProposalArgs) => {
-        if (proposalType === ProposalType.Unknown) throw new Error('Unknown proposal type supplied')
+    const createProposal = async (account: AccountInterface, gameId: number, proposalType: number, target_color: number) => {
+        // if (proposalType === ProposalType.Unknown) throw new Error('Unknown proposal type supplied')
         const { transaction_hash } = await client.actions.createProposal({
             account,
             gameId,
             proposalType,
-            args
+            target_color,
         });
 
         await account.waitForTransaction(transaction_hash, {
