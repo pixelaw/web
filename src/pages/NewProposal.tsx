@@ -5,7 +5,7 @@ import Select from 'react-select';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
-import {hexRGBtoNumber} from "@/global/utils.ts";
+import {hexRGBtoNumber, hexRGBtoNumber_tailzeros} from "@/global/utils.ts";
 
 const NewProposal: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
@@ -17,7 +17,6 @@ const NewProposal: React.FC = () => {
   const handleColorChange = (color: any) => {
     setColor(color.hex);
   };
-  
 
   const handleClickOutside = (event: MouseEvent) => {
     if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
@@ -42,7 +41,7 @@ const NewProposal: React.FC = () => {
         gameData.account.account,
         GAME_ID,
         type,
-        hexRGBtoNumber(color.replace('#', ''))
+        hexRGBtoNumber_tailzeros(color.replace('#', ''))
       ).then(() => navigate('/governance'))
     }
   };
