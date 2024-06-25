@@ -235,7 +235,7 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@dojoengine/core@0.7.5", "@dojoengine/core@^0.7.4":
+"@dojoengine/core@0.7.5", "@dojoengine/core@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/core/-/core-0.7.5.tgz#d58610bd83ce350d71953751d929da814f1d9537"
   integrity sha512-QUBMoj+AgMeGT6q2Mg3W1rFxN453aHKJ1zBiz59vqSrhxDhJvbPoUwpQqd9pADiNSdj5U3pjxvbEhN25HpLzlQ==
@@ -243,7 +243,7 @@
     "@dojoengine/recs" "2.0.13"
     zod "^3.22.4"
 
-"@dojoengine/create-burner@^0.7.4":
+"@dojoengine/create-burner@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/create-burner/-/create-burner-0.7.5.tgz#288c5355fe903d6ca5117ee0ee6239b5b7289d8e"
   integrity sha512-g3/Qmx/7Z02PkGOKUncrCc4BMlBrrMAVxbyo3l0Gu/a+UgmHfnsU5ULxLloq/MJ9g6S8fWhrtXBxEQM2W4BA8g==
@@ -255,7 +255,7 @@
     get-starknet-core "^3.2.0"
     js-cookie "^3.0.5"
 
-"@dojoengine/react@^0.7.4":
+"@dojoengine/react@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/react/-/react-0.7.5.tgz#199e8d491f114a203c038619ee2964f7e0c23704"
   integrity sha512-QnUjtifqTlvJA1nQ2BDDXpXZIoT2DDLGj4RA2o2JN7FlQHFyVv+sLNjjnvKMdf1X54vwuogdp31zO0uyQWKg4w==
@@ -292,7 +292,7 @@
     mobx "^6.7.0"
     rxjs "7.5.5"
 
-"@dojoengine/state@0.7.5", "@dojoengine/state@^0.7.4":
+"@dojoengine/state@0.7.5", "@dojoengine/state@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/state/-/state-0.7.5.tgz#39da00c51c055f98de769e06ef6b42d641e90888"
   integrity sha512-eRUMgsNqca1FUwMA95uxGByseLII2fgdLxC1cCXLwgIznLMgKf84z8D8LmyGiLYdX0BZtLM9xIYqgrLgJspdCQ==
@@ -302,7 +302,7 @@
     "@latticexyz/utils" "^2.0.0-next.11"
     zustand "^4.5.2"
 
-"@dojoengine/torii-client@0.7.5", "@dojoengine/torii-client@^0.7.4":
+"@dojoengine/torii-client@0.7.5", "@dojoengine/torii-client@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/torii-client/-/torii-client-0.7.5.tgz#f5354fe8383f30d2fec4180c932aca1e2b907e0f"
   integrity sha512-CIE618c16xPNkFyj067LUG7Po7ldWtyBDqEwc3h1hbl7sUjlyZjJm+PCoZf/gSksWfT5y+gtz9jjtHgaOAL2zA==
@@ -315,7 +315,7 @@
   resolved "https://registry.yarnpkg.com/@dojoengine/torii-wasm/-/torii-wasm-0.7.5.tgz#d8bfe7477877b7dbf4ef12e33dd798e4e9c9d61b"
   integrity sha512-qQfnh+jPTiTUB6dj9JPNIbwjSr9Ab3ZfEo9zdDwMkxT2aaqD0OtOb8EQAHKZCVMN3EAOARJm92S6k1OzxPR4Tw==
 
-"@dojoengine/utils@0.7.5", "@dojoengine/utils@^0.7.4":
+"@dojoengine/utils@0.7.5", "@dojoengine/utils@^0.7.5":
   version "0.7.5"
   resolved "https://registry.yarnpkg.com/@dojoengine/utils/-/utils-0.7.5.tgz#4acddfcdd3ec261e25922d48783d379da23e746c"
   integrity sha512-pglYhEjCu52WtT1aT5J4s4uCtRq9fCywqvxgPRC/SUARjKlLhPHCoEio7MpCGNKIKXMNbzboFIsptDWBMryzeQ==
@@ -3730,7 +3730,12 @@ stackback@0.0.2:
   resolved "https://registry.yarnpkg.com/stackback/-/stackback-0.0.2.tgz#1ac8a0d9483848d1695e418b6d031a3c3ce68e3b"
   integrity sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==
 
-"starknet-types-07@npm:starknet-types@^0.7.2", starknet-types@^0.7.1:
+"starknet-types-07@npm:starknet-types@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/starknet-types/-/starknet-types-0.7.2.tgz#2a1be2392e6e568484afabdc1e83411b5105713b"
+  integrity sha512-r3JJ0rrK0g3FnVRGcFiLY+9YT5WZgxB4TKBfR44wYGevHtKEM6BM5B+Gn1eou1zV7xEAwz3GpmvLSQTUAzDhsw==
+
+starknet-types@^0.7.1:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/starknet-types/-/starknet-types-0.7.2.tgz#2a1be2392e6e568484afabdc1e83411b5105713b"
   integrity sha512-r3JJ0rrK0g3FnVRGcFiLY+9YT5WZgxB4TKBfR44wYGevHtKEM6BM5B+Gn1eou1zV7xEAwz3GpmvLSQTUAzDhsw==
@@ -3766,7 +3771,16 @@ string-length@^6.0.0:
   dependencies:
     strip-ansi "^7.1.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -3784,7 +3798,14 @@ string-width@^5.0.1, string-width@^5.1.2:
     emoji-regex "^9.2.2"
     strip-ansi "^7.0.1"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -4246,7 +4267,16 @@ word-wrap@^1.2.5:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
