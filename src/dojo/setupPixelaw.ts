@@ -1,7 +1,6 @@
 import {getSyncEntities} from "@dojoengine/state";
 import {DojoConfig, DojoProvider} from "@dojoengine/core";
 import * as torii from "@dojoengine/torii-client";
-import {createClientComponents} from "./createClientComponents";
 import {createSystemCalls} from "./createSystemCalls";
 import {defineContractComponents} from "./contractComponents";
 import {world} from "./world";
@@ -69,10 +68,12 @@ export async function setupPixelaw({
         worldAddress: config.manifest.world.address || "",
         relayUrl: "",
     });
+
     const contractComponents = defineContractComponents(world);
     // const clientComponents = createClientComponents({contractComponents});
 
-    await getSyncEntities(toriiClient, contractComponents as any);
+    // FIXME: this is throwing failed to get entities: Missing expected data
+    await getSyncEntities(toriiClient, contractComponents as any, []);
 
     // Get apps from the world
     const entities = getComponentEntities(contractComponents.App);

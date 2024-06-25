@@ -76,10 +76,16 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
     return {x: coord[0], y: coord[1]}
 }
 
-export const hexRGBtoNumber = (color: string) => {
+// use this for making a new proposal
+export const hexRGBtoNumber_tailzeros = (color: string) => {
     return parseInt(`0x${color}00`, 16)
 }
 
+// use this to treat pixel colors.
+// Fixed here to remove the alpha channel. (which caused the color error.)
+export const hexRGBtoNumber = (color: string) => {
+    return parseInt(`0x00${color}`, 16)
+}
 
 // Converts the numeric RGBA to a normal hex color
 // @dev this removes the Alpha channel.
@@ -90,6 +96,10 @@ export const numRGBAToHex = (rgba: number) => {
     return '#' + (color).toString(16).padStart(6, "0")
 }
 
+// Converts the numeric RGB to a normal hex color
+export const numRGBToHex = (rgb: number) => {
+    return '#' + (rgb).toString(16).padStart(6, "0")
+}
 
 export const removeNullsFromArray = <T>(array: (T | null)[]) => {
     return array.filter(element => element !== null) as T[]
