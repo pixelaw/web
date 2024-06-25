@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Bounds, Coordinate, MAX_UINT32, Pixel, PixelStore } from "@/webtools/types.ts";
+import { Bounds, Coordinate, MAX_UINT32, Pixel, PixelStore, toString } from "@/webtools/types.ts";
 import { produce } from 'immer';
 import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql";
 import { GraphQLClient } from 'graphql-request';
@@ -95,6 +95,27 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         return state[key];
     };
 
+    const setPixelColor = (coord: Coordinate, color: number): void => {
+        const key = toString(coord)
+        let pixel = state[key]
+
+        if(!pixel){
+            pixel = {
+                action: "",
+                color: color,
+                owner: "",
+                text: "",
+                timestamp: Date.now(),
+                x: coord[0],
+                y: coord[1]
+            };
+        }else pixel.color = color
+
+        setState(produce(draft => {
+            draft[key] = pixel
+        }));
+    }
+
     const setPixel = (key: string, pixel: Pixel): void => {
         setState(produce(draft => {
             draft[key] = pixel;
@@ -109,5 +130,5 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
         }));
     };
 
-    return { getPixel, setPixel, setPixels, prepare, refresh, cacheUpdated };
+    return { getPixel, setPixel, setPixelColor, setPixels, prepare, refresh, setCacheUpdated, cacheUpdated };
 }
