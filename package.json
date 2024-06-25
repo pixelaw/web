@@ -1,7 +1,7 @@
 {
   "name": "pixelaw-web",
   "private": true,
-  "version": "0.3.7",
+  "version": "0.3.8",
   "type": "module",
   "packageManager": "yarn@1.22.19",
   "scripts": {
@@ -15,13 +15,13 @@
     "create-components": "npx @dojoengine/core ./public/assets/manifest.json src/dojo/contractComponents.ts http://localhost:5050 0x60916a73fe631fcba3b2a930e21c6f7bb2533ea398c7bfa75c72f71a8709fc2"
   },
   "dependencies": {
-    "@dojoengine/core": "^0.7.1",
-    "@dojoengine/create-burner": "^0.7.1",
-    "@dojoengine/react": "^0.7.2",
+    "@dojoengine/core": "^0.7.5",
+    "@dojoengine/create-burner": "^0.7.5",
+    "@dojoengine/react": "^0.7.5",
     "@dojoengine/recs": "^0.1.35",
-    "@dojoengine/state": "^0.7.1",
-    "@dojoengine/torii-client": "^0.7.1",
-    "@dojoengine/utils": "^0.7.2",
+    "@dojoengine/state": "^0.7.5",
+    "@dojoengine/torii-client": "^0.7.5",
+    "@dojoengine/utils": "^0.7.5",
     "@react-hook/resize-observer": "^2.0.1",
     "@types/upng-js": "^2.1.5",
     "autoprefixer": "^10.4.19",
