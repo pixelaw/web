@@ -24,6 +24,6 @@ export default defineConfig({
         },
     },
     build: {
-        sourcemap: true, // Enable source map generation
-    },
+        sourcemap: true
+    }
 });
