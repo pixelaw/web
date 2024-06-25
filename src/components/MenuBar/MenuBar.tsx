@@ -8,6 +8,7 @@ const MenuBar: React.FC = () => {
 
     // Determine if the settings page is shown based on the current path
     const showSettings = location.pathname === '/settings';
+    const showGovernance = location.pathname !== '/governance';
 
     const toggleSettings = () => {
         if (showSettings) {
@@ -16,13 +17,18 @@ const MenuBar: React.FC = () => {
             navigate('/settings'); // Navigate to settings if not currently showing
         }
     };
+
     return (
         <div className={styles.inner}>
-            <div className={styles.logoContainer}>
+            <div className={styles.logoContainer} onClick={() => navigate('/')}>
                 <img src="/assets/logo/pixeLaw-logo.png" alt="logo"/>
 
             </div>
-            <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
+            <div>
+                {showGovernance && <button className={styles.menuButton} onClick={() => navigate('/governance')}>Governance</button>}
+                {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
+                <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
+            </div>
         </div>
     );
 };

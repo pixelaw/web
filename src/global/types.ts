@@ -141,3 +141,25 @@ export type Position = {
   x: number,
   y: number
 }
+
+export enum ProposalType {
+    Unknown,
+    // ToggleAllowedApp,
+    AddNewColor,
+    // ChangeGameDuration,
+    // ChangePixelRecovery,
+    // ExpandArea,
+    // BanPlayerAddress,
+    // ChangeMaxPXConfig,
+    // ChangeWinnerConfig,
+    // ChangePaintCost,
+    // MakeADisasterByCoordinates,
+    MakeADisasterByColor,
+}
+
+export type ProposalArgs = {
+    address: string,
+    arg1: number,
+    arg2: number
+}
+
