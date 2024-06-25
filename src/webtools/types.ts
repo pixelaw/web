@@ -40,8 +40,10 @@ export interface PixelStore {
     refresh: () => void;
     prepare: (bounds: Bounds) => void;
     getPixel: (coordinate: Coordinate) => Pixel | undefined;
+    setPixelColor: (coord: Coordinate, color: number) => void;
     setPixel: (key: string, pixel: Pixel) => void;
     setPixels: (pixels: { key: string, pixel: Pixel }[]) => void;
+    setCacheUpdated: (value: number) => void;
     cacheUpdated: number;
 }
 
@@ -73,3 +75,10 @@ export const TILESIZE = 100
 
 // TODO handle scalefactor 10 later
 export const DEFAULT_SCALEFACTOR = 1
+
+export function toString<Coordinate>(coordinate: Coordinate): string {
+    if (!Array.isArray(coordinate) || coordinate.length !== 2) {
+        throw new Error('Invalid coordinate');
+    }
+    return `${coordinate[0]}_${coordinate[1]}`;
+}

@@ -59,6 +59,9 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
         gameData.dojoProvider.execute(gameData.account.account!, dojoCall)
             .then(res => {
                 console.log("dojocall", res)
+
+                pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
+                pixelStore.setCacheUpdated(Date.now())
                 // Do something with the UI?
             })
         setClickedCell(undefined)
