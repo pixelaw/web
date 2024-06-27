@@ -1,6 +1,7 @@
 import {Coordinate, Dimension, Pixel} from "../../types.ts";
 import {getCellSize, numRGBToHex, applyWorldOffset} from "../../utils.ts";
 import {ZOOM_TILEMODE} from "./constants.ts";
+import {numRGBAToHex} from "@/global/utils.ts";
 
 export function drawPixels(
     context: CanvasRenderingContext2D,
@@ -32,9 +33,7 @@ export function drawPixels(
         const pixel = getPixel(worldCoords);
         if (!pixel) return;
 
-        // context.fillStyle = numRGBAToHex(pixel.color as number);
-        context.fillStyle = numRGBToHex(pixel.color as number);
-        // context.fillStyle = numRGBAToHex(pixel.color);
+        context.fillStyle = numRGBAToHex(pixel.color as number);
 
         const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment)
 

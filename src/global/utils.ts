@@ -76,15 +76,8 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
     return {x: coord[0], y: coord[1]}
 }
 
-// use this for making a new proposal
-export const hexRGBtoNumber_tailzeros = (color: string) => {
-    return parseInt(`0x${color}00`, 16)
-}
-
-// use this to treat pixel colors.
-// Fixed here to remove the alpha channel. (which caused the color error.)
 export const hexRGBtoNumber = (color: string) => {
-    return parseInt(`0x00${color}`, 16)
+    return parseInt(`0x${color}00`, 16)
 }
 
 // Converts the numeric RGBA to a normal hex color
