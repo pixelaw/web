@@ -11,7 +11,7 @@ import Apps from "@/components/Apps/Apps.tsx";
 import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {Route, Routes} from "react-router-dom";
 import Loading from "@/components/Loading/Loading.tsx";
-import Settings from "@/components/Settings/Settings.tsx";
+import Settings from "@/pages/Settings/Settings.tsx";
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {useViewStateStore, useSyncedViewStateStore} from "@/stores/ViewStateStore.ts";
 import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
