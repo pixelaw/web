@@ -29,13 +29,12 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
             // setState(prevState => ({...prevState, [key]: img}));
             tileCache.current[key] = await loadImage(base64Img); // Cache the loaded image
             fetchCounter.current--
-            console.log("setState to img")
             setCacheUpdated(Date.now())
 
         }).catch(e => {
             setIdb(key, "").then(() => {
                 tileCache.current[key] = ""; // Cache the loaded image
-                // console.log("setState to ''")
+
                 fetchCounter.current--
 
             });
@@ -51,7 +50,7 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
             setIsLoading(true);
             const keysArray = await keys();
             const tilesObj: Record<string, Tile | undefined | ""> = {};
-            // console.log("loading keys", keysArray.length)
+
             for (const key of keysArray) {
                 if (typeof key === 'string') {
                     try {
@@ -79,7 +78,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
 
 
     const prepare = (newBounds: Bounds): void => {
-        // console.log("prepare", JSON.stringify(newBounds))
         if (!inputBounds.current || !areBoundsEqual(inputBounds.current, newBounds)) {
             inputBounds.current = newBounds
             const ab = calculateTileBounds(newBounds)
@@ -93,10 +91,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
 
     const refresh = (): void => {
 
-        // if (fetchCounter.current > 0) {
-        //     console.log("skipRender")
-        //     return
-        // }
         if (isLoading || !actualBounds.current) return
 
         const [[leftTileCoord, topTileCoord], [rightTileCoord, bottomTileCoord]] = actualBounds.current
@@ -134,7 +128,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
             tileRows
         }
 
-        console.log("setTileset")
         setCacheUpdated(Date.now())
     }
 
@@ -143,7 +136,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
         if (tileCache.current[key] === undefined) {
 
             tileCache.current[key] = ""; // Cache the loaded image
-            console.log("setState to ''")
 
             fetchTile(key)
 
@@ -151,15 +143,7 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
         return tileCache.current[key];
     };
 
-    // const setTile = async (key: string, tile: Tile | undefined): Promise<void> => {
-    //     console.log("setTile")
-    //     await setIdb(key, tile);
-    //     setState({...state, [key]: tile});
-    //
-    //     fetchTile(key)
-    //     console.log("setState to tile")
-    //
-    // };
+
 
     const setTiles = async (tiles: { key: string, tile: Tile }[]): Promise<void> => {
         // const newTiles = {...state};
@@ -176,7 +160,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
 
 const loadImage = (base64: string): Promise<HTMLImageElement> => {
 
-    console.log("loadImage")
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);

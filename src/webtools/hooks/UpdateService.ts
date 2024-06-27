@@ -45,7 +45,7 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
 
             socket.current.onmessage = (event) => {
                 const msg: Message = JSON.parse(event.data);
-                console.log(msg)
+
                 if (msg.cmd === "tileChanged") {
                     const tileChangedMsg = msg.data as TileChangedMessage;
 

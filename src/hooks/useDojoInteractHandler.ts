@@ -41,6 +41,7 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
         )
 
         if (params.length) {
+            console.log(params)
             // User needs to choose parameters first
             // TODO lets first make the scenario without params work (paint)
         }
