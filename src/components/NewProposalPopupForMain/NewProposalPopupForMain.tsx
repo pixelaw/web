@@ -2,6 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 // import { Link } from 'react-router-dom';
 import { SketchPicker } from 'react-color';
 import Select from 'react-select';
+import {ProposalType} from "@/global/types";
+import {GAME_ID} from "@/global/constants";
+import {usePixelawProvider} from "@/providers/PixelawProvider";
+import {hexRGBtoNumberRGBA} from "@/global/utils.ts";
+
 
 const NewProposalPopupForMain: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
@@ -12,6 +17,8 @@ const NewProposalPopupForMain: React.FC = () => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorPickerRef = useRef(null);
   const popupRef = useRef<HTMLDivElement>(null);
+
+  const {gameData} = usePixelawProvider();
 
   const handleColorChange = (color: any) => {
     setColor(color.hex);
@@ -43,13 +50,18 @@ const NewProposalPopupForMain: React.FC = () => {
   }, []);
 
   const handleSubmit = () => {
-    const proposalData = {
-      proposalType,
-      color,
-      disasterColor,
-      comments,
-    };
-    console.log(proposalData);
+    const type = proposalType ===
+        'Add Color' ? ProposalType.AddNewColor : ProposalType.MakeADisasterByColor;
+    if (gameData && gameData.account.account) {
+      gameData.setup.systemCalls.createProposal(
+        gameData.account.account,
+        GAME_ID,
+        type,
+        hexRGBtoNumberRGBA(color.replace('#', ''))
+      ).then(() => {
+        setIsCreatingNewProposal(false);
+      })
+    }
   };
 
   const colors = [

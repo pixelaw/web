@@ -5,7 +5,7 @@ import Select from 'react-select';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
-import {hexRGBtoNumber, hexRGBtoNumber_tailzeros} from "@/global/utils.ts";
+import {hexRGBtoNumber, hexRGBtoNumberRGBA} from "@/global/utils.ts";
 
 const NewProposal: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
@@ -41,7 +41,7 @@ const NewProposal: React.FC = () => {
         gameData.account.account,
         GAME_ID,
         type,
-        hexRGBtoNumber_tailzeros(color.replace('#', ''))
+        hexRGBtoNumberRGBA(color.replace('#', ''))
       ).then(() => navigate('/governance'))
     }
   };
