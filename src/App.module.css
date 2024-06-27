@@ -102,6 +102,39 @@ body {
     filter: blur(5px);
   }
 
+.proposalListContainer {
+    position: absolute;
+    top: 64px;
+    left: 10px;
+    width: 420px;
+    max-height: calc(100vh - 64px);
+    background: rgba(31, 41, 55, 0.75);
+    border-radius: 8px;
+    overflow-y: hidden;
+    z-index: 1000;
+    padding: 16px;
+    padding-bottom: 0%;
+}
+  
+  .openButton {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    background: blue;
+    color: white;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    padding: 16px;
+    cursor: pointer;
+    z-index: 1000;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  
+
+
+
 .container {
   background-color: var(--bg-primary); /* Replace with the actual color value if different */
   min-height: 100vh; /* Equivalent to min-h-screen */
