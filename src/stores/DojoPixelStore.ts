@@ -109,7 +109,12 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
                 x: coord[0],
                 y: coord[1]
             };
-        }else pixel.color = color
+        }else {
+            pixel = {
+                ...pixel,
+                color
+            }
+        }
 
         setState(produce(draft => {
             draft[key] = pixel
