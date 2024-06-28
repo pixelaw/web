@@ -20,6 +20,9 @@ import Governance from "@/pages/Governance.js";
 import NewProposal from "@/pages/NewProposal.js";
 import ProposalDetails from "@/pages/ProposalDetails.js";
 import { RiArrowGoBackFill } from "react-icons/ri";
+import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewProposalPopupForMain.tsx';
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
 
 
 function App() {
@@ -54,6 +57,7 @@ function App() {
 
     // FIXME: should be in the ViewStateStore??
     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+    const [isProposalListVisible, setIsProposalListVisible] = useState(true);
     // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
@@ -92,6 +96,10 @@ function App() {
 
     function toggleColorPicker() {
         setIsColorPickerVisible(prevState => !prevState);
+    }
+
+    function toggleProposalList() {
+        setIsProposalListVisible(prevState => !prevState);
     }
 
     // useEffect(() => {
@@ -182,6 +190,27 @@ function App() {
                                 <button className={styles.closeButton} onClick={toggleColorPicker}>
                                     <RiArrowGoBackFill size={22}/>
                                 </button>
+                            </div>
+
+                            <div className={styles.proposalListContainer}>
+                                <div className={`flex items-center justify-between mb-4`}>
+                                    <div className='text-white text-xl font-bold'>
+                                        Proposals
+                                    </div>
+                                    <button className={`ml-auto text-white ${isProposalListVisible ? 'rotate-180' : ''} transition duration-300`} onClick={toggleProposalList}>
+                                        <FaArrowDown />
+                                    </button>
+                                </div>
+                                {isProposalListVisible && (
+                                    <div className='mb-4'>
+                                        <div className=''>
+                                            <ProposalListForMain headerHeight={64} />
+                                        </div>
+                                        <div className='pt-4'>
+                                            <NewProposalPopupForMain />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className={styles.buttonContainer}>
