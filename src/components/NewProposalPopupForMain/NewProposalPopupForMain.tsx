@@ -5,7 +5,7 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumberRGBA} from "@/global/utils.ts";
+import {hexRGBtoNumber} from "@/global/utils.ts";
 
 
 const NewProposalPopupForMain: React.FC = () => {
@@ -57,7 +57,7 @@ const NewProposalPopupForMain: React.FC = () => {
         gameData.account.account,
         GAME_ID,
         type,
-        hexRGBtoNumberRGBA(color.replace('#', ''))
+        hexRGBtoNumber(color.replace('#', ''))
       ).then(() => {
         setIsCreatingNewProposal(false);
       })
