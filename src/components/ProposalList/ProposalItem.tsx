@@ -44,6 +44,26 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
     const start = Number(proposal?.start ?? 0)
     const end = Number(proposal?.end ?? 0)
 
+    function formatTimeRemaining(remainingSeconds: number) {
+        const hours = Math.floor(remainingSeconds / 3600);
+        remainingSeconds %= 3600;
+        const minutes = Math.floor(remainingSeconds / 60);
+        const seconds = remainingSeconds % 60;
+      
+        let formattedTime = '';
+        if (hours > 0) {
+          formattedTime += `${hours}h`;
+        }
+        if (minutes > 0) {
+          formattedTime += `${minutes}m`;
+        }
+        if (seconds > 0) {
+          formattedTime += `${seconds}s`;
+        }
+      
+        return formattedTime || '0s';
+      }
+
     React.useEffect(() => {
 
         if (proposalStatus === 'closed') return
@@ -53,9 +73,9 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
             const current = Math.floor(Date.now() / 1_000)
 
             if (current < start) {
-                setProposalStatus(`starts in ${start - current}s`)
+                setProposalStatus(`starts in ${formatTimeRemaining(start - current)}`)
             } else if (current > start && current < end) {
-                setProposalStatus(`ends in ${end - current}s`)
+                setProposalStatus(`ends in ${formatTimeRemaining(end - current)}`)
             } else {
                 setProposalStatus('closed')
             }
@@ -109,11 +129,13 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
         return author;
     };
 
+    const containerClassName = `relative p-4 rounded-md border transition-colors duration-300 ${proposalStatus === 'closed' ? 'bg-gray-600 border-gray-700' : 'bg-gray-800 border-gray-700 hover:border-gray-600'}`;
 
     return (
         <div
-             className='relative bg-gray-800 p-4 rounded-md border border-gray-700 hover:border-gray-600 transition-colors duration-300'>
-            <div className='block'>
+            // className='relative bg-gray-800 p-4 rounded-md border border-gray-700 hover:border-gray-600 transition-colors duration-300'>
+            className={containerClassName}>
+             <div className='block'>
                 <div className='flex justify-between items-center mb-1'>
                     <div className='text-sm font-bold text-white flex items-center'>
                         {title}
@@ -132,7 +154,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                 <div className='text-gray-400 text-xs mb-2'>
                     proposed by {formatWalletAddress(proposal.author.toString())}
                 </div>
-                <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-20'>
+                <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-30' style={{marginRight: '6rem'}}>
                     <div
                         className='bg-green-500 h-full rounded-l-full'
                         style={{width: `${(proposal.yes_px / (proposal.yes_px + proposal.no_px)) * 100}%`}}
@@ -142,7 +164,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                         style={{width: `${(proposal.no_px / (proposal.yes_px + proposal.no_px)) * 100}%`}}
                     ></div>
                 </div>
-                <div className='flex justify-between text-xs text-gray-300 mr-20'>
+                <div className='flex justify-between text-xs text-gray-300 mr-30' style={{marginRight: '6rem'}}>
                     <div>
                         For {proposal.yes_px} points
                     </div>

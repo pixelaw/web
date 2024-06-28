@@ -80,6 +80,10 @@ export const hexRGBtoNumber = (color: string) => {
     return parseInt(`0x${color}00`, 16)
 }
 
+export const hexRGBAtoNumber = (color: string) => {
+    return parseInt(`0x${color}`, 16)
+}
+
 // Converts the numeric RGBA to a normal hex color
 // @dev this removes the Alpha channel.
 // TODO: Eventually convert to rgb(255 0 153 / 80%)

@@ -10,10 +10,10 @@ import {hexRGBtoNumber} from "@/global/utils.ts";
 
 const NewProposalPopupForMain: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
-  const [color, setColor] = useState('#FFFFFF');
+  const [color, setColor] = useState('#FFFFFF00');
   const [isCreatingNewProposal, setIsCreatingNewProposal] = useState(false);
-  const [disasterColor, setDisasterColor] = useState('#FFFFFF');
-  const [comments, setComments] = useState('');
+  // const [disasterColor, setDisasterColor] = useState('#FFFFFF00'); // only handle color.
+  // const [comments, setComments] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const colorPickerRef = useRef(null);
   const popupRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,9 @@ const NewProposalPopupForMain: React.FC = () => {
   };
 
   const handleDisasterColorChange = (selectedOption: any) => {
-    setDisasterColor(selectedOption.value);
+    console.log(selectedOption.value);
+    setColor(formatColorToRGBA(selectedOption.value)); // to submit the color.
+    // setDisasterColor(selectedOption.value);
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -57,17 +59,37 @@ const NewProposalPopupForMain: React.FC = () => {
         gameData.account.account,
         GAME_ID,
         type,
-        hexRGBtoNumber(color.replace('#', ''))
+        hexRGBtoNumber(formatColorToRGB(color).replace('#', ''))
       ).then(() => {
         setIsCreatingNewProposal(false);
       })
     }
   };
 
+  function formatColorToRGBA(color: string) {
+    if (color.length === 7 && color.startsWith('#')) {
+      return color + '00';
+    } else if (color.length === 9 && color.startsWith('#')) {
+      return color;
+    } else {
+      return color;
+    }
+  }
+
+  function formatColorToRGB(color: string) {
+    if (color.length === 7 && color.startsWith('#')) {
+      return color;
+    } else if (color.length === 9 && color.startsWith('#')) {
+      return color.slice(0, -2);
+    } else {
+      return color;
+    }
+  }
+
   const colors = [
-    '#000000',
-    '#FF00FF',
-    '#00FFFF',
+    '#00000000',
+    '#FF00FF00',
+    '#00FFFF00',
   ];
 
   const colorOptionsFormatted = colors.map(color => ({
@@ -76,9 +98,9 @@ const NewProposalPopupForMain: React.FC = () => {
       <div className='flex items-center'>
         <div 
           className='w-6 h-6 rounded-md mr-2' 
-          style={{ backgroundColor: color }}
+          style={{ backgroundColor: formatColorToRGB(color)}}
         ></div>
-        {color}
+        {formatColorToRGB(color)}
       </div>
     ),
   }));
@@ -142,13 +164,15 @@ const NewProposalPopupForMain: React.FC = () => {
                   <div className='flex items-center relative'>
                     <div
                       className='w-11 h-10 rounded-md mr-4 cursor-pointer'
-                      style={{ backgroundColor: color }}
+                      style={{ backgroundColor: formatColorToRGB(color) }}
                       onClick={() => setShowColorPicker(!showColorPicker)}
                     ></div>
                     <input
                       type="text"
-                      value={color.toUpperCase()}
-                      onChange={(e) => setColor(e.target.value.toUpperCase())}
+                      value={formatColorToRGB(color)}
+                      onChange={(e) => {
+                        setColor(formatColorToRGBA(e.target.value.toUpperCase()));
+                      }} // add 00
                       className='w-full p-2 rounded-md bg-gray-700 text-white'
                     />
                     {showColorPicker && (
@@ -164,7 +188,7 @@ const NewProposalPopupForMain: React.FC = () => {
                 <div className='mb-4'>
                   <label className='block text-lg mb-2'>Choose a color to turn white on the canvas.</label>
                   <Select 
-                    value={colorOptionsFormatted.find(option => option.value === disasterColor)}
+                    value={colorOptionsFormatted.find(option => formatColorToRGB(option.value) === color)}
                     onChange={handleDisasterColorChange}
                     options={colorOptionsFormatted}
                     styles={customStyles}
