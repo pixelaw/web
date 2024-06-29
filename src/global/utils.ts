@@ -63,13 +63,20 @@ export const felt252ToUnicode = (felt252: string | number) => {
     return string
 }
 
-export const formatAddress = (address: string) => {
-    if (address.length > 30) {
-        return address.substr(0, 6) + '...' + address.substr(address.length - 4, address.length)
-    }
+// export const formatAddress = (address: string) => {
+//     if (address.length > 30) {
+//         return address.substr(0, 6) + '...' + address.substr(address.length - 4, address.length)
+//     }
 
-    return address
-}
+//     return address
+// }
+
+export const formatWalletAddress = (address: string) => {
+    if (address.length > 10) {
+        return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    }
+    return address;
+};
 
 // Takes a RGB hex nr and converts it to numeric rgba (0 alpha)
 export const coordinateToPosition = (coord: Coordinate): Position => {

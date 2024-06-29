@@ -1,20 +1,24 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './MenuBar.module.css';
+import { formatWalletAddress } from "@/global/utils.ts";
 
-const MenuBar: React.FC = () => {
+interface MenuBarProps {
+    address: string;
+};
+
+const MenuBar: React.FC<MenuBarProps> = ({ address }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Determine if the settings page is shown based on the current path
     const showSettings = location.pathname === '/settings';
     const showGovernance = location.pathname !== '/governance';
 
     const toggleSettings = () => {
         if (showSettings) {
-            navigate(-1); // Go back if we're currently showing settings
+            navigate(-1);
         } else {
-            navigate('/settings'); // Navigate to settings if not currently showing
+            navigate('/settings');
         }
     };
 
@@ -22,12 +26,16 @@ const MenuBar: React.FC = () => {
         <div className={styles.inner}>
             <div className={styles.logoContainer} onClick={() => navigate('/')}>
                 <img src="/assets/logo/pixeLaw-logo.png" alt="logo"/>
-
             </div>
-            <div>
-                {/* {showGovernance && <button className={styles.menuButton} onClick={() => navigate('/governance')}>Governance</button>} */}
-                {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
-                <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
+
+            <div className={styles.rightSection}>
+                <div className={styles.addressContainer}>
+                    {formatWalletAddress(address.address || '')}
+                </div>
+                <div className={styles.buttonContainer}>
+                    {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
+                    <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
+                </div>
             </div>
         </div>
     );

@@ -180,7 +180,7 @@ function App() {
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar/>
+            <MenuBar address={gameData?.account?.account || ''}/>
 
             <div className={styles.main}>
 
