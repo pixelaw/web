@@ -60,7 +60,7 @@ function App() {
 
     // FIXME: should be in the ViewStateStore??
     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
-    const [isProposalListVisible, setIsProposalListVisible] = useState(true);
+    const [isProposalListVisible, setIsProposalListVisible] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
     const filterRef = useRef<HTMLDivElement>(null);
@@ -74,6 +74,18 @@ function App() {
 
     // const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
 
+    // get end date (FIXME: It's not smooth...)
+    useEffect(() => {
+        if (gameData?.setup?.contractComponents?.Game?.values?.end) {
+            const gameEntries = gameData.setup.contractComponents.Game.values.end.entries();
+            const firstGame = gameEntries.next().value;
+
+            if (firstGame) {
+                const endTimestamp = firstGame[1];
+                setEndDate(new Date(endTimestamp * 1000));
+            }
+        }
+    }, [gameData]);
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -169,16 +181,6 @@ function App() {
     }
 
     document.title = "PixeLAW: World";
-
-    
-    // get end date (FIXME: It's not smooth...)
-    const game_entries = gameData?.setup.contractComponents.Game.values.end?.entries();
-    const first_game = game_entries?.next().value;
-
-    if (first_game) {
-        const endTimestamp = first_game[1];
-        setEndDate(new Date(endTimestamp * 1000));
-    }
     
     return (
         // <div className={styles.container}>
