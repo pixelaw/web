@@ -181,11 +181,15 @@ function App() {
     }
 
     document.title = "PixeLAW: World";
+
+    // TODO: show current_px / max_px to MenuBar
+    // const tmp = gameData?.setup.contractComponents.Player.values;
+    // console.log(tmp);
     
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar address={gameData?.account?.account || ''} endTime={endDate}/> {/* have to get from game status*/}
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate}/>
             <div className={styles.main}>
 
                 <Routes>
