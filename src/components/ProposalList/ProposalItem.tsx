@@ -5,6 +5,7 @@ import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {ProposalType} from "@/global/types.ts";
 import {numRGBAToHex} from "@/webtools/utils.ts";
 import {GAME_ID, NEEDED_YES_PX} from "@/global/constants.ts";
+import { formatWalletAddress } from "@/global/utils.ts";
 
 type PropsType = {
     entityId: Entity,
@@ -132,13 +133,6 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                 console.error(e)
             })
     }
-
-    const formatWalletAddress = (author: string) => {
-        if (author.length > 10) {
-            return `${author.slice(0, 4)}...${author.slice(-4)}`;
-        }
-        return author;
-    };
 
     const containerClassName = `relative p-4 rounded-md border transition-colors duration-300 ${proposalStatus === 'closed' ? 'bg-gray-600 border-gray-700' : 'bg-gray-800 border-gray-700 hover:border-gray-600'}`;
 

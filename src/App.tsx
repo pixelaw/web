@@ -24,6 +24,9 @@ import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewPro
 import { FaArrowDown, FaArrowUp, FaFilter } from 'react-icons/fa';
 import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
 import FilterMenu from './components/FilterMenu/FilterMenu';
+import {Has} from "@dojoengine/recs";
+import {useEntityQuery, useComponentValue} from "@dojoengine/react";
+
 
 function App() {
     // console.log("App")
@@ -57,15 +60,32 @@ function App() {
 
     // FIXME: should be in the ViewStateStore??
     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
-    const [isProposalListVisible, setIsProposalListVisible] = useState(true);
+    const [isProposalListVisible, setIsProposalListVisible] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
     const filterRef = useRef<HTMLDivElement>(null);
+    const [endDate, setEndDate] = useState(new Date());
     // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
     //</editor-fold>
+    // console.log(gameData?.setup.contractComponents.Game);
+
+    // const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
+
+    // get end date (FIXME: It's not smooth...)
+    useEffect(() => {
+        if (gameData?.setup?.contractComponents?.Game?.values?.end) {
+            const gameEntries = gameData.setup.contractComponents.Game.values.end.entries();
+            const firstGame = gameEntries.next().value;
+
+            if (firstGame) {
+                const endTimestamp = firstGame[1];
+                setEndDate(new Date(endTimestamp * 1000));
+            }
+        }
+    }, [gameData]);
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -117,22 +137,7 @@ function App() {
           document.removeEventListener('mousedown', handleClickOutside);
         };
       }, []);
-    // useEffect(() => {
-    //     function handleClickOutside(event: MouseEvent) {
-    //         if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
-    //             setIsColorPickerVisible(false);
-    //         }
-    //     }
-    //     if (isColorPickerVisible) {
-    //         document.addEventListener("mousedown", handleClickOutside);
-    //     } else {
-    //         document.removeEventListener("mousedown", handleClickOutside);
-    //     }
-    //     return () => {
-    //         document.removeEventListener("mousedown", handleClickOutside);
-    //     };
-    // }, [isColorPickerVisible]);
-
+      
     //</editor-fold>
 
     //<editor-fold desc="Custom behavior">
@@ -177,11 +182,14 @@ function App() {
 
     document.title = "PixeLAW: World";
 
+    // TODO: show current_px / max_px to MenuBar
+    // const tmp = gameData?.setup.contractComponents.Player.values;
+    // console.log(tmp);
+    
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar/>
-
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate}/>
             <div className={styles.main}>
 
                 <Routes>

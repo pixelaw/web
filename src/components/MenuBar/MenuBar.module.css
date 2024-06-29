@@ -9,3 +9,30 @@
 .menuButton { /* Add this class */
     @apply text-white bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded;
 }
+
+.rightSection {
+    @apply flex items-center gap-4;
+}
+
+.addressContainer {
+    @apply flex items-center gap-2;
+}
+
+.addressContainer {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 8px 16px;
+    /* margin-right: 20px; */
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+.countdownContainer {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
