@@ -40,27 +40,6 @@ body {
     width: 100vw; /* Fill the full viewport height */
 }
 
-.colorpicker {
-    position: absolute;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background-color: transparent; /* Background for entire container is transparent */
-    z-index: 10; /* Ensure it is on top */
-}
-
-.apps {
-    position: absolute;
-    top: calc(50px + 1rem);
-    left: 1rem;
-    width: 300px;
-    display: flex;
-    justify-content: center;
-    background-color: transparent;
-    z-index: 10;
-    height: calc(100vh - 50px - 2rem);
-}
-
 .container {
     background-color: darkblue; /* Replace with the actual color value */
     min-height: 100vh; /* Equivalent to min-h-screen */

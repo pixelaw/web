@@ -1,8 +1,8 @@
 import React from 'react';
 import {clearIdb} from "@/webtools/utils.ts";
-import styles from './Settings.module.css';
+import styles from './SettingsPage.module.css';
 
-const Settings = () => {
+const SettingsPage = () => {
     const handleClearIdb = async () => {
         await clearIdb();
     };
@@ -24,4 +24,4 @@ const Settings = () => {
     );
 };
 
-export default Settings;
+export default SettingsPage;

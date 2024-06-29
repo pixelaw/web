@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useViewStateStore} from '@/stores/ViewStateStore.ts';
 import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {PixelStore} from "@/webtools/types.ts";
@@ -14,7 +14,7 @@ import {generateDojoCall} from "@/dojo/utils/call.ts";
 export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixelawGameData) => {
     const {setClickedCell, clickedCell, selectedApp, color} = useViewStateStore();
     const {getByName} = useDojoAppStore()
-
+    const [paramData, setParamData] = useState(null)
 
     useEffect(() => {
         if (!clickedCell || !selectedApp) return;
@@ -43,7 +43,7 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
         if (params.length) {
             console.log(params)
             // User needs to choose parameters first
-            // TODO lets first make the scenario without params work (paint)
+
         }
 
         // Generate the DojoCall
