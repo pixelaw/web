@@ -36,6 +36,17 @@ const getStatusColor = (status: string) => {
     }
 };
 
+// doesn't work correctly...
+const getTextColor = (proposal: any) => {
+    if (proposal.status === 'Closed' && proposal.yes_px > proposal.no_px) {
+        return 'text-green';
+    } else if (proposal.status === 'Closed' && proposal.yes_px < proposal.no_px) {
+        return 'text-red';
+    } else {
+        return 'text-white';
+    }
+  };
+
 const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, searchTerm }) => {
     const { gameData } = usePixelawProvider();
     const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
@@ -137,7 +148,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
             className={containerClassName}>
              <div className='block'>
                 <div className='flex justify-between items-center mb-1'>
-                    <div className='text-sm font-bold text-white flex items-center'>
+                    <div className={`text-sm font-bold ${getTextColor(proposal)} flex items-center`}>
                         {title}
                         {hexColor && (
                             <div

@@ -21,9 +21,9 @@ import NewProposal from "@/pages/NewProposal.js";
 import ProposalDetails from "@/pages/ProposalDetails.js";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewProposalPopupForMain.tsx';
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+import { FaArrowDown, FaArrowUp, FaFilter } from 'react-icons/fa';
 import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
-
+import FilterMenu from './components/FilterMenu/FilterMenu';
 
 function App() {
     // console.log("App")
@@ -58,6 +58,9 @@ function App() {
     // FIXME: should be in the ViewStateStore??
     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
     const [isProposalListVisible, setIsProposalListVisible] = useState(true);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
+    const filterRef = useRef<HTMLDivElement>(null);
     // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
@@ -102,6 +105,18 @@ function App() {
         setIsProposalListVisible(prevState => !prevState);
     }
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+            setFilterOpen(false);
+          }
+        };
+    
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
     // useEffect(() => {
     //     function handleClickOutside(event: MouseEvent) {
     //         if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
@@ -197,6 +212,24 @@ function App() {
                                     <div className='text-white text-xl font-bold'>
                                         Proposals
                                     </div>
+                                    <div className='ml-1 relative flex items-center'>
+                                        {isProposalListVisible && (
+                                            <button 
+                                            className='bg-gray-700 text-white px-4 py-2 rounded-md'
+                                            onClick={() => setFilterOpen(!filterOpen)}
+                                            >
+                                                <FaFilter />
+                                            </button>)}
+                                        {isProposalListVisible && filterOpen && (
+                                            <div 
+                                            className='absolute mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10' 
+                                            ref={filterRef}
+                                            style={{ top: '100%', right: -100 }}
+                                            >
+                                                <FilterMenu statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
+                                            </div>
+                                        )}
+                                    </div>
                                     <button className={`ml-auto text-white ${isProposalListVisible ? 'rotate-180' : ''} transition duration-300`} onClick={toggleProposalList}>
                                         <FaArrowDown />
                                     </button>
@@ -204,7 +237,7 @@ function App() {
                                 {isProposalListVisible && (
                                     <div className='mb-4'>
                                         <div className=''>
-                                            <ProposalListForMain headerHeight={64} />
+                                            <ProposalListForMain headerHeight={64} statusFilter={statusFilter}/>
                                         </div>
                                         <div className='pt-4'>
                                             <NewProposalPopupForMain />
