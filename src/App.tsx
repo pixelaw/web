@@ -64,6 +64,7 @@ function App() {
     const [filterOpen, setFilterOpen] = useState(false);
     const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
     const filterRef = useRef<HTMLDivElement>(null);
+    const [endDate, setEndDate] = useState(new Date());
     // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
@@ -171,8 +172,13 @@ function App() {
 
     
     // get end date (FIXME: It's not smooth...)
-    const endTimestamp = gameData?.setup.contractComponents.Game.values.end.entries().next().value[1];
-    const endDate = new Date(endTimestamp * 1000);
+    const game_entries = gameData?.setup.contractComponents.Game.values.end?.entries();
+    const first_game = game_entries?.next().value;
+
+    if (first_game) {
+        const endTimestamp = first_game[1];
+        setEndDate(new Date(endTimestamp * 1000));
+    }
     
     return (
         // <div className={styles.container}>
