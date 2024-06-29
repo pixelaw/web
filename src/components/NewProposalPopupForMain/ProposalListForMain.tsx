@@ -11,11 +11,12 @@ import {GAME_ID} from "@/global/constants.ts";
 
 interface ProposalListForMainProps {
   headerHeight: number;
+  statusFilter: 'All' | 'Active' | 'Closed';
 }
 
-const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight }) => {
+const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight, statusFilter }) => {
   const [filterOpen, setFilterOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
+  // const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
   const [searchTerm, setSearchTerm] = useState('');
   const filterRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -46,23 +47,6 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight 
 
   const { gameData } = usePixelawProvider();
   const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)], { updateOnValueChange: true })
-
-
-  // const filteredProposals = proposals.filter(proposal => {
-  //   if (statusFilter !== 'All') {
-  //     if (statusFilter === 'Active' && !proposal.status.startsWith('end in')) {
-  //       return false;
-  //     }
-  //     if (statusFilter === 'Closed' && proposal.status !== 'closed') {
-  //       return false;
-  //     }
-  //   }
-  //   if (searchTerm) {
-  //     return proposal.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-  //            proposal.proposer.toLowerCase().includes(searchTerm.toLowerCase());
-  //   }
-  //   return true;
-  // });
 
   const getStatusColor = (status: string) => {
     if (status.startsWith('end in')) {
