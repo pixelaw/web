@@ -24,6 +24,9 @@ import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewPro
 import { FaArrowDown, FaArrowUp, FaFilter } from 'react-icons/fa';
 import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
 import FilterMenu from './components/FilterMenu/FilterMenu';
+import {Has} from "@dojoengine/recs";
+import {useEntityQuery, useComponentValue} from "@dojoengine/react";
+
 
 function App() {
     // console.log("App")
@@ -66,6 +69,10 @@ function App() {
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
     //</editor-fold>
+    // console.log(gameData?.setup.contractComponents.Game);
+
+    // const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
+
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -117,22 +124,7 @@ function App() {
           document.removeEventListener('mousedown', handleClickOutside);
         };
       }, []);
-    // useEffect(() => {
-    //     function handleClickOutside(event: MouseEvent) {
-    //         if (colorPickerRef.current && !colorPickerRef.current.contains(event.target as Node)) {
-    //             setIsColorPickerVisible(false);
-    //         }
-    //     }
-    //     if (isColorPickerVisible) {
-    //         document.addEventListener("mousedown", handleClickOutside);
-    //     } else {
-    //         document.removeEventListener("mousedown", handleClickOutside);
-    //     }
-    //     return () => {
-    //         document.removeEventListener("mousedown", handleClickOutside);
-    //     };
-    // }, [isColorPickerVisible]);
-
+      
     //</editor-fold>
 
     //<editor-fold desc="Custom behavior">
@@ -177,11 +169,15 @@ function App() {
 
     document.title = "PixeLAW: World";
 
+    
+    // get end date (FIXME: It's not smooth...)
+    const endTimestamp = gameData?.setup.contractComponents.Game.values.end.entries().next().value[1];
+    const endDate = new Date(endTimestamp * 1000);
+    
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar address={gameData?.account?.account || ''}/>
-
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate}/> {/* have to get from game status*/}
             <div className={styles.main}>
 
                 <Routes>

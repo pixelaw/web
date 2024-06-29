@@ -28,3 +28,11 @@
     color: #fff;
     letter-spacing: 0.5px;
 }
+
+.countdownContainer {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
