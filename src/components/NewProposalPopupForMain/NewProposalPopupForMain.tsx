@@ -99,11 +99,8 @@ const NewProposalPopupForMain: React.FC = () => {
 
   useEffect(() => {
     const tmp = gameData?.setup.contractComponents.AllowedColor.values.color;
-    // console.log('Allowed colors');
-    // console.log(tmp);
     if (tmp) {
       const valuesArray = Array.from(tmp.values()).map(numRGBToHex);
-      console.log(valuesArray);
       setColorArrays(valuesArray);
     }
   }, [gameData?.setup.contractComponents.AllowedColor.values.color]);
