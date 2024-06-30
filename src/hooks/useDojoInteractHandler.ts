@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {useViewStateStore} from '@/stores/ViewStateStore.ts';
 import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {PixelStore} from "@/webtools/types.ts";
@@ -6,15 +6,28 @@ import {IPixelawGameData} from "@/dojo/setupPixelaw.ts";
 import getParamsDef from "@/dojo/utils/paramsDef.ts";
 import {coordinateToPosition, hexRGBtoNumber} from "@/global/utils.ts";
 import {DojoCall} from "@dojoengine/core";
-import {Manifest, Position} from "@/global/types.ts";
 import {generateDojoCall} from "@/dojo/utils/call.ts";
 
-// TODO maybe cleaner to directly use the Dojo hook here, but its not working.
-// For now passing the pixelStore
-export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixelawGameData) => {
+
+export const useDojoInteractHandler = (
+    pixelStore: PixelStore,
+    gameData: IPixelawGameData,
+    onParamsRequired: (params: any) => void,
+    onSubmitParams: (submitParams: (params: any) => void) => void
+) => {
     const {setClickedCell, clickedCell, selectedApp, color} = useViewStateStore();
     const {getByName} = useDojoAppStore()
     const [paramData, setParamData] = useState(null)
+
+    // Callback to be called with submitted parameters
+    const submitParams = useCallback((params: any) => {
+        setParamData(params);
+    }, []);
+
+    useEffect(() => {
+        // Call the passed-in callback with the submitParams function
+        onSubmitParams(submitParams);
+    }, [submitParams, onSubmitParams]);
 
     useEffect(() => {
         if (!clickedCell || !selectedApp) return;
@@ -40,15 +53,16 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             false
         )
 
-        if (params.length) {
-            console.log(params)
-            // User needs to choose parameters first
-
+        if (params.length && !paramData) {
+            onParamsRequired(params); // Use the callback to pass parameters where needed
+            console.log("req")
+            return; // Stop further execution until params are handled
         }
 
+        console.log("pd", paramData)
         // Generate the DojoCall
         const dojoCall: DojoCall = generateDojoCall(
-            params,
+            paramData || params,
             gameData.setup.manifest,
             contractName,
             action,
@@ -63,8 +77,11 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
 
                 pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
                 pixelStore.setCacheUpdated(Date.now())
-                // Do something with the UI?
+
+                // Reset paramData after execution
+                setParamData(null);
+
             })
         setClickedCell(undefined)
-    }, [setClickedCell, clickedCell]);
+    }, [setClickedCell, clickedCell,  paramData]);
 };

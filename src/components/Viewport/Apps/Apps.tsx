@@ -1,4 +1,4 @@
-import App from "@/components/App/App.tsx";
+import App from "@/components/Viewport/App/App.tsx";
 import styles from './Apps.module.css';
 import {AppStore} from "@/webtools/types.ts";
 import {useViewStateStore} from "@/stores/ViewStateStore.ts";

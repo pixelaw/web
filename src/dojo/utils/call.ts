@@ -22,6 +22,7 @@ export function generateDojoCall(
         color,
     ]
 
+    // Add the params, if any, to the CallData
 
     return {
         contractName,
