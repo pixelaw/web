@@ -5,12 +5,17 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumber} from "@/global/utils.ts";
+import {hexRGBtoNumber, numRGBToHex} from "@/global/utils.ts";
 
 
 const NewProposalPopupForMain: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF00');
+  const [colorArrays, setColorArrays] = useState([
+    '#00000000',
+    '#FF00FF00',
+    '#00FFFF00',
+]);
   const [isCreatingNewProposal, setIsCreatingNewProposal] = useState(false);
   // const [disasterColor, setDisasterColor] = useState('#FFFFFF00'); // only handle color.
   // const [comments, setComments] = useState('');
@@ -53,7 +58,7 @@ const NewProposalPopupForMain: React.FC = () => {
 
   const handleSubmit = () => {
     const type = proposalType ===
-        'Add Color' ? ProposalType.AddNewColor : ProposalType.MakeADisasterByColor;
+        'Add Color' ? ProposalType.AddNewColor : ProposalType.ResetToWhiteByColor;
     if (gameData && gameData.account.account) {
       gameData.setup.systemCalls.createProposal(
         gameData.account.account,
@@ -92,7 +97,15 @@ const NewProposalPopupForMain: React.FC = () => {
     '#00FFFF00',
   ];
 
-  const colorOptionsFormatted = colors.map(color => ({
+  useEffect(() => {
+    const tmp = gameData?.setup.contractComponents.AllowedColor.values.color;
+    if (tmp) {
+      const valuesArray = Array.from(tmp.values()).map(numRGBToHex);
+      setColorArrays(valuesArray);
+    }
+  }, [gameData?.setup.contractComponents.AllowedColor.values.color]);
+
+  const colorOptionsFormatted = colorArrays.map(color => ({
     value: color,
     label: (
       <div className='flex items-center'>
@@ -100,7 +113,7 @@ const NewProposalPopupForMain: React.FC = () => {
           className='w-6 h-6 rounded-md mr-2' 
           style={{ backgroundColor: formatColorToRGB(color)}}
         ></div>
-        {formatColorToRGB(color)}
+        {formatColorToRGB(color).toUpperCase()}
       </div>
     ),
   }));
@@ -154,7 +167,7 @@ const NewProposalPopupForMain: React.FC = () => {
                   className='w-full p-3 rounded-md bg-gray-700 text-white'
                 >
                   <option value="Add Color">Add Color</option>
-                  <option value="Make A Disaster">Make A Disaster</option>
+                  <option value="Reset To White">Reset To White</option>
                 </select>
               </div>
 
@@ -184,7 +197,7 @@ const NewProposalPopupForMain: React.FC = () => {
                 </div>
               )}
 
-              {proposalType === 'Make A Disaster' && (
+              {proposalType === 'Reset To White' && (
                 <div className='mb-4'>
                   <label className='block text-lg mb-2'>Choose a color to turn white on the canvas.</label>
                   <Select 

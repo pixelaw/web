@@ -65,6 +65,8 @@ function App() {
     const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
     const filterRef = useRef<HTMLDivElement>(null);
     const [endDate, setEndDate] = useState(new Date());
+    const [currentPx, setCurrentPx] = useState(0);
+    const [maxPx, setMaxPx] = useState(10);
     // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
@@ -86,6 +88,35 @@ function App() {
             }
         }
     }, [gameData]);
+
+    useEffect(() => {
+        const tmp = gameData?.setup.contractComponents.Player.values;
+        
+        if (tmp) {
+            const addressMap = tmp.address;
+            const currentPxMap = tmp.current_px;
+            const maxPxMap = tmp.max_px;
+
+            const targetAddress = gameData?.account?.account.address || '';
+            // console.log(`Target address: ${targetAddress}`);
+
+            let symbolKey;
+            for (let [key, value] of addressMap) {
+                if (value.toString() === targetAddress.toString()) {
+                    symbolKey = key;
+                    break;
+                }
+            }
+
+            if (symbolKey) {
+                const currentPx = currentPxMap.get(symbolKey);
+                const maxPx = maxPxMap.get(symbolKey);
+                setCurrentPx(currentPx || 0);
+                setMaxPx(maxPx || 0);
+                // console.log(`Current PX for address ${targetAddress}: ${currentPx}`);
+            }
+        }
+    }, [gameData?.setup.contractComponents.Player.values]);
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -185,11 +216,11 @@ function App() {
     // TODO: show current_px / max_px to MenuBar
     // const tmp = gameData?.setup.contractComponents.Player.values;
     // console.log(tmp);
-    
+
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar address={gameData?.account?.account || ''} endTime={endDate}/>
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate} currentPx={currentPx} maxPx={maxPx} />
             <div className={styles.main}>
 
                 <Routes>

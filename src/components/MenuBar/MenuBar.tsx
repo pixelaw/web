@@ -6,9 +6,11 @@ import { formatWalletAddress } from "@/global/utils.ts";
 interface MenuBarProps {
     address: string;
     endTime: Date;
+    currentPx: number;
+    maxPx: number;
 };
 
-const MenuBar: React.FC<MenuBarProps> = ({ address, endTime }) => {
+const MenuBar: React.FC<MenuBarProps> = ({ address, endTime, currentPx, maxPx}) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [timeLeft, setTimeLeft] = useState('');
@@ -58,6 +60,9 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime }) => {
             <div className={styles.rightSection}>
                 <div className={styles.addressContainer}>
                     {formatWalletAddress(address.address || '')}
+                </div>
+                <div className={styles.addressContainer}>
+                    {currentPx}/{maxPx} PX
                 </div>
                 <div className={styles.buttonContainer}>
                     {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
