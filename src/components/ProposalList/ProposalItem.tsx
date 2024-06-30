@@ -18,7 +18,7 @@ type PropsType = {
 const createProposalTitle = (proposalType: ProposalType, hexColor: string) => {
     switch (proposalType) {
         case ProposalType.AddNewColor: return `Adding A New Color: ${hexColor.toUpperCase()}`
-        case ProposalType.MakeADisasterByColor: return `Make a Disaster by Color: ${hexColor.toUpperCase()}`
+        case ProposalType.ResetToWhiteByColor: return `Reset Color To White: ${hexColor.toUpperCase()}`
         default: {
             console.error('unhandled proposal type: ', proposalType)
             return ''

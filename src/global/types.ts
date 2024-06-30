@@ -154,7 +154,9 @@ export enum ProposalType {
     // ChangeWinnerConfig,
     // ChangePaintCost,
     // MakeADisasterByCoordinates,
-    MakeADisasterByColor,
+    // ResetToWhiteByCoordinates,
+    // MakeADisasterByColor,
+    ResetToWhiteByColor,
 }
 
 export type ProposalArgs = {

@@ -53,7 +53,7 @@ const NewProposalPopupForMain: React.FC = () => {
 
   const handleSubmit = () => {
     const type = proposalType ===
-        'Add Color' ? ProposalType.AddNewColor : ProposalType.MakeADisasterByColor;
+        'Add Color' ? ProposalType.AddNewColor : ProposalType.ResetToWhiteByColor;
     if (gameData && gameData.account.account) {
       gameData.setup.systemCalls.createProposal(
         gameData.account.account,
@@ -154,7 +154,7 @@ const NewProposalPopupForMain: React.FC = () => {
                   className='w-full p-3 rounded-md bg-gray-700 text-white'
                 >
                   <option value="Add Color">Add Color</option>
-                  <option value="Make A Disaster">Make A Disaster</option>
+                  <option value="Reset To White">Reset To White</option>
                 </select>
               </div>
 
@@ -184,7 +184,7 @@ const NewProposalPopupForMain: React.FC = () => {
                 </div>
               )}
 
-              {proposalType === 'Make A Disaster' && (
+              {proposalType === 'Reset To White' && (
                 <div className='mb-4'>
                   <label className='block text-lg mb-2'>Choose a color to turn white on the canvas.</label>
                   <Select 
