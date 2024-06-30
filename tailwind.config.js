@@ -95,7 +95,8 @@ module.exports = {
             fontFamily: {
                 'silkscreen': ["Silkscreen", 'cursive'],
                 'noto-sans': ["Noto Sans", 'sans-serif'],
-                'emoji': ["Noto Emoji", 'sans-serif']
+                'emoji': ["Noto Emoji", 'sans-serif'],
+                'roboto-mono': ["Roboto Mono", 'monospace'],
             },
             backgroundImage: {
                 'main': "url('/assets/background/main.png')",

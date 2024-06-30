@@ -5,12 +5,17 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumber} from "@/global/utils.ts";
+import {hexRGBtoNumber, numRGBToHex} from "@/global/utils.ts";
 
 
 const NewProposalPopupForMain: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF00');
+  const [colorArrays, setColorArrays] = useState([
+    '#00000000',
+    '#FF00FF00',
+    '#00FFFF00',
+]);
   const [isCreatingNewProposal, setIsCreatingNewProposal] = useState(false);
   // const [disasterColor, setDisasterColor] = useState('#FFFFFF00'); // only handle color.
   // const [comments, setComments] = useState('');
@@ -92,7 +97,18 @@ const NewProposalPopupForMain: React.FC = () => {
     '#00FFFF00',
   ];
 
-  const colorOptionsFormatted = colors.map(color => ({
+  useEffect(() => {
+    const tmp = gameData?.setup.contractComponents.AllowedColor.values.color;
+    // console.log('Allowed colors');
+    // console.log(tmp);
+    if (tmp) {
+      const valuesArray = Array.from(tmp.values()).map(numRGBToHex);
+      console.log(valuesArray);
+      setColorArrays(valuesArray);
+    }
+  }, [gameData?.setup.contractComponents.AllowedColor.values.color]);
+
+  const colorOptionsFormatted = colorArrays.map(color => ({
     value: color,
     label: (
       <div className='flex items-center'>
@@ -100,7 +116,7 @@ const NewProposalPopupForMain: React.FC = () => {
           className='w-6 h-6 rounded-md mr-2' 
           style={{ backgroundColor: formatColorToRGB(color)}}
         ></div>
-        {formatColorToRGB(color)}
+        {formatColorToRGB(color).toUpperCase()}
       </div>
     ),
   }));

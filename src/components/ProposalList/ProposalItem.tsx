@@ -18,7 +18,7 @@ type PropsType = {
 const createProposalTitle = (proposalType: ProposalType, hexColor: string) => {
     switch (proposalType) {
         case ProposalType.AddNewColor: return `Adding A New Color: ${hexColor.toUpperCase()}`
-        case ProposalType.ResetToWhiteByColor: return `Reset Color To White: ${hexColor.toUpperCase()}`
+        case ProposalType.ResetToWhiteByColor: return `Reset To White: ${hexColor.toUpperCase()}`
         default: {
             console.error('unhandled proposal type: ', proposalType)
             return ''
@@ -152,14 +152,14 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                         )}
                     </div>
                     <div
-                        className={`px-2 py-1 rounded-md text-white text-xs ${getStatusColor(proposalStatus)}`}>
+                        className={`px-2 py-1 rounded-md text-white text-xs ${getStatusColor(proposalStatus)}`} style={{marginLeft: '1rem'}}>
                         {proposalStatus}
                     </div>
                 </div>
                 <div className='text-gray-400 text-xs mb-2'>
                     proposed by {formatWalletAddress(proposal.author.toString())}
                 </div>
-                <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-30' style={{marginRight: '6rem'}}>
+                <div className='bg-gray-700 rounded-full h-2 relative flex mb-1 mr-30' style={{marginRight: '7rem'}}>
                     <div
                         className='bg-green-500 h-full rounded-l-full'
                         style={{width: `${(proposal.yes_px / (proposal.yes_px + proposal.no_px)) * 100}%`}}
@@ -169,7 +169,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                         style={{width: `${(proposal.no_px / (proposal.yes_px + proposal.no_px)) * 100}%`}}
                     ></div>
                 </div>
-                <div className='flex justify-between text-xs text-gray-300 mr-30' style={{marginRight: '6rem'}}>
+                <div className='flex justify-between text-xs text-gray-300 mr-30' style={{marginRight: '7rem'}}>
                     <div>
                         For {proposal.yes_px} points
                     </div>
