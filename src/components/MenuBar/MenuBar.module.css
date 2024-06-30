@@ -1,5 +1,6 @@
 .inner {
-    @apply w-full h-12 bg-header-primary flex items-center justify-between px-4;
+    @apply w-full h-12 bg-header-primary flex items-center px-4;
+    position: relative;
 }
 
 .logoContainer {
@@ -12,6 +13,9 @@
 
 .rightSection {
     @apply flex items-center gap-4;
+    position: absolute;
+    right: 2%;
+    /* transform: translateX(-50%); */
 }
 
 .addressContainer {
@@ -35,4 +39,7 @@
     font-weight: bold;
     color: #FFD700;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
