@@ -21,8 +21,6 @@ const PaletteColor: React.FC<PropsType> =
 
         const color = numRGBAToHex(paletteColor.color)
 
-        console.log(color, paletteColor.idx)
-
         return (
             <SimpleColorPickerItem
                 color={color}

@@ -1,10 +1,11 @@
 import styles from './SimpleColorPicker.module.css';
 import {useEntityQuery} from "@dojoengine/react";
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
-import {Has, HasValue} from "@dojoengine/recs";
+import {Has, HasValue, Entity} from "@dojoengine/recs";
 import PaletteColor from "@/components/ColorPicker/PaletteColor.tsx";
 import SimpleColorPickerItem from "@/components/ColorPicker/SimpleColorPickerItem.tsx";
-import {GAME_ID} from "@/global/constants.ts";
+import {GAME_ID, PALETTE_COLORS_LENGTH} from "@/global/constants.ts";
+import {getEntityIdFromKeys} from "@dojoengine/utils";
 
 const colors = [
     "#FF0000",
@@ -23,6 +24,21 @@ export interface ColorPickerProps {
     color: string;
 }
 
+const sortIndices = () => {
+    const sortedIndices: Entity[] = []
+    for (let i = 0; i < PALETTE_COLORS_LENGTH; i++) {
+        sortedIndices.push(
+            getEntityIdFromKeys([
+                BigInt(GAME_ID),
+                BigInt(i)
+            ])
+        )
+    }
+    return sortedIndices
+}
+
+const sortedIndices = sortIndices()
+
 const SimpleColorPicker: React.FC<ColorPickerProps> = ({onColorSelect, color: selectedColor}) => {
     selectedColor = `#${selectedColor}`
 
@@ -30,15 +46,20 @@ const SimpleColorPicker: React.FC<ColorPickerProps> = ({onColorSelect, color: se
 
     const paletteColors = useEntityQuery(
         [
-            Has(gameData!.setup.contractComponents.PaletteColors),
-            HasValue(gameData!.setup.contractComponents.PaletteColors, {game_id: GAME_ID})
+            Has(gameData!.setup.clientComponents.PaletteColors),
+            HasValue(gameData!.setup.clientComponents.PaletteColors, {game_id: GAME_ID}),
         ], { updateOnValueChange: true }
     )
+
+    const orderedPaletteColors = sortedIndices.filter(sortedIndex => {
+        const bigIntSortedIndex = BigInt(sortedIndex)
+        return paletteColors.findIndex(paletteColor => BigInt(paletteColor) === bigIntSortedIndex) > -1
+    })
 
     if (paletteColors.length) {
         return (
             <div className={styles.inner}>
-                {paletteColors.map(paletteColor => (
+                {orderedPaletteColors.map(paletteColor => (
                     <PaletteColor
                         key={paletteColor.toString()}
                         entityId={paletteColor}
