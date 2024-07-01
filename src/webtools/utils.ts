@@ -121,7 +121,7 @@ export function nextTileCoord(tileCoord: number, tileSize: number) {
 export const numRGBAToHex = (rgba: number | undefined) => {
     if (rgba == undefined) return "#0000EE"    // TODO Maybe return default color?
     const color = rgba >>> 8
-    return '#' + (color).toString(16).padStart(6, "0")
+    return '#' + (color).toString(16).padStart(6, "0").substring(0, 6)
 }
 
 // Converts the numeric RGB to a normal hex color

@@ -180,7 +180,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
             </div>
             <button
                 className={`absolute bottom-4 text-sm right-4 px-4 py-2 rounded-md transition duration-300 ${
-                    proposalStatus === 'closed' ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                    proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed') ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
                 }`}
                 onClick={() => proposalStatus === 'closed' ? handleActivateProposal() : onStartVote ? onStartVote(onStartVoteParam) : ''}
                 disabled={proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed')}

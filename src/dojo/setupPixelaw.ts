@@ -12,6 +12,7 @@ import {GraphQLClient} from "graphql-request";
 import {getComponentEntities, getComponentValue} from "@dojoengine/recs";
 import {felt252ToString} from "../global/utils";
 import {Manifest} from "../global/types.ts";
+import {ClientComponents, createClientComponents} from "@/dojo/createClientComponents.ts";
 
 export type TPixelLawError = Error & {
     type?: "DojoStateError" | "ConfigError";
@@ -20,6 +21,7 @@ export type TPixelLawError = Error & {
 export type SetupResult = {
     apps: ReturnType<typeof getComponentValue>[];
     client: Awaited<ReturnType<typeof setupWorld>>;
+    clientComponents: ClientComponents
     contractComponents: ReturnType<typeof defineContractComponents>;
     graphSdk: ReturnType<typeof getSdk>;
     systemCalls: ReturnType<typeof createSystemCalls>;
@@ -70,7 +72,7 @@ export async function setupPixelaw({
     });
 
     const contractComponents = defineContractComponents(world);
-    // const clientComponents = createClientComponents({contractComponents});
+    const clientComponents = createClientComponents({contractComponents});
 
     // FIXME: this is throwing failed to get entities: Missing expected data
     await getSyncEntities(toriiClient, contractComponents as any, []);
@@ -140,6 +142,7 @@ export async function setupPixelaw({
     const setupData = {
         apps,
         client,
+        clientComponents,
         contractComponents,
         graphSdk: createGraphSdk(),
         systemCalls: createSystemCalls({client}),

@@ -84,7 +84,7 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
 }
 
 export const hexRGBtoNumber = (color: string) => {
-    return parseInt(`0x${color}00`, 16)
+    return parseInt(`0x${color}FF`, 16)
 }
 
 export const hexRGBAtoNumber = (color: string) => {
