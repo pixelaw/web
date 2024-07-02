@@ -101,7 +101,8 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
 
   const handleVotePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setVotePoints(value === '' ? '' : Number(value));
+    const numericValue = Number(value);
+    setVotePoints(numericValue < 0 ? 0 : (value === '' ? '' : numericValue));
   };
 
   return (
