@@ -26,6 +26,7 @@ import ProposalListForMain from './components/NewProposalPopupForMain/ProposalLi
 import FilterMenu from './components/FilterMenu/FilterMenu';
 import {Has} from "@dojoengine/recs";
 import {useEntityQuery, useComponentValue} from "@dojoengine/react";
+import {Slide, ToastContainer} from "react-toastify";
 
 
 function App() {
@@ -306,6 +307,23 @@ function App() {
 
                 </Routes>
             </div>
+            <ToastContainer
+                position="top-right"
+                className={'w-full max-w-[420px] min-w-[200px] top-auto bottom-0 z-[999]'}
+                limit={2}
+                transition={Slide}
+                closeButton={false}
+                newestOnTop
+                hideProgressBar
+                toastStyle={{
+                    background: '#151f2c',
+                    padding: '15px',
+                    marginTop: '15px',
+                    color: '#fff',
+                    borderRadius: 0,
+                    boxShadow: '5px 5px 0px #00000029',
+                }}
+            />
         </div>
     )
     //</editor-fold>

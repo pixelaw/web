@@ -1,6 +1,7 @@
 import {shortString} from 'starknet'
 import {Coordinate} from "@/webtools/types.ts";
 import {Position} from "@/global/types.ts";
+import {toastError} from "@/components/Toast";
 
 /*
 * @notice converts a number to hexadecimal
@@ -107,4 +108,29 @@ export const numRGBToHex = (rgb: number) => {
 
 export const removeNullsFromArray = <T>(array: (T | null)[]) => {
     return array.filter(element => element !== null) as T[]
+}
+
+
+export const toastContractError = (e: any) => {
+    if (e.message) {
+        if (e.message.includes("Transaction execution error: {")) {
+            const index = e.message.indexOf("Transaction execution error: {")
+            if (index > -1) {
+                const transactionExecutionErrorMessage: string = e.message.substring(index + ("Transaction execution error: {").length - 1)
+                try {
+                    const transactionExecutionError = JSON.parse(transactionExecutionErrorMessage)
+                    if (transactionExecutionError.execution_error) {
+                        toastError({ message: transactionExecutionError.execution_error })
+                    } else toastError({ message: transactionExecutionErrorMessage })
+                } catch (e) {
+                    toastError({ message: transactionExecutionErrorMessage })
+                }
+            }
+            else toastError({ message: e.message.toString() })
+        }
+        else {
+            toastError(e.message.toString())
+        }
+    }
+    else toastError({ message: e.toString() })
 }
