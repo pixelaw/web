@@ -14,6 +14,7 @@ export const PROPOSAL_CONTRACT_ADDRESS ='0x481aadb9eab76d625be9d0ab0af0155c9f162
 export const VOTING_CONTRACT_ADDRESS ='0x405fdfa192f0a756c50dc081d0a4a10afbc5ed29a774665ab6a34cef4d4a549'
 export const GAME_ID = 1
 export const NEEDED_YES_PX = 1
+export const PALETTE_COLORS_LENGTH = 9
 
 export const proposals = [
     {

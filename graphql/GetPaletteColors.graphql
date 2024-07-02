@@ -1,0 +1,11 @@
+query GetPaletteColors {
+   paletteColorsModels(order: { direction: ASC, field: IDX}, where: { game_idEQ: 1}) {
+    edges {
+      node {
+        game_id
+        idx
+        color
+      }
+    }
+  }
+}
