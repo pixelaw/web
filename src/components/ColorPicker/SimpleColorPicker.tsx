@@ -1,6 +1,7 @@
 import styles from './SimpleColorPicker.module.css';
 import SimpleColorPickerItem from "@/components/ColorPicker/SimpleColorPickerItem.tsx";
 import usePaletteColors from "@/hooks/usePaletteColors.ts";
+import { original } from 'immer';
 
 const colors = [
     "#FF0000",
@@ -26,21 +27,24 @@ const SimpleColorPicker: React.FC<ColorPickerProps> = ({onColorSelect, color: se
     const paletteColors = usePaletteColors()
 
     if (paletteColors.data?.length) {
+        const reversedData = (paletteColors?.data ?? []).slice().reverse();
         return (
             <div className={styles.inner}>
-                {(paletteColors?.data ?? []).map(({color, idx}) => (
+                {reversedData.map(({ color }, idx) => (
                     <SimpleColorPickerItem
                         key={color}
                         color={color}
                         onSelect={onColorSelect}
                         selectedColor={selectedColor}
-                        old={idx === 0}
-                        latest={idx === (paletteColors.data?.length ?? 0) - 1}
+                        old={idx === reversedData.length - 1 }
+                        latest={idx === 0}
                     />
                 ))}
             </div>
-        )
+        );
     }
+    
+    
 
     return (
         <div className={styles.inner}>

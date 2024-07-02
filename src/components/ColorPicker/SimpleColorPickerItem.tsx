@@ -19,7 +19,7 @@ const SimpleColorPickerItem: React.FC<PropsType> =
     return (
         <button
             style={{backgroundColor: color}}
-            className={`${styles.button} ${color === '#FFFFFF' ? styles['button-white'] : ''} ${selected ? styles.selected : ''}`}
+            className={`${styles.button} ${color === '#FFFFFFFF' ? styles['button-white'] : ''} ${selected ? styles.selected : ''}`}
             aria-label={`Color ${color}`}
             onClick={handleClick}
         >

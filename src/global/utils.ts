@@ -112,25 +112,36 @@ export const removeNullsFromArray = <T>(array: (T | null)[]) => {
 
 
 export const toastContractError = (e: any) => {
-    if (e.message) {
-        if (e.message.includes("Transaction execution error: {")) {
-            const index = e.message.indexOf("Transaction execution error: {")
-            if (index > -1) {
-                const transactionExecutionErrorMessage: string = e.message.substring(index + ("Transaction execution error: {").length - 1)
-                try {
-                    const transactionExecutionError = JSON.parse(transactionExecutionErrorMessage)
-                    if (transactionExecutionError.execution_error) {
-                        toastError({ message: transactionExecutionError.execution_error })
-                    } else toastError({ message: transactionExecutionErrorMessage })
-                } catch (e) {
-                    toastError({ message: transactionExecutionErrorMessage })
-                }
-            }
-            else toastError({ message: e.message.toString() })
+    const message = e.message || e.toString();
+    const transactionErrorIndex = message.indexOf("Transaction execution error: {");
+
+    if (transactionErrorIndex > -1) {
+        const transactionExecutionErrorMessage = message.substring(transactionErrorIndex + ("Transaction execution error: {").length - 1);
+        try {
+            const transactionExecutionError = JSON.parse(transactionExecutionErrorMessage);
+            toastError({ message: extractError(transactionExecutionError.execution_error || transactionExecutionErrorMessage) });
+        } catch {
+            toastError({ message: extractError(transactionExecutionErrorMessage) });
         }
-        else {
-            toastError(e.message.toString())
+    } else {
+        toastError({ message: extractError(message) });
+    }
+}
+
+const extractError = (message: string): string => {
+    const patterns = [
+        /'([^']+)'/,
+        /not found in contract/,
+        /Failure reason:\s(.*?)\./,
+        // 他のパターンをここに追加できます
+    ];
+
+
+    for (const pattern of patterns) {
+        const match = message.match(pattern);
+        if (match) {
+            return match[1] || match[0];
         }
     }
-    else toastError({ message: e.toString() })
+    return "Unknown error";
 }
