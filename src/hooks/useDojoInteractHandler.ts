@@ -46,6 +46,10 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             // TODO lets first make the scenario without params work (paint)
         }
 
+        console.log("useDojoInteractHandler");
+        console.log("Params", params);
+        console.log(color);
+
         // Generate the DojoCall
         const dojoCall: DojoCall = generateDojoCall(
             params,
@@ -55,6 +59,9 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             coordinateToPosition(clickedCell),
             hexRGBtoNumber(color),
         )
+
+        console.log("DojoCall", dojoCall);
+        console.log(hexRGBtoNumber(color));
 
         // Execute the call
         gameData.dojoProvider.execute(gameData.account.account!, dojoCall)

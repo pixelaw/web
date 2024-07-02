@@ -1,5 +1,5 @@
 import styles from './App.module.css';
-import React, {useEffect, useMemo} from "react";
+import React, {useEffect, useMemo, useState, useRef} from "react";
 import {Bounds, Coordinate} from "@/webtools/types.ts";
 import {useSimpleTileStore} from "@/webtools/hooks/SimpleTileStore.ts";
 import {useDojoPixelStore} from "@/stores/DojoPixelStore.ts";
@@ -11,11 +11,22 @@ import Apps from "@/components/Apps/Apps.tsx";
 import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {Route, Routes} from "react-router-dom";
 import Loading from "@/components/Loading/Loading.tsx";
-import Settings from "@/components/Settings/Settings.tsx";
+import Settings from "@/pages/Settings/Settings.tsx";
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {useViewStateStore, useSyncedViewStateStore} from "@/stores/ViewStateStore.ts";
 import {useDojoInteractHandler} from "@/hooks/useDojoInteractHandler.ts";
 import {useSettingsStore} from "@/stores/SettingsStore.ts";
+import Governance from "@/pages/Governance.js";
+import NewProposal from "@/pages/NewProposal.js";
+import ProposalDetails from "@/pages/ProposalDetails.js";
+import { RiArrowGoBackFill } from "react-icons/ri";
+import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewProposalPopupForMain.tsx';
+import { FaArrowDown, FaArrowUp, FaFilter } from 'react-icons/fa';
+import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
+import FilterMenu from './components/FilterMenu/FilterMenu';
+import {Has} from "@dojoengine/recs";
+import {useEntityQuery, useComponentValue} from "@dojoengine/react";
+
 
 function App() {
     // console.log("App")
@@ -42,12 +53,70 @@ function App() {
         zoom,
         setZoom,
         setHoveredCell,
-        setClickedCell
+        setClickedCell,
+        selectedApp, // added
+        setSelectedApp, // added
     } = useViewStateStore();
+
+    // FIXME: should be in the ViewStateStore??
+    const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+    const [isProposalListVisible, setIsProposalListVisible] = useState(false);
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
+    const filterRef = useRef<HTMLDivElement>(null);
+    const [endDate, setEndDate] = useState(new Date());
+    const [currentPx, setCurrentPx] = useState(0);
+    const [maxPx, setMaxPx] = useState(10);
+    // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
     //</editor-fold>
+    // console.log(gameData?.setup.contractComponents.Game);
+
+    // const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
+
+    // get end date (FIXME: It's not smooth...)
+    useEffect(() => {
+        if (gameData?.setup?.contractComponents?.Game?.values?.end) {
+            const gameEntries = gameData.setup.contractComponents.Game.values.end.entries();
+            const firstGame = gameEntries.next().value;
+
+            if (firstGame) {
+                const endTimestamp = firstGame[1];
+                setEndDate(new Date(endTimestamp * 1000));
+            }
+        }
+    }, [gameData]);
+
+    useEffect(() => {
+        const tmp = gameData?.setup.contractComponents.Player.values;
+        
+        if (tmp) {
+            const addressMap = tmp.address;
+            const currentPxMap = tmp.current_px;
+            const maxPxMap = tmp.max_px;
+
+            const targetAddress = gameData?.account?.account.address || '';
+            // console.log(`Target address: ${targetAddress}`);
+
+            let symbolKey;
+            for (let [key, value] of addressMap) {
+                if (value.toString() === targetAddress.toString()) {
+                    symbolKey = key;
+                    break;
+                }
+            }
+
+            if (symbolKey) {
+                const currentPx = currentPxMap.get(symbolKey);
+                const maxPx = maxPxMap.get(symbolKey);
+                setCurrentPx(currentPx || 0);
+                setMaxPx(maxPx || 0);
+                // console.log(`Current PX for address ${targetAddress}: ${currentPx}`);
+            }
+        }
+    }, [gameData?.setup.contractComponents.Player.values]);
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -79,6 +148,27 @@ function App() {
         setColor(color)
     }
 
+    function toggleColorPicker() {
+        setIsColorPickerVisible(prevState => !prevState);
+    }
+
+    function toggleProposalList() {
+        setIsProposalListVisible(prevState => !prevState);
+    }
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+            setFilterOpen(false);
+          }
+        };
+    
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+      
     //</editor-fold>
 
     //<editor-fold desc="Custom behavior">
@@ -123,10 +213,14 @@ function App() {
 
     document.title = "PixeLAW: World";
 
-    return (
-        <div className={styles.container}>
-            <MenuBar/>
+    // TODO: show current_px / max_px to MenuBar
+    // const tmp = gameData?.setup.contractComponents.Player.values;
+    // console.log(tmp);
 
+    return (
+        // <div className={styles.container}>
+        <div className='bg-bg-primary min-h-screen flex flex-col'>
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate} currentPx={currentPx} maxPx={maxPx} />
             <div className={styles.main}>
 
                 <Routes>
@@ -144,17 +238,71 @@ function App() {
                                 onCellClick={onCellClick}
                                 onCellHover={onCellHover}
                             />
-                            <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}>
+                            {/* <div className={styles.colorpicker} style={{bottom: zoombasedAdjustment}}> */}
+                            <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment, display: isColorPickerVisible ? 'flex' : 'none' }}>
                                 <SimpleColorPicker color={color} onColorSelect={onColorSelect}/>
+                                <button className={styles.closeButton} onClick={toggleColorPicker}>
+                                    <RiArrowGoBackFill size={22}/>
+                                </button>
                             </div>
 
-                            <div className={styles.apps} style={{left: zoombasedAdjustment}}>
+                            <div className={styles.proposalListContainer}>
+                                <div className={`flex items-center justify-between mb-4`}>
+                                    <div className='text-white text-xl font-bold'>
+                                        Proposals
+                                    </div>
+                                    <div className='ml-1 relative flex items-center'>
+                                        {isProposalListVisible && (
+                                            <button 
+                                            className='bg-gray-700 text-white px-4 py-2 rounded-md'
+                                            onClick={() => setFilterOpen(!filterOpen)}
+                                            >
+                                                <FaFilter />
+                                            </button>)}
+                                        {isProposalListVisible && filterOpen && (
+                                            <div 
+                                            className='absolute mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10' 
+                                            ref={filterRef}
+                                            style={{ top: '100%', right: -100 }}
+                                            >
+                                                <FilterMenu statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <button className={`ml-auto text-white ${isProposalListVisible ? 'rotate-180' : ''} transition duration-300`} onClick={toggleProposalList}>
+                                        <FaArrowDown />
+                                    </button>
+                                </div>
+                                {isProposalListVisible && (
+                                    <div className='mb-4'>
+                                        <div className=''>
+                                            <ProposalListForMain headerHeight={64} statusFilter={statusFilter}/>
+                                        </div>
+                                        <div className='pt-4'>
+                                            <NewProposalPopupForMain />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.placePixelButton} onClick={() => {toggleColorPicker(); setSelectedApp('p_war');}} style={{ display: isColorPickerVisible ? 'none' : 'flex' }}>
+                                    Place a Pixel
+                                </button>
+                            </div>
+
+
+
+                            {/* <div className={styles.apps} style={{left: zoombasedAdjustment}}>
                                 <Apps
                                     appStore={appStore}
                                 />
-                            </div>
+                            </div> */}
                         </>
                     }/>
+                    <Route path="/governance" element={<Governance />} />
+                    <Route path="/new-proposal" element={<NewProposal />} />
+                    <Route path="/proposal/:id" element={<ProposalDetails />} />
 
                 </Routes>
             </div>

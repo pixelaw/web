@@ -68,8 +68,8 @@ module.exports = {
             },
             borderRadius: {
                 lg: "var(--radius)",
-                md: "calc(var(--radius) - 2px)",
-                sm: "calc(var(--radius) - 4px)",
+                // md: "calc(var(--radius) - 2px)",
+                // sm: "calc(var(--radius) - 4px)",
             },
             padding: {
                 'xs': '15px',
@@ -95,7 +95,8 @@ module.exports = {
             fontFamily: {
                 'silkscreen': ["Silkscreen", 'cursive'],
                 'noto-sans': ["Noto Sans", 'sans-serif'],
-                'emoji': ["Noto Emoji", 'sans-serif']
+                'emoji': ["Noto Emoji", 'sans-serif'],
+                'roboto-mono': ["Roboto Mono", 'monospace'],
             },
             backgroundImage: {
                 'main': "url('/assets/background/main.png')",

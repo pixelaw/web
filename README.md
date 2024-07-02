@@ -9,5 +9,18 @@ It turned out in rearchitecting everything from the ground up, mostly to be able
   - So to the left of x=0 is now x=4_294_967_295 but it all "just works"
 
 # How to run it
-- It's a regular Vite+React project, but you'll need the PixeLAW Core (dev)container running somewhere too.
+please run [p_war](https://github.com/pixelaw/p_war) first.
 
+```zsh
+$ git clone git@github.com:pixelaw/p_war.git
+$ cd ./p_war
+```
+
+then, please open the directory by using vscode, and build container with devcontainer.
+
+```zsh
+$ cd ../
+$ git clone git@github.com:pixelaw/p_war_client.git
+$ pnpm i
+$ pnpm run dev
+```

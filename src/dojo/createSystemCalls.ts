@@ -1,6 +1,7 @@
 import {AccountInterface, num} from 'starknet'
 import {ZERO_ADDRESS} from '@/global/constants'
 import {IWorld} from '@/dojo/generated'
+import {ProposalType} from "@/global/types.js";
 
 const FAILURE_REASON_REGEX = /Failure reason: ".+"/;
 
@@ -65,7 +66,56 @@ export function createSystemCalls(
         }
     }
 
+    const vote = async (account: AccountInterface, gameId: number, index: number, usePx: number, isInFavor: boolean) => {
+
+        const { transaction_hash } = await client.actions.vote({
+            account,
+            gameId,
+            index,
+            usePx,
+            isInFavor
+        });
+
+        await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+        })
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    };
+
+    const createProposal = async (account: AccountInterface, gameId: number, proposalType: ProposalType, targetColor: number) => {
+        if (proposalType === ProposalType.Unknown) throw new Error('Unknown proposal type supplied')
+        const { transaction_hash } = await client.actions.createProposal({
+            account,
+            gameId,
+            proposalType,
+            targetColor
+        });
+
+        await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    };
+
+    const activateProposal = async (account: AccountInterface, gameId: number, index: number) => {
+
+        const { transaction_hash } = await client.actions.activateProposal({
+            account,
+            gameId,
+            index,
+        });
+
+        await account.waitForTransaction(transaction_hash, {
+            retryInterval: 100,
+        })
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    };
+
     return {
-        interact
+        interact,
+        vote,
+        createProposal,
+        activateProposal
     }
 }

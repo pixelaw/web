@@ -1,6 +1,7 @@
 import {Coordinate, Dimension, Pixel} from "../../types.ts";
-import {getCellSize, numRGBAToHex, applyWorldOffset} from "../../utils.ts";
+import {getCellSize, numRGBToHex, applyWorldOffset} from "../../utils.ts";
 import {ZOOM_TILEMODE} from "./constants.ts";
+import {numRGBAToHex} from "@/global/utils.ts";
 
 export function drawPixels(
     context: CanvasRenderingContext2D,

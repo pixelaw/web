@@ -1,7 +1,6 @@
 import {getSyncEntities} from "@dojoengine/state";
 import {DojoConfig, DojoProvider} from "@dojoengine/core";
 import * as torii from "@dojoengine/torii-client";
-import {createClientComponents} from "./createClientComponents";
 import {createSystemCalls} from "./createSystemCalls";
 import {defineContractComponents} from "./contractComponents";
 import {world} from "./world";
@@ -13,6 +12,7 @@ import {GraphQLClient} from "graphql-request";
 import {getComponentEntities, getComponentValue} from "@dojoengine/recs";
 import {felt252ToString} from "../global/utils";
 import {Manifest} from "../global/types.ts";
+import {ClientComponents, createClientComponents} from "@/dojo/createClientComponents.ts";
 
 export type TPixelLawError = Error & {
     type?: "DojoStateError" | "ConfigError";
@@ -21,6 +21,7 @@ export type TPixelLawError = Error & {
 export type SetupResult = {
     apps: ReturnType<typeof getComponentValue>[];
     client: Awaited<ReturnType<typeof setupWorld>>;
+    clientComponents: ClientComponents
     contractComponents: ReturnType<typeof defineContractComponents>;
     graphSdk: ReturnType<typeof getSdk>;
     systemCalls: ReturnType<typeof createSystemCalls>;
@@ -69,10 +70,12 @@ export async function setupPixelaw({
         worldAddress: config.manifest.world.address || "",
         relayUrl: "",
     });
-    const contractComponents = defineContractComponents(world);
-    // const clientComponents = createClientComponents({contractComponents});
 
-    await getSyncEntities(toriiClient, contractComponents as any);
+    const contractComponents = defineContractComponents(world);
+    const clientComponents = createClientComponents({contractComponents});
+
+    // FIXME: this is throwing failed to get entities: Missing expected data
+    await getSyncEntities(toriiClient, contractComponents as any, []);
 
     // Get apps from the world
     const entities = getComponentEntities(contractComponents.App);
@@ -139,6 +142,7 @@ export async function setupPixelaw({
     const setupData = {
         apps,
         client,
+        clientComponents,
         contractComponents,
         graphSdk: createGraphSdk(),
         systemCalls: createSystemCalls({client}),
