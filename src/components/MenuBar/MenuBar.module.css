@@ -31,6 +31,8 @@
     font-size: 14px;
     color: #fff;
     letter-spacing: 0.5px;
+    border: 1px solid #FFD700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .countdownContainer {
@@ -42,4 +44,34 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.pxChange {
+    position: absolute;
+    top: 20px; /* 調整可能 */
+    left: 70%;
+    transform: translateX(-10%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    animation: fadeInOut 1s ease-in-out;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+    }
 }
