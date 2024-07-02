@@ -19,14 +19,13 @@ const PxCounter = () => {
 
     const [currentPx, setCurrentPx] = React.useState(playerPx);
     const [lastDate, setLastDate] = React.useState(playerLastDate);
-    const [pxChange, setPxChange] = React.useState(0); // 新しい状態を追加
-
+    const [pxChange, setPxChange] = React.useState(0);
     React.useEffect(() => {
         if (lastDate === playerLastDate) return;
         const currentSeconds = Math.floor(Date.now() / 1_000);
         const pxRecovered = Math.floor((currentSeconds - playerLastDate) / recoveryRate);
         const newPx = playerPx + pxRecovered > maxPx ? maxPx : playerPx + pxRecovered;
-        setPxChange(newPx - currentPx); // 変化量を設定
+        setPxChange(newPx - currentPx);
         setCurrentPx(newPx);
         setLastDate(playerLastDate);
     }, [playerLastDate, playerPx, lastDate, recoveryRate, maxPx]);
@@ -36,7 +35,7 @@ const PxCounter = () => {
         const interval = setInterval(() => {
             setCurrentPx(prevCurrentPx => {
                 const newPx = prevCurrentPx === maxPx ? maxPx : prevCurrentPx + 1;
-                setPxChange(1); // 1ずつ増えるので、変化量を1に設定
+                setPxChange(1);
                 return newPx;
             });
         }, recoveryRate * 1_000);
@@ -46,7 +45,7 @@ const PxCounter = () => {
 
     React.useEffect(() => {
         if (pxChange !== 0) {
-            const timeout = setTimeout(() => setPxChange(0), 1000); // 1秒後に変化量をリセット
+            const timeout = setTimeout(() => setPxChange(0), 1000);
             return () => clearTimeout(timeout);
         }
     }, [pxChange]);

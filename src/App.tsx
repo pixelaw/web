@@ -153,10 +153,12 @@ function App() {
 
     // TODO "slide up" the bottom as the zoomlevel increases
     const zoombasedAdjustment = useMemo(() => {
-        if (zoom > 3000) {
-            return '1rem';
-        }
-        return '-100%';
+        // show color palette always at the bottom for now.
+        return '1rem';
+        // if (zoom >= 2000) {
+        //     return '1rem';
+        // }
+        // return '-100%';
     }, [zoom]);
 
     //</editor-fold>
