@@ -1,0 +1,10 @@
+ query GetPixelRecoveryRate {
+   pixelRecoveryRateModels(where: { game_idEQ: 1}) {
+    edges {
+      node {
+        game_id
+        rate
+      }
+    }
+  }
+}

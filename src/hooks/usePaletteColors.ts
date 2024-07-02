@@ -35,7 +35,7 @@ const usePaletteColors = () => {
                     }
                 })
             },
-            refetchInterval: 1_000
+            refetchInterval: 2_000
         }
     )
 }
