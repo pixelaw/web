@@ -1,0 +1,18 @@
+query GetProposals($game_id: usize) {
+  proposalModels (where: { game_idEQ: $game_id }, order: { direction: ASC, field: INDEX} ) {
+    edges {
+      node {
+        game_id
+        index
+        author
+        proposal_type
+        target_color
+        start
+        end
+        yes_px
+        no_px
+        is_activated
+      }
+    }
+  }
+}

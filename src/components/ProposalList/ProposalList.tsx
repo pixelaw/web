@@ -3,10 +3,9 @@ import {FaFilter, FaSearch} from 'react-icons/fa';
 import FilterMenu from '../FilterMenu/FilterMenu';
 import {Link} from 'react-router-dom';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {useEntityQuery} from "@dojoengine/react";
-import {Has} from "@dojoengine/recs";
 import {GAME_ID} from "@/global/constants.ts";
 import ProposalItem from "@/components/ProposalList/ProposalItem.tsx";
+import useProposals from "@/hooks/useProposals.ts";
 
 interface ProposalListProps {
   headerHeight: number;
@@ -44,7 +43,8 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
   }, []);
 
   const { gameData } = usePixelawProvider();
-  const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)], { updateOnValueChange: true })
+  const proposals = useProposals(GAME_ID)
+  const proposalArray = proposals?.data ?? [];
 
   const handleVote = (proposal: any) => {
     setSelectedProposal(proposal);
@@ -126,7 +126,7 @@ const ProposalList: React.FC<ProposalListProps> = ({ headerHeight }) => {
       <div className={`overflow-y-auto px-6 ${selectedProposal ? 'blur' : ''}`} style={{ height: `calc(100vh - ${headerHeight}px - 112px)` }}>
         <div className='space-y-4'>
           {proposalArray.map((proposal) => {
-              return <ProposalItem entityId={proposal} key={proposal} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
+              return <ProposalItem proposal={proposal} key={proposal.index} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
           })}
         </div>
       </div>

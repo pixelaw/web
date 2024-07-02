@@ -1,13 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaSearch, FaFilter } from 'react-icons/fa';
-// import FilterMenu from './FilterMenu';
-import { Link } from 'react-router-dom';
 import ProposalItem from '../ProposalList/ProposalItem';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {Has} from "@dojoengine/recs";
-import {useEntityQuery} from "@dojoengine/react";
 import {GAME_ID} from "@/global/constants.ts";
 import {toastContractError} from "@/global/utils.ts";
+import useProposals from "@/hooks/useProposals.ts";
 
 
 interface ProposalListForMainProps {
@@ -47,7 +43,8 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
   }, []);
 
   const { gameData } = usePixelawProvider();
-  const proposalArray = useEntityQuery([Has(gameData!.setup.contractComponents.Proposal)], { updateOnValueChange: true })
+    const proposals = useProposals(GAME_ID)
+    const proposalArray = proposals?.data ?? [];
 
   const getStatusColor = (status: string) => {
     if (status.startsWith('end in')) {
@@ -122,7 +119,7 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
       <div className={`overflow-y-auto px-2`} style={{ height: `calc(100vh - ${headerHeight}px - 170px)` }}>
         <div className='space-y-4'>
           {proposalArray.map((proposal) => {
-            return <ProposalItem entityId={proposal} key={proposal} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
+            return <ProposalItem proposal={proposal} key={proposal.index} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
           })}
         </div>
       </div>

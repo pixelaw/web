@@ -1,14 +1,13 @@
-import { Entity } from "@dojoengine/recs";
 import React from "react";
-import {useComponentValue} from "@dojoengine/react";
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {ProposalType} from "@/global/types.ts";
 import {numRGBAToHex} from "@/webtools/utils.ts";
 import {GAME_ID, NEEDED_YES_PX} from "@/global/constants.ts";
 import {formatWalletAddress, toastContractError} from "@/global/utils.ts";
+import {ProposalDataType} from "@/hooks/useProposals.ts";
 
 type PropsType = {
-    entityId: Entity,
+    proposal?: ProposalDataType,
     onStartVote?: (proposal: any) => void,
     filter?: 'All' | 'Active' | 'Closed',
     searchTerm?: string
@@ -48,9 +47,8 @@ const getTextColor = (proposal: any) => {
     }
   };
 
-const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, searchTerm }) => {
+const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, searchTerm }) => {
     const { gameData } = usePixelawProvider();
-    const proposal = useComponentValue(gameData!.setup.contractComponents.Proposal, entityId)
     const [proposalStatus, setProposalStatus] = React.useState('')
 
     const start = Number(proposal?.start ?? 0)
