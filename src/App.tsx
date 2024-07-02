@@ -7,7 +7,6 @@ import {useUpdateService} from "@/webtools/hooks/UpdateService.ts";
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx";
 import SimpleColorPicker from "@/components/ColorPicker/SimpleColorPicker.tsx";
 import MenuBar from "@/components/MenuBar/MenuBar.tsx";
-import Apps from "@/components/Apps/Apps.tsx";
 import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {Route, Routes} from "react-router-dom";
 import Loading from "@/components/Loading/Loading.tsx";
@@ -21,11 +20,9 @@ import NewProposal from "@/pages/NewProposal.js";
 import ProposalDetails from "@/pages/ProposalDetails.js";
 import { RiArrowGoBackFill } from "react-icons/ri";
 import NewProposalPopupForMain from '@/components/NewProposalPopupForMain/NewProposalPopupForMain.tsx';
-import { FaArrowDown, FaArrowUp, FaFilter } from 'react-icons/fa';
+import { FaArrowDown, FaFilter } from 'react-icons/fa';
 import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
 import FilterMenu from './components/FilterMenu/FilterMenu';
-import {Has} from "@dojoengine/recs";
-import {useEntityQuery, useComponentValue} from "@dojoengine/react";
 import {Slide, ToastContainer} from "react-toastify";
 
 
@@ -66,9 +63,6 @@ function App() {
     const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Closed'>('All');
     const filterRef = useRef<HTMLDivElement>(null);
     const [endDate, setEndDate] = useState(new Date());
-    const [currentPx, setCurrentPx] = useState(0);
-    const [maxPx, setMaxPx] = useState(10);
-    // const colorPickerRef = useRef<HTMLDivElement>(null);
 
     useDojoInteractHandler(pixelStore, gameData!);
     useSyncedViewStateStore();
@@ -89,35 +83,6 @@ function App() {
             }
         }
     }, [gameData]);
-
-    useEffect(() => {
-        const tmp = gameData?.setup.contractComponents.Player.values;
-        
-        if (tmp) {
-            const addressMap = tmp.address;
-            const currentPxMap = tmp.current_px;
-            const maxPxMap = tmp.max_px;
-
-            const targetAddress = gameData?.account?.account.address || '';
-            // console.log(`Target address: ${targetAddress}`);
-
-            let symbolKey;
-            for (let [key, value] of addressMap) {
-                if (value.toString() === targetAddress.toString()) {
-                    symbolKey = key;
-                    break;
-                }
-            }
-
-            if (symbolKey) {
-                const currentPx = currentPxMap.get(symbolKey);
-                const maxPx = maxPxMap.get(symbolKey);
-                setCurrentPx(currentPx || 0);
-                setMaxPx(maxPx || 0);
-                // console.log(`Current PX for address ${targetAddress}: ${currentPx}`);
-            }
-        }
-    }, [gameData?.setup.contractComponents.Player.values]);
 
     //<editor-fold desc="Handlers">
     useEffect(() => {
@@ -221,7 +186,7 @@ function App() {
     return (
         // <div className={styles.container}>
         <div className='bg-bg-primary min-h-screen flex flex-col'>
-            <MenuBar address={gameData?.account?.account || ''} endTime={endDate} currentPx={currentPx} maxPx={maxPx} />
+            <MenuBar address={gameData?.account?.account || ''} endTime={endDate} />
             <div className={styles.main}>
 
                 <Routes>
