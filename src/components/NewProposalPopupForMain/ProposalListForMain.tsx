@@ -43,8 +43,8 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
   }, []);
 
   const { gameData } = usePixelawProvider();
-    const proposals = useProposals(GAME_ID)
-    const proposalArray = proposals?.data ?? [];
+  const proposals = useProposals(GAME_ID)
+  const proposalArray = proposals?.data ?? [];
 
   const getStatusColor = (status: string) => {
     if (status.startsWith('end in')) {
