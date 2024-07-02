@@ -184,7 +184,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
                 onClick={() => proposalStatus === 'closed' ? handleActivateProposal() : onStartVote ? onStartVote(onStartVoteParam) : ''}
                 disabled={proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed')}
             >
-                {proposalStatus === 'closed' ? 'Activate' : 'Vote'}
+                {proposalStatus === 'closed' ? (canActivateProposal ? 'Activate' : 'Denied') : 'Vote'}
             </button>
         </div>
     )

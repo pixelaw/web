@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './MenuBar.module.css';
 import { formatWalletAddress } from "@/global/utils.ts";
 import PxCounter from "@/components/MenuBar/PxCounter.tsx";
@@ -11,19 +11,7 @@ interface MenuBarProps {
 
 const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
     const navigate = useNavigate();
-    const location = useLocation();
     const [timeLeft, setTimeLeft] = useState('');
-
-    const showSettings = location.pathname === '/settings';
-    const showGovernance = location.pathname !== '/governance';
-
-    const toggleSettings = () => {
-        if (showSettings) {
-            navigate(-1);
-        } else {
-            navigate('/settings');
-        }
-    };
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -61,10 +49,11 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
                     {formatWalletAddress(address.address || '')}
                 </div>
                 <PxCounter />
+                {/* <div className={styles.buttonContainer}>
                 <div className={styles.buttonContainer}>
                     {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
                     <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
-                </div>
+                </div> */}
             </div>
         </div>
     );
