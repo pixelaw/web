@@ -64,10 +64,10 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime, currentPx, maxPx}) 
                 <div className={styles.addressContainer}>
                     {currentPx}/{maxPx} PX
                 </div>
-                <div className={styles.buttonContainer}>
+                {/* <div className={styles.buttonContainer}>
                     {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
                     <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
-                </div>
+                </div> */}
             </div>
         </div>
     );
