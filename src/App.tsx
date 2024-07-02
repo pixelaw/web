@@ -24,6 +24,9 @@ import { FaArrowDown, FaFilter } from 'react-icons/fa';
 import ProposalListForMain from './components/NewProposalPopupForMain/ProposalListForMain';
 import FilterMenu from './components/FilterMenu/FilterMenu';
 import {Slide, ToastContainer} from "react-toastify";
+import useBoard from "@/hooks/useBoard.ts";
+import {GAME_ID} from "@/global/constants.ts";
+import {BoardBounds, createBoardBounds, isCoordinateInBounds} from "@/webtools/utils.ts";
 
 
 function App() {
@@ -92,6 +95,12 @@ function App() {
         pixelStore.refresh()
     }, [updateService.tileChanged]);
 
+
+    const board = useBoard(GAME_ID)
+
+    const newCenter: Coordinate | undefined = board.data ? [board.data.center.x, board.data.center.y] : undefined
+
+    const bounds: BoardBounds = createBoardBounds(board.data?.origin ?? { x: 0, y: 0}, board.data?.width ?? 0, board.data?.height ?? 0)
     function onWorldviewChange(newWorldview: Bounds) {
         // console.log("onWorldviewChange", newWorldview)
         updateService.setBounds(newWorldview)
@@ -105,6 +114,9 @@ function App() {
     }
 
     function onCellClick(coordinate: Coordinate) {
+        if (board.data) {
+            if(!isCoordinateInBounds(coordinate, bounds)) return
+        }
         setClickedCell(coordinate)
     }
 
@@ -198,7 +210,7 @@ function App() {
                                 pixelStore={pixelStore}
                                 zoom={zoom}
                                 setZoom={setZoom}
-                                center={center}
+                                center={newCenter ?? center}
                                 setCenter={setCenter}
                                 onWorldviewChange={onWorldviewChange}
                                 onCellClick={onCellClick}
