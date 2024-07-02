@@ -132,6 +132,7 @@ const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, sear
     }
 
     const containerClassName = `relative p-4 rounded-md border transition-colors duration-300 ${proposalStatus === 'closed' ? 'bg-gray-600 border-gray-700' : 'bg-gray-800 border-gray-700 hover:border-gray-600'}`;
+    const isButtonDisabled = proposalStatus === '' || proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed') || proposal.is_activated
 
     return (
         <div
@@ -177,12 +178,17 @@ const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, sear
             </div>
             <button
                 className={`absolute bottom-4 text-sm right-4 px-4 py-2 rounded-md transition duration-300 ${
-                    proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed') ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                    isButtonDisabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
                 }`}
                 onClick={() => proposalStatus === 'closed' ? handleActivateProposal() : onStartVote ? onStartVote(onStartVoteParam) : ''}
-                disabled={proposalStatus.includes('starts') || (!canActivateProposal && proposalStatus === 'closed')}
+                disabled={isButtonDisabled}
             >
-                {proposalStatus === 'closed' ? (canActivateProposal ? 'Activate' : 'Denied') : 'Vote'}
+                {
+                    proposalStatus === '' ? '...' :
+                        proposal.is_activated ? 'Applied' :
+                            proposalStatus === 'closed' ?
+                                (canActivateProposal ? 'Activate' : 'Denied') : 'Vote'
+                }
             </button>
         </div>
     )
