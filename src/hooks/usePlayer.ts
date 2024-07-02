@@ -32,7 +32,15 @@ const usePlayer = (playerAddress: string) => {
 
                 const result: Data = await gqlClient.request(GetPlayer, { player_address: playerAddress })
                 const player = result.playerModels.edges?.[0]
-                if (!player) return undefined
+                if (!player) return {
+                    address: playerAddress,
+                    max_px: 10,
+                    num_owns: 0,
+                    num_commit: 0,
+                    current_px: 10,
+                    last_date: 0,
+                    is_banned: false
+                }
                 return {
                     ...player.node,
                     last_date: parseInt(player.node.last_date, 16)

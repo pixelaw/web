@@ -5,6 +5,48 @@ import {shortString} from "starknet";
 
 export const MAX_VIEW_SIZE = 1_000_000
 
+export type BoardBounds = { upperLeft: Coordinate, upperRight: Coordinate, lowerLeft: Coordinate, lowerRight: Coordinate}
+
+export const isCoordinateInBounds = ([x, y]: Coordinate, { upperLeft, upperRight, lowerLeft }: BoardBounds) => {
+    let xIsInBounds = false
+    let yIsInBounds = false
+    if (upperRight[0] > upperLeft[0]) {
+        xIsInBounds = x >= upperLeft[0] && x <= upperRight[0]
+    } else {
+        xIsInBounds = (x >= upperLeft[0] && x > upperRight[0]) || (x < upperLeft[0] && x <= upperRight[0])
+    }
+
+    if (upperRight[1] < lowerLeft[1]) {
+        yIsInBounds = y >= upperRight[1] && y <= lowerLeft[1]
+    } else {
+        yIsInBounds = (y >= upperRight[1] && y > lowerLeft[1]) || (y < upperRight[1] && y <= lowerLeft[1])
+    }
+
+    return xIsInBounds && yIsInBounds
+}
+
+export const createBoardBounds = ({x, y}: {x: number, y: number}, width: number, height: number) => {
+    const upperLeft: Coordinate = [x, y]
+
+    let xPlusWidth = (x + width > MAX_UINT32 ? x + width - MAX_UINT32 : x + width) - 1
+    xPlusWidth = xPlusWidth < 0 ? MAX_UINT32 : xPlusWidth
+
+    const upperRight: Coordinate = [xPlusWidth, y]
+
+    let yPlusHeight = (y + width > MAX_UINT32 ? y + height - MAX_UINT32 : y + width) - 1
+    yPlusHeight = yPlusHeight < 0 ? MAX_UINT32 : yPlusHeight
+
+    const lowerLeft: Coordinate = [x, yPlusHeight]
+    const lowerRight: Coordinate = [xPlusWidth, yPlusHeight]
+
+    return {
+        upperLeft,
+        upperRight,
+        lowerLeft,
+        lowerRight
+    }
+}
+
 export function randomColor(): number {
     // Generate random RGB color
     const r = Math.floor(Math.random() * 256);
