@@ -5,7 +5,7 @@ import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 import {ProposalType} from "@/global/types.ts";
 import {numRGBAToHex} from "@/webtools/utils.ts";
 import {GAME_ID, NEEDED_YES_PX} from "@/global/constants.ts";
-import { formatWalletAddress } from "@/global/utils.ts";
+import {formatWalletAddress, toastContractError} from "@/global/utils.ts";
 
 type PropsType = {
     entityId: Entity,
@@ -129,8 +129,7 @@ const ProposalItem: React.FC<PropsType> = ({ entityId, onStartVote, filter, sear
         )
             .then(() => console.log('activateProposal'))
             .catch((e) => {
-                // toast error message
-                console.error(e)
+                toastContractError(e)
             })
     }
 

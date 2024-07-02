@@ -7,6 +7,7 @@ import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {Has} from "@dojoengine/recs";
 import {useEntityQuery} from "@dojoengine/react";
 import {GAME_ID} from "@/global/constants.ts";
+import {toastContractError} from "@/global/utils.ts";
 
 
 interface ProposalListForMainProps {
@@ -84,8 +85,7 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
     )
         .then(() => setSelectedProposal(null))
         .catch((e) => {
-            // toast error message
-            console.error(e)
+            toastContractError(e)
         })
 }
 

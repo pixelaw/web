@@ -5,7 +5,7 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumber, numRGBToHex} from "@/global/utils.ts";
+import {hexRGBtoNumber, numRGBToHex, toastContractError} from "@/global/utils.ts";
 
 
 const NewProposalPopupForMain: React.FC = () => {
@@ -67,7 +67,7 @@ const NewProposalPopupForMain: React.FC = () => {
         hexRGBtoNumber(formatColorToRGB(color).replace('#', ''))
       ).then(() => {
         setIsCreatingNewProposal(false);
-      })
+      }).catch(e => toastContractError(e))
     }
   };
 
