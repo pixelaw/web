@@ -1,7 +1,23 @@
 .loadingContainer {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-25;
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-bg-primary bg-opacity-90;
 }
 
-.loadingContainer div {
-    @apply text-lg font-semibold text-white;
+.loadingText {
+    @apply text-3xl font-bold text-white;
+    animation: loadingAnimation 1s steps(4, end) infinite;
+}
+
+@keyframes loadingAnimation {
+    0% {
+        content: 'Loading.';
+    }
+    25% {
+        content: 'Loading..';
+    }
+    50% {
+        content: 'Loading...';
+    }
+    75% {
+        content: 'Loading...';
+    }
 }
