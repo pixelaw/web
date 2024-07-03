@@ -1,6 +1,6 @@
 import styles from './App.module.css';
 import React, {useEffect, useMemo, useState, useRef} from "react";
-import {Bounds, Coordinate} from "@/webtools/types.ts";
+import {Bounds, Coordinate, toString} from "@/webtools/types.ts";
 import {useSimpleTileStore} from "@/webtools/hooks/SimpleTileStore.ts";
 import {useDojoPixelStore} from "@/stores/DojoPixelStore.ts";
 import {useUpdateService} from "@/webtools/hooks/UpdateService.ts";
@@ -101,6 +101,36 @@ function App() {
     const newCenter: Coordinate | undefined = board.data ? [board.data.center.x, board.data.center.y] : undefined
 
     const bounds: BoardBounds = createBoardBounds(board.data?.origin ?? { x: 0, y: 0}, board.data?.width ?? 0, board.data?.height ?? 0)
+    const hasBoard = !!board?.data
+
+    React.useEffect(() => {
+        if (!hasBoard) return
+        const origin = board.data!.origin
+        for (let y = origin.y - 1; y <= origin.y + board.data!.height; y++) {
+            for (let x = origin.x - 1; x <= origin.x + board.data!.width; x++) {
+                const color =
+                    x === origin.x - 1 ||
+                    x === origin.x + board.data!.width ||
+                    y === origin.y - 1 ||
+                    y === origin.y + board.data!.height ?
+                        '0x000000FF' : '0xFFFFFFFF'
+
+                pixelStore.setPixel(
+                    toString([x, y]),
+                    {
+                            action: '0',
+                            color,
+                            owner: '',
+                            text: '',
+                            timestamp: Date.now() / 1_000,
+                            x,
+                            y
+                        }
+                    )
+            }
+        }
+
+    }, [hasBoard])
     function onWorldviewChange(newWorldview: Bounds) {
         // console.log("onWorldviewChange", newWorldview)
         updateService.setBounds(newWorldview)

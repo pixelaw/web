@@ -47,7 +47,8 @@ const useBoard = (id: number) => {
                     }
                 }
             },
-            enabled: !!id
+            enabled: !!id,
+            refetchInterval: 2_000
         }
     )
 }
