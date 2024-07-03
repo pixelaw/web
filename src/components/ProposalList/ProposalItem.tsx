@@ -99,7 +99,7 @@ const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, sear
 
     const hexColor = numRGBAToHex(proposal.target_color)
     const title = createProposalTitle(proposal.proposal_type, hexColor)
-    const canActivateProposal = proposal.yes_px >= NEEDED_YES_PX
+    const canActivateProposal = (proposal.yes_px >= NEEDED_YES_PX && proposal.yes_px > proposal.no_px)
 
     if (
         (filter === 'Closed' && proposalStatus !== 'closed') ||
