@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ProposalItem from '../ProposalList/ProposalItem';
 import {usePixelawProvider} from "@/providers/PixelawProvider";
 import {GAME_ID} from "@/global/constants.ts";
-import {toastContractError} from "@/global/utils.ts";
+import {toastContractError, toastProposalAdded} from "@/global/utils.ts";
 import useProposals from "@/hooks/useProposals.ts";
 
 
@@ -43,8 +43,18 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
   }, []);
 
   const { gameData } = usePixelawProvider();
-    const proposals = useProposals(GAME_ID)
-    const proposalArray = proposals?.data ?? [];
+  const proposals = useProposals(GAME_ID)
+  const proposalArray = proposals?.data ?? [];
+
+  // FIXME: this implementation is not working correctly. proposals is updated only when we open the proposal list popup.
+  // const [previousProposalCount, setPreviousProposalCount] = useState(proposalArray.length);
+  // useEffect(() => {
+  //   if (proposalArray.length > previousProposalCount) {
+  //     toastProposalAdded('New proposal added');
+  //     setPreviousProposalCount(proposalArray.length);
+  //   }
+  // }, [proposalArray.length, previousProposalCount]);
+
 
   const getStatusColor = (status: string) => {
     if (status.startsWith('end in')) {
@@ -101,7 +111,8 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
 
   const handleVotePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setVotePoints(value === '' ? '' : Number(value));
+    const numericValue = Number(value);
+    setVotePoints(numericValue < 0 ? 0 : (value === '' ? '' : numericValue));
   };
 
   return (

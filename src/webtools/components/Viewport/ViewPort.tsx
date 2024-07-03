@@ -120,7 +120,7 @@ const Viewport: React.FC<ViewportProps> = (
 
     // Render when in Tile mode
     useEffect(() => {
-        if (zoom <= ZOOM_TILEMODE && zoom > ZOOM_MIN) {
+        if (zoom <= ZOOM_TILEMODE && zoom >= ZOOM_MIN) {
             prepareCanvas()
 
             drawTiles(bufferContextRef.current!, zoom, pixelOffset, dimensions, worldOffset, tileset)

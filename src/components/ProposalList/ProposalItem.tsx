@@ -37,15 +37,15 @@ const getStatusColor = (status: string) => {
 };
 
 // doesn't work correctly...
-const getTextColor = (proposal: any) => {
-    if (proposal.status === 'Closed' && proposal.yes_px > proposal.no_px) {
-        return 'text-green';
-    } else if (proposal.status === 'Closed' && proposal.yes_px < proposal.no_px) {
-        return 'text-red';
+const getTextColor = (proposalStatus:string, proposal: any) => {
+    if (proposalStatus === 'closed' && proposal.yes_px > proposal.no_px) {
+        return 'text-green-300';
+    } else if (proposalStatus === 'closed' && proposal.yes_px <= proposal.no_px) {
+        return 'text-red-300';
     } else {
         return 'text-white';
     }
-  };
+};
 
 const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, searchTerm }) => {
     const { gameData } = usePixelawProvider();
@@ -140,7 +140,7 @@ const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, sear
             className={containerClassName}>
              <div className='block'>
                 <div className='flex justify-between items-center mb-1'>
-                    <div className={`text-sm font-bold ${getTextColor(proposal)} flex items-center`}>
+                    <div className={`text-sm font-bold flex items-center ${getTextColor(proposalStatus, proposal)}`}>
                         {title}
                         {hexColor && (
                             <div
@@ -178,7 +178,7 @@ const ProposalItem: React.FC<PropsType> = ({ proposal, onStartVote, filter, sear
             </div>
             <button
                 className={`absolute bottom-4 text-sm right-4 px-4 py-2 rounded-md transition duration-300 ${
-                    isButtonDisabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white'
+                    isButtonDisabled ? `${getTextColor(proposalStatus, proposal)} bg-gray-500 cursor-not-allowed` : 'bg-blue-600 hover:bg-blue-500 text-white'
                 }`}
                 onClick={() => proposalStatus === 'closed' ? handleActivateProposal() : onStartVote ? onStartVote(onStartVoteParam) : ''}
                 disabled={isButtonDisabled}

@@ -5,17 +5,17 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumber, numRGBToHex, toastContractError} from "@/global/utils.ts";
-
+import {hexRGBtoNumber, numRGBAToHex, toastContractError, toastProposalAdded} from "@/global/utils.ts";
+import useAllowedColors from '@/hooks/useAllowedColors.ts';
 
 const NewProposalPopupForMain: React.FC = () => {
   const [proposalType, setProposalType] = useState('Add Color');
   const [color, setColor] = useState('#FFFFFF00');
-  const [colorArrays, setColorArrays] = useState([
-    '#00000000',
-    '#FF00FF00',
-    '#00FFFF00',
-]);
+//   const [colorArrays, setColorArrays] = useState([
+//     '#00000000',
+//     '#FF00FF00',
+//     '#00FFFF00',
+// ]);
   const [isCreatingNewProposal, setIsCreatingNewProposal] = useState(false);
   // const [disasterColor, setDisasterColor] = useState('#FFFFFF00'); // only handle color.
   // const [comments, setComments] = useState('');
@@ -67,6 +67,7 @@ const NewProposalPopupForMain: React.FC = () => {
         hexRGBtoNumber(formatColorToRGB(color).replace('#', ''))
       ).then(() => {
         setIsCreatingNewProposal(false);
+        // toastProposalAdded('Proposal Added'); // should be broadcast for everyone.
       }).catch(e => toastContractError(e))
     }
   };
@@ -96,14 +97,9 @@ const NewProposalPopupForMain: React.FC = () => {
     '#FF00FF00',
     '#00FFFF00',
   ];
-
-  useEffect(() => {
-    const tmp = gameData?.setup.contractComponents.AllowedColor.values.color;
-    if (tmp) {
-      const valuesArray = Array.from(tmp.values()).map(numRGBToHex);
-      setColorArrays(valuesArray);
-    }
-  }, [gameData?.setup.contractComponents.AllowedColor.values.color]);
+  const allowed_colors = useAllowedColors(GAME_ID);
+  const allowed_colors_arrays = allowed_colors?.data ?? [];
+  const colorArrays = allowed_colors_arrays.map(colorData => numRGBAToHex(colorData.color).toUpperCase());
 
   const colorOptionsFormatted = colorArrays.map(color => ({
     value: color,

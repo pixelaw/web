@@ -153,10 +153,12 @@ function App() {
 
     // TODO "slide up" the bottom as the zoomlevel increases
     const zoombasedAdjustment = useMemo(() => {
-        if (zoom > 3000) {
-            return '1rem';
-        }
-        return '-100%';
+        // show color palette always at the bottom for now.
+        return '1rem';
+        // if (zoom >= 2000) {
+        //     return '1rem';
+        // }
+        // return '-100%';
     }, [zoom]);
 
     //</editor-fold>
@@ -286,7 +288,7 @@ function App() {
             </div>
             <ToastContainer
                 position="top-right"
-                className={'w-full max-w-[420px] min-w-[200px] top-auto bottom-0 z-[999]'}
+                className={'w-full max-w-[420px] min-w-[200px] z-[999] top-12'}
                 limit={2}
                 transition={Slide}
                 closeButton={false}

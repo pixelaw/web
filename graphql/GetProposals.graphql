@@ -1,5 +1,5 @@
 query GetProposals($game_id: usize) {
-  proposalModels (where: { game_idEQ: $game_id }, order: { direction: ASC, field: INDEX} ) {
+  proposalModels (where: { game_idEQ: $game_id }, order: { direction: DESC, field: INDEX} ) {
     edges {
       node {
         game_id

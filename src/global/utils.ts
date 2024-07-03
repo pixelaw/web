@@ -1,7 +1,7 @@
 import {shortString} from 'starknet'
 import {Coordinate} from "@/webtools/types.ts";
 import {Position} from "@/global/types.ts";
-import {toastError} from "@/components/Toast";
+import {toastError, toastSuccess} from "@/components/Toast";
 
 /*
 * @notice converts a number to hexadecimal
@@ -110,6 +110,10 @@ export const removeNullsFromArray = <T>(array: (T | null)[]) => {
     return array.filter(element => element !== null) as T[]
 }
 
+
+export const toastProposalAdded = (m: string) => {
+    toastSuccess({message: m});
+}
 
 export const toastContractError = (e: any) => {
     const message = e.message || e.toString();
