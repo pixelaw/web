@@ -5,7 +5,7 @@ import Select from 'react-select';
 import {ProposalType} from "@/global/types";
 import {GAME_ID} from "@/global/constants";
 import {usePixelawProvider} from "@/providers/PixelawProvider";
-import {hexRGBtoNumber, numRGBAToHex, toastContractError} from "@/global/utils.ts";
+import {hexRGBtoNumber, numRGBAToHex, toastContractError, toastProposalAdded} from "@/global/utils.ts";
 import useAllowedColors from '@/hooks/useAllowedColors.ts';
 
 const NewProposalPopupForMain: React.FC = () => {
@@ -67,6 +67,7 @@ const NewProposalPopupForMain: React.FC = () => {
         hexRGBtoNumber(formatColorToRGB(color).replace('#', ''))
       ).then(() => {
         setIsCreatingNewProposal(false);
+        // toastProposalAdded('Proposal Added'); // should be broadcast for everyone.
       }).catch(e => toastContractError(e))
     }
   };
