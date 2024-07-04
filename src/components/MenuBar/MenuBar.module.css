@@ -48,7 +48,7 @@
 
 .pxChange {
     position: absolute;
-    top: 20px; /* 調整可能 */
+    top: 20px;
     left: 70%;
     transform: translateX(-10%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -74,4 +74,11 @@
         opacity: 0;
         transform: translate(-50%, -10px);
     }
+}
+
+.zeroPx {
+    background-color: rgba(255, 0, 0, 0.1); 
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
 }

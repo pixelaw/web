@@ -20,6 +20,7 @@ const PxCounter = () => {
     const [currentPx, setCurrentPx] = React.useState(playerPx);
     const [lastDate, setLastDate] = React.useState(playerLastDate);
     const [pxChange, setPxChange] = React.useState(0);
+
     React.useEffect(() => {
         if (lastDate === playerLastDate) return;
         const currentSeconds = Math.floor(Date.now() / 1_000);
@@ -51,7 +52,7 @@ const PxCounter = () => {
     }, [pxChange]);
 
     return (
-        <div className={styles.addressContainer}>
+        <div className={`${styles.addressContainer} ${currentPx === 0 ? styles.zeroPx : ''}`}>
             {currentPx}/{maxPx} PX
             {pxChange !== 0 && (
                 <div className={styles.pxChange}>
