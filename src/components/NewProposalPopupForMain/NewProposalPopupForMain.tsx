@@ -144,7 +144,7 @@ const NewProposalPopupForMain: React.FC = () => {
     <div>
       {!isCreatingNewProposal && (
         <button onClick={() => setIsCreatingNewProposal(true)} className='bg-blue-600 text-white w-full px-10 py-3 rounded-md text-sm font-semibold shadow-lg hover:bg-blue-500 transition duration-300'>
-          Create A New Proposal
+          Create A New Proposal(5PX)
         </button>
       )}
 

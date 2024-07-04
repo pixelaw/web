@@ -107,7 +107,7 @@ body {
     top: 64px;
     left: 10px;
     width: 450px;
-    max-height: calc(100vh - 64px);
+    max-height: calc(100vh - 160px);
     background: rgba(31, 41, 55, 0.95);
     border-radius: 8px;
     overflow-y: hidden;

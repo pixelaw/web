@@ -127,7 +127,7 @@ const ProposalListForMain: React.FC<ProposalListForMainProps> = ({ headerHeight,
           </Link>
         </div>
       </div> */}
-      <div className={`overflow-y-auto px-2`} style={{ height: `calc(100vh - ${headerHeight}px - 170px)` }}>
+      <div className={`overflow-y-auto px-2`} style={{ height: `calc(100vh - ${headerHeight}px - 30vh)` }}>
         <div className='space-y-4'>
           {proposalArray.map((proposal) => {
             return <ProposalItem proposal={proposal} key={proposal.index} onStartVote={handleVote} filter={statusFilter} searchTerm={searchTerm} />
