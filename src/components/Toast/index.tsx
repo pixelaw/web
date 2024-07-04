@@ -27,7 +27,7 @@ const Toast = () => {
         <>
             <ToastContainer
                 position="top-right"
-                className={'w-full max-w-[420px] min-w-[200px] top-auto z-999'}
+                className={'z-999 top-auto w-full min-w-[200px] max-w-[420px]'}
                 limit={2}
                 transition={Slide}
                 closeButton={false}

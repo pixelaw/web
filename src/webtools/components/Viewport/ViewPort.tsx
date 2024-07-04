@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {Bounds, Coordinate, PixelStore, Tileset} from "../../types.ts";
+import {type Bounds, type Coordinate, type PixelStore, type Tileset} from "../../types.ts";
 import {
     cellForPosition,
     getCellSize,

@@ -7,7 +7,8 @@
     @apply w-[139px] h-[46px] cursor-pointer;
 }
 
-.menuButton { /* Add this class */
+.menuButton {
+    /* Add this class */
     @apply text-white bg-blue-500 hover:bg-blue-700 font-bold py-2 px-4 rounded;
 }
 
@@ -31,7 +32,7 @@
     font-size: 14px;
     color: #fff;
     letter-spacing: 0.5px;
-    border: 1px solid #FFD700;
+    border: 1px solid #ffd700;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
@@ -39,7 +40,7 @@
     font-family: 'Roboto Mono', monospace;
     font-size: 24px;
     font-weight: bold;
-    color: #FFD700;
+    color: #ffd700;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     position: absolute;
     left: 50%;

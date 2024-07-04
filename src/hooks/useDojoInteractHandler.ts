@@ -1,20 +1,16 @@
-import {useEffect} from 'react';
-import {useViewStateStore} from '@/stores/ViewStateStore.ts';
-import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
-import {PixelStore} from "@/webtools/types.ts";
-import {IPixelawGameData} from "@/dojo/setupPixelaw.ts";
-import getParamsDef from "@/dojo/utils/paramsDef.ts";
-import {coordinateToPosition, hexRGBtoNumber, toastContractError} from "@/global/utils.ts";
-import {DojoCall} from "@dojoengine/core";
-import {Manifest, Position} from "@/global/types.ts";
-import {generateDojoCall} from "@/dojo/utils/call.ts";
+import { type DojoCall } from '@dojoengine/core';
+import { useEffect } from 'react';
+import { type IPixelawGameData } from '@/dojo/setupPixelaw.ts';
+import { generateDojoCall } from '@/dojo/utils/call.ts';
+import getParamsDef from '@/dojo/utils/paramsDef.ts';
+import { coordinateToPosition, hexRGBtoNumber, toastContractError } from '@/global/utils.ts';
+import { useViewStateStore } from '@/stores/ViewStateStore.ts';
+import { type PixelStore } from '@/webtools/types.ts';
 
 // TODO maybe cleaner to directly use the Dojo hook here, but its not working.
 // For now passing the pixelStore
 export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixelawGameData) => {
-    const {setClickedCell, clickedCell, selectedApp, color} = useViewStateStore();
-    const {getByName} = useDojoAppStore()
-
+    const { setClickedCell, clickedCell, selectedApp, color } = useViewStateStore();
 
     useEffect(() => {
         if (!clickedCell || !selectedApp) return;
@@ -25,29 +21,21 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
         const pixel = pixelStore.getPixel(clickedCell);
 
         // If the pixel is not set, or the action is not overridden, use the default "interact"
-        const action = pixel && pixel.action !== "0"
-            ? pixel.action
-            : "interact"
+        const action = pixel && pixel.action !== '0' ? pixel.action : 'interact';
 
-        const contractName = `${selectedApp}_actions`
-        const position = coordinateToPosition(clickedCell)
+        const contractName = `${selectedApp}_actions`;
+        const position = coordinateToPosition(clickedCell);
 
-        const params = getParamsDef(
-            gameData.setup.manifest,
-            contractName,
-            action,
-            position,
-            false
-        )
+        const params = getParamsDef(gameData.setup.manifest, contractName, action, position, false);
 
         if (params.length) {
-            console.log(params)
+            console.log(params);
             // User needs to choose parameters first
             // TODO lets first make the scenario without params work (paint)
         }
 
-        console.log("useDojoInteractHandler");
-        console.log("Params", params);
+        console.log('useDojoInteractHandler');
+        console.log('Params', params);
         console.log(color);
 
         // Generate the DojoCall
@@ -58,24 +46,25 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             action,
             coordinateToPosition(clickedCell),
             hexRGBtoNumber(color),
-        )
+        );
 
-        console.log("DojoCall", dojoCall);
+        console.log('DojoCall', dojoCall);
         console.log(hexRGBtoNumber(color));
 
         // Execute the call
-        gameData.dojoProvider.execute(gameData.account.account!, dojoCall)
-            .then(res => {
-                console.log("dojocall", res)
+        gameData.dojoProvider
+            .execute(gameData.account.account!, dojoCall)
+            .then((res) => {
+                console.log('dojocall', res);
 
-                pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
-                pixelStore.setCacheUpdated(Date.now())
+                pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color));
+                pixelStore.setCacheUpdated(Date.now());
                 // Do something with the UI?
             })
-            .catch(e => {
-                console.error(e)
-                toastContractError(e)
-            })
-        setClickedCell(undefined)
+            .catch((e) => {
+                console.error(e);
+                toastContractError(e);
+            });
+        setClickedCell(undefined);
     }, [setClickedCell, clickedCell]);
 };

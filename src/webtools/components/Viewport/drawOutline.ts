@@ -1,4 +1,4 @@
-import {Dimension} from "../../types.ts";
+import { type Dimension } from '../../types.ts';
 
 export function drawOutline(context: CanvasRenderingContext2D, dimensions: Dimension) {
     // Draw outline

@@ -1,27 +1,28 @@
-import {getSyncEntities} from "@dojoengine/state";
-import {DojoConfig, DojoProvider} from "@dojoengine/core";
-import * as torii from "@dojoengine/torii-client";
-import {createSystemCalls} from "./createSystemCalls";
-import {defineContractComponents} from "./contractComponents";
-import {world} from "./world";
-import {setupWorld} from "./generated";
-import {Account, RpcProvider} from "starknet";
-import {BurnerManager, useBurnerManager} from "@dojoengine/create-burner";
-import {getSdk} from "../generated/graphql";
-import {GraphQLClient} from "graphql-request";
-import {getComponentEntities, getComponentValue} from "@dojoengine/recs";
-import {felt252ToString} from "../global/utils";
-import {Manifest} from "../global/types.ts";
-import {ClientComponents, createClientComponents} from "@/dojo/createClientComponents.ts";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { type DojoConfig, DojoProvider } from '@dojoengine/core';
+import { BurnerManager, type useBurnerManager } from '@dojoengine/create-burner';
+import { getComponentEntities, getComponentValue } from '@dojoengine/recs';
+import { getSyncEntities } from '@dojoengine/state';
+import * as torii from '@dojoengine/torii-client';
+import { GraphQLClient } from 'graphql-request';
+import { Account, RpcProvider } from 'starknet';
+import { getSdk } from '../generated/graphql';
+import { type Manifest } from '../global/types.ts';
+import { felt252ToString } from '../global/utils';
+import { defineContractComponents } from './contractComponents';
+import { createSystemCalls } from './createSystemCalls';
+import { setupWorld } from './generated';
+import { world } from './world';
+import { type ClientComponents, createClientComponents } from '@/dojo/createClientComponents.ts';
 
 export type TPixelLawError = Error & {
-    type?: "DojoStateError" | "ConfigError";
+    type?: 'DojoStateError' | 'ConfigError';
 };
 
 export type SetupResult = {
     apps: ReturnType<typeof getComponentValue>[];
     client: Awaited<ReturnType<typeof setupWorld>>;
-    clientComponents: ClientComponents
+    clientComponents: ClientComponents;
     contractComponents: ReturnType<typeof defineContractComponents>;
     graphSdk: ReturnType<typeof getSdk>;
     systemCalls: ReturnType<typeof createSystemCalls>;
@@ -42,37 +43,35 @@ export interface IPixelawGameData {
 
 async function getAbi(provider: RpcProvider, app: any): Promise<any> {
     let name = felt252ToString(app.name).toLowerCase();
-    console.log("reloading abi for", name);
+    console.log('reloading abi for', name);
     const ch = await provider.getClassHashAt(app.system);
     const cl = await provider.getClass(ch);
 
     name = `pixelaw::apps::${name}::app::${name}_actions`;
 
     return {
-        kind: "DojoContract",
+        kind: 'DojoContract',
         address: app.system,
         abi: cl.abi,
         name,
     };
 }
 
-export async function setupPixelaw({
-                                       ...config
-                                   }: DojoConfig): Promise<IPixelawGameData> {
-    console.group("🏵️ Setting up Dojo 🔨");
-    console.log("⚙️ Config:", config);
-    console.log("torii.createClient", config.manifest.world.address);
+export async function setupPixelaw({ ...config }: DojoConfig): Promise<IPixelawGameData> {
+    console.group('🏵️ Setting up Dojo 🔨');
+    console.log('⚙️ Config:', config);
+    console.log('torii.createClient', config.manifest.world.address);
 
     // torii client
     const toriiClient = await torii.createClient([], {
         rpcUrl: config.rpcUrl,
         toriiUrl: config.toriiUrl,
-        worldAddress: config.manifest.world.address || "",
-        relayUrl: "",
+        worldAddress: config.manifest.world.address || '',
+        relayUrl: '',
     });
 
     const contractComponents = defineContractComponents(world);
-    const clientComponents = createClientComponents({contractComponents});
+    const clientComponents = createClientComponents({ contractComponents });
 
     // FIXME: this is throwing failed to get entities: Missing expected data
     await getSyncEntities(toriiClient, contractComponents as any, []);
@@ -80,14 +79,12 @@ export async function setupPixelaw({
     // Get apps from the world
     const entities = getComponentEntities(contractComponents.App);
 
-    const apps: ReturnType<typeof getComponentValue>[] = [...entities].map(
-        (entityId) => getComponentValue(contractComponents.App, entityId)
+    const apps: ReturnType<typeof getComponentValue>[] = [...entities].map((entityId) =>
+        getComponentValue(contractComponents.App, entityId),
     );
 
     const contracts = await Promise.all(
-        apps.map((address) =>
-            getAbi(new RpcProvider({nodeUrl: config!.rpcUrl}), address)
-        )
+        apps.map((address) => getAbi(new RpcProvider({ nodeUrl: config!.rpcUrl }), address)),
     );
 
     // Manifest with updated contract ABIs
@@ -105,7 +102,7 @@ export async function setupPixelaw({
         masterAccount: new Account(
             dojoProvider.provider,
             config.masterAddress,
-            config.masterPrivateKey
+            config.masterPrivateKey,
         ),
         accountClassHash: config.accountClassHash,
         rpcProvider: dojoProvider.provider,
@@ -116,7 +113,7 @@ export async function setupPixelaw({
     if (burnerManager.list().length === 0) {
         try {
             await burnerManager.create();
-            console.log("burner done")
+            console.log('burner done');
         } catch (e) {
             console.error(e);
         }
@@ -126,14 +123,12 @@ export async function setupPixelaw({
         dojoProvider.provider,
         config.masterAddress,
         config.masterPrivateKey,
-        "1"
+        '1',
     );
-    const {create, list, get, select, clear, account, isDeploying} =
-        burnerManager;
+    const { create, list, get, select, clear, account, isDeploying } = burnerManager;
 
     // Create Graph SDK
-    const createGraphSdk = () =>
-        getSdk(new GraphQLClient(`${config.toriiUrl}/graphql`));
+    const createGraphSdk = () => getSdk(new GraphQLClient(`${config.toriiUrl}/graphql`));
 
     // Wrap up
     console.groupEnd();
@@ -145,7 +140,7 @@ export async function setupPixelaw({
         clientComponents,
         contractComponents,
         graphSdk: createGraphSdk(),
-        systemCalls: createSystemCalls({client}),
+        systemCalls: createSystemCalls({ client }),
         config,
         manifest,
         dojoProvider,

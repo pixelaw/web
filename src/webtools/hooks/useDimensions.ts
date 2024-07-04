@@ -1,4 +1,4 @@
-import {useState, useLayoutEffect, RefObject} from 'react';
+import { useState, useLayoutEffect, type RefObject } from 'react';
 
 export type Dimension = [width: number, height: number];
 
@@ -8,10 +8,7 @@ const useDimensions = <T extends HTMLElement>(targetRef: RefObject<T>): Dimensio
     useLayoutEffect(() => {
         const updateDimensions = () => {
             if (targetRef.current) {
-                setDimensions([
-                    targetRef.current.offsetWidth,
-                    targetRef.current.offsetHeight,
-                ]);
+                setDimensions([targetRef.current.offsetWidth, targetRef.current.offsetHeight]);
             }
         };
 
@@ -20,10 +17,7 @@ const useDimensions = <T extends HTMLElement>(targetRef: RefObject<T>): Dimensio
 
         const handleResize = (entries: ResizeObserverEntry[]) => {
             for (const entry of entries) {
-                setDimensions([
-                    entry.contentRect.width,
-                    entry.contentRect.height
-                ]);
+                setDimensions([entry.contentRect.width, entry.contentRect.height]);
             }
         };
 

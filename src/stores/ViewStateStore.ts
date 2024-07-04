@@ -1,13 +1,13 @@
-import {useEffect, useRef} from "react";
-import {create} from 'zustand';
-import {useLocation} from 'react-router-dom';
-import {Coordinate} from "@/webtools/types.ts";
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { create } from 'zustand';
+import { type Coordinate } from '@/webtools/types.ts';
 
 // const ZOOM_PRESETS = {tile: 100, pixel: 2800}
-const ZOOM_PRESETS = {tile: 100, pixel: 3400} // for p/war we cannot see anything with 2800(FIXME)
-const DEFAULT_ZOOM = ZOOM_PRESETS.pixel
+const ZOOM_PRESETS = { tile: 100, pixel: 3400 }; // for p/war we cannot see anything with 2800(FIXME)
+const DEFAULT_ZOOM = ZOOM_PRESETS.pixel;
 // const DEFAULT_CENTER: Coordinate = [4294967194, 0]
-const DEFAULT_CENTER: Coordinate = [30, 30] // for p/war
+const DEFAULT_CENTER: Coordinate = [30, 30]; // for p/war
 
 interface AppState {
     selectedApp: string;
@@ -31,27 +31,18 @@ export const useViewStateStore = create<AppState>((set) => ({
     color: '000000',
     hoveredCell: undefined,
     clickedCell: undefined,
-    setSelectedApp: (appName: string) => set({selectedApp: appName}),
-    setCenter: (center: Coordinate) => set({center}),
-    setZoom: (zoom: number) => set({zoom}),
-    setColor: (color: string) => set({color: color}),
-    setHoveredCell: (cell?: Coordinate) => set({hoveredCell: cell}),
-    setClickedCell: (cell?: Coordinate) => set({clickedCell: cell}),
+    setSelectedApp: (appName: string) => set({ selectedApp: appName }),
+    setCenter: (center: Coordinate) => set({ center }),
+    setZoom: (zoom: number) => set({ zoom }),
+    setColor: (color: string) => set({ color: color }),
+    setHoveredCell: (cell?: Coordinate) => set({ hoveredCell: cell }),
+    setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
 }));
 
 export function useSyncedViewStateStore() {
-
     const location = useLocation();
-    const {
-        selectedApp,
-        setSelectedApp,
-        center,
-        setCenter,
-        zoom,
-        setZoom,
-        color,
-        setColor
-    } = useViewStateStore();
+    const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } =
+        useViewStateStore();
 
     const initialLoad = useRef(true);
 
@@ -64,11 +55,10 @@ export function useSyncedViewStateStore() {
             const zoomInQuery = Number(queryParams.get('zoom'));
             const colorInQuery = queryParams.get('color');
 
-            if (appInQuery && appInQuery.length > 0) setSelectedApp(appInQuery)
+            if (appInQuery && appInQuery.length > 0) setSelectedApp(appInQuery);
             if (centerInQuery) setCenter(centerInQuery);
             if (zoomInQuery) setZoom(zoomInQuery);
             if (colorInQuery) setColor(colorInQuery);
-
         }
     }, []);
 

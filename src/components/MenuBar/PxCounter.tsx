@@ -1,8 +1,8 @@
-import { usePixelawProvider } from "@/providers/PixelawProvider.tsx";
-import styles from "@/components/MenuBar/MenuBar.module.css";
-import React from "react";
-import usePlayer from "@/hooks/usePlayer.ts";
-import usePixelRecoveryRate from "@/hooks/usePixelRecoveryRate.ts";
+import { usePixelawProvider } from '@/providers/PixelawProvider.tsx';
+import styles from '@/components/MenuBar/MenuBar.module.css';
+import usePlayer from '@/hooks/usePlayer.ts';
+import usePixelRecoveryRate from '@/hooks/usePixelRecoveryRate.ts';
+import { useEffect, useState } from 'react';
 
 const PxCounter = () => {
     const { gameData } = usePixelawProvider();
@@ -17,10 +17,10 @@ const PxCounter = () => {
     const recoveryRate = pixelRecoveryRate?.data?.rate ?? 0;
     const playerLastDate = player?.data?.last_date ?? 0;
 
-    const [currentPx, setCurrentPx] = React.useState(playerPx);
-    const [lastDate, setLastDate] = React.useState(playerLastDate);
-    const [pxChange, setPxChange] = React.useState(0);
-    React.useEffect(() => {
+    const [currentPx, setCurrentPx] = useState(playerPx);
+    const [lastDate, setLastDate] = useState(playerLastDate);
+    const [pxChange, setPxChange] = useState(0);
+    useEffect(() => {
         if (lastDate === playerLastDate) return;
         const currentSeconds = Math.floor(Date.now() / 1_000);
         const pxRecovered = Math.floor((currentSeconds - playerLastDate) / recoveryRate);
@@ -30,10 +30,10 @@ const PxCounter = () => {
         setLastDate(playerLastDate);
     }, [playerLastDate, playerPx, lastDate, recoveryRate, maxPx]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (!recoveryRate || maxPx === currentPx) return;
         const interval = setInterval(() => {
-            setCurrentPx(prevCurrentPx => {
+            setCurrentPx((prevCurrentPx) => {
                 const newPx = prevCurrentPx === maxPx ? maxPx : prevCurrentPx + 1;
                 setPxChange(1);
                 return newPx;
@@ -43,7 +43,7 @@ const PxCounter = () => {
         return () => clearInterval(interval);
     }, [recoveryRate, currentPx, maxPx]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (pxChange !== 0) {
             const timeout = setTimeout(() => setPxChange(0), 1000);
             return () => clearTimeout(timeout);
@@ -54,12 +54,10 @@ const PxCounter = () => {
         <div className={styles.addressContainer}>
             {currentPx}/{maxPx} PX
             {pxChange !== 0 && (
-                <div className={styles.pxChange}>
-                    {pxChange > 0 ? `+${pxChange}` : pxChange}
-                </div>
+                <div className={styles.pxChange}>{pxChange > 0 ? `+${pxChange}` : pxChange}</div>
             )}
         </div>
     );
-}
+};
 
 export default PxCounter;

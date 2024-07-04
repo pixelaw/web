@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from './App.module.css';
 
 interface AppProps {
     icon: string; // Unicode string for the emoji
@@ -8,8 +7,10 @@ interface AppProps {
 
 const App: React.FC<AppProps> = ({ icon, name }) => {
     return (
-        <div className={styles.inner}>
-            <p>{icon} {name}</p>
+        <div>
+            <p>
+                {icon} {name}
+            </p>
         </div>
     );
 };

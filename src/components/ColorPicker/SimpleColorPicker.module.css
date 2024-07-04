@@ -7,37 +7,39 @@
     flex-wrap: wrap; /* Allow wrapping of buttons */
     justify-content: center; /* Center buttons horizontally */
     gap: 0.5rem; /* Gap between buttons */
-  }
-  
-  .button {
+}
+
+.button {
     width: calc(2rem + 1vw);
     height: calc(2rem + 1vw);
     border-radius: 0.5rem; /* More rounded corners */
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for buttons */
     border: 2px solid transparent; /* Default border */
     position: relative; /* Position for number */
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .button-white {
+}
+
+.button-white {
     border: 2px solid #000000 !important; /* Black border for white button */
-  }
-  
-  .button:hover {
+}
+
+.button:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .button.selected {
+}
+
+.button.selected {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border: 2px solid #00BFFF; /* Light blue border to indicate selection */
-  }
-  
-  .number {
+    border: 2px solid #00bfff; /* Light blue border to indicate selection */
+}
+
+.number {
     position: absolute;
     top: -0.3rem; /* Adjust as necessary */
     left: -0.3rem; /* Adjust as necessary */
@@ -52,9 +54,9 @@
     justify-content: center;
     border-radius: 0.25rem; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Light shadow */
-  }
-  
-  .label {
+}
+
+.label {
     position: absolute;
     top: -0.3rem; /* Adjust as necessary */
     left: -0.3rem; /* Adjust as necessary */
@@ -68,4 +70,4 @@
     justify-content: center;
     border-radius: 0.25rem; /* Rounded corners */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); /* Light shadow */
-  }
+}

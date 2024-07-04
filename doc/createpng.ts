@@ -6,11 +6,11 @@ const png = new PNG({ width: size, height: size });
 
 for (let y = 0; y < png.height; y++) {
     for (let x = 0; x < png.width; x++) {
-        let idx = (png.width * y + x) << 2;
+        const idx = (png.width * y + x) << 2;
 
         // Create gradient from red to blue
-        let red = Math.round(255 * (1 - y / png.height));
-        let blue = Math.round(255 * y / png.height);
+        const red = Math.round(255 * (1 - y / png.height));
+        const blue = Math.round(255 * y / png.height);
 
         png.data[idx] = red;
         png.data[idx+1] = 0;

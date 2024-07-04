@@ -10,7 +10,9 @@ body {
     box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: inherit; /* Ensure box-sizing is consistent */
 }
 
@@ -75,7 +77,8 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-  .placePixelButton, .governPixelsButton {
+.placePixelButton,
+.governPixelsButton {
     padding: 0.5rem 1rem;
     background-color: #ffffff;
     border: 1px solid #000000;
@@ -83,8 +86,7 @@ body {
     border-radius: 4px;
     cursor: pointer;
     z-index: 100; /* Ensure it's above other elements */
-  }
-  
+}
 
 .apps {
     position: absolute;
@@ -100,7 +102,7 @@ body {
 
 .blur-background {
     filter: blur(5px);
-  }
+}
 
 .proposalListContainer {
     position: absolute;
@@ -115,8 +117,8 @@ body {
     padding: 16px;
     padding-bottom: 0%;
 }
-  
-  .openButton {
+
+.openButton {
     position: fixed;
     top: 50%;
     left: 0;
@@ -130,16 +132,13 @@ body {
     z-index: 1000;
     writing-mode: vertical-rl;
     text-orientation: mixed;
-  }
-  
-
-
+}
 
 .container {
-  background-color: var(--bg-primary); /* Replace with the actual color value if different */
-  min-height: 100vh; /* Equivalent to min-h-screen */
-  display: flex;
-  flex-direction: column; /* Equivalent to flex-col */
+    background-color: var(--bg-primary); /* Replace with the actual color value if different */
+    min-height: 100vh; /* Equivalent to min-h-screen */
+    display: flex;
+    flex-direction: column; /* Equivalent to flex-col */
 }
 
 .errorContainer {
@@ -166,7 +165,8 @@ body {
     font-weight: bold;
 }
 
-.errorDetail, .errorSuggestion {
+.errorDetail,
+.errorSuggestion {
     color: #adb5bd; /* Example suggestion color */
     text-align: center;
     margin-top: 1rem;

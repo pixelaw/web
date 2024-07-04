@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './MenuBar.module.css';
-import { formatWalletAddress } from "@/global/utils.ts";
-import PxCounter from "@/components/MenuBar/PxCounter.tsx";
+import { formatWalletAddress } from '@/global/utils.ts';
+import PxCounter from '@/components/MenuBar/PxCounter.tsx';
 
 interface MenuBarProps {
-    address: string;
+    address?: string;
     endTime: Date;
 }
 
-const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
+const MenuBar: React.FC<MenuBarProps> = ({ address, endTime }) => {
     const navigate = useNavigate();
     const [timeLeft, setTimeLeft] = useState('');
 
@@ -24,7 +24,9 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
                 const minutes = Math.floor((difference / 1000 / 60) % 60);
                 const seconds = Math.floor((difference / 1000) % 60);
 
-                setTimeLeft(`${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+                setTimeLeft(
+                    `${days.toString().padStart(2, '0')}:${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+                );
             } else {
                 setTimeLeft('00:00:00:00');
                 clearInterval(timer);
@@ -37,23 +39,14 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
     return (
         <div className={styles.inner}>
             <div className={styles.logoContainer} onClick={() => navigate('/')}>
-                <img src="/assets/logo/pixeLaw-logo.png" alt="logo"/>
+                <img src='/assets/logo/pixeLaw-logo.png' alt='logo' />
             </div>
 
-            <div className={styles.countdownContainer}>
-                {timeLeft}
-            </div>
+            <div className={styles.countdownContainer}>{timeLeft}</div>
 
             <div className={styles.rightSection}>
-                <div className={styles.addressContainer}>
-                    {formatWalletAddress(address.address || '')}
-                </div>
+                <div className={styles.addressContainer}>{formatWalletAddress(address || '')}</div>
                 <PxCounter />
-                {/* <div className={styles.buttonContainer}>
-                <div className={styles.buttonContainer}>
-                    {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
-                    <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
-                </div> */}
             </div>
         </div>
     );

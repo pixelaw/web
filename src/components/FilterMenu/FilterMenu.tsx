@@ -8,7 +8,7 @@ interface FilterMenuProps {
 const FilterMenu: React.FC<FilterMenuProps> = ({ statusFilter, setStatusFilter }) => {
   return (
     <div className='p-4'>
-      <div className='font-bold mb-2'>Status Filter</div>
+      <div className='mb-2 font-bold'>Status Filter</div>
       <div className='space-y-2'>
         <label className='flex items-center'>
           <input 

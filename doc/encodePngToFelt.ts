@@ -9,7 +9,7 @@ type PixelRows = PixelRow[]
 
 async function generatePixelRows(imageFile: string, origin: { x: number, y: number }): Promise<PixelRows> {
 
-    let pixelRows = []
+    const pixelRows = []
     const png = PNG.sync.read(fs.readFileSync(imageFile));
 
     const pixels = [];
@@ -22,8 +22,8 @@ async function generatePixelRows(imageFile: string, origin: { x: number, y: numb
     const PIXELS_PER_FELT = 7
     let x_offset = 0
     for (let last_pixel = 0; last_pixel < pixels.length; last_pixel++) {
-        let x = last_pixel % (png.width);
-        let y = Math.floor(last_pixel / png.width);
+        const x = last_pixel % (png.width);
+        const y = Math.floor(last_pixel / png.width);
 
         buffer.push(pixels[last_pixel])
 
@@ -35,15 +35,15 @@ async function generatePixelRows(imageFile: string, origin: { x: number, y: numb
         ) {
 
             // Chop in rows of 7
-            let feltPixels: number[][] = [];
+            const feltPixels: number[][] = [];
             for (let i = 0; i < buffer.length; i += PIXELS_PER_FELT) {
-                let chunk = buffer.slice(i, i + PIXELS_PER_FELT).flat();
+                const chunk = buffer.slice(i, i + PIXELS_PER_FELT).flat();
                 feltPixels.push(chunk);
             }
 
-            let image_data: string[] = feltPixels.map(pixel => {
-                let buf = Buffer.from(pixel);
-                let hexString = buf.toString('hex');
+            const image_data: string[] = feltPixels.map(pixel => {
+                const buf = Buffer.from(pixel);
+                const hexString = buf.toString('hex');
                 return "0x0000000".concat(hexString).padEnd(65, '0');
             });
 
@@ -68,7 +68,7 @@ async function generatePixelRows(imageFile: string, origin: { x: number, y: numb
 
 function generateSozo(pixelRows: PixelRows): string {
     let result = ""
-    for (let {position, image_data} of pixelRows) {
+    for (const {position, image_data} of pixelRows) {
 
         result += `sozo \
 --profile dev-pop \
@@ -97,7 +97,7 @@ async function execute(pixelRows: PixelRows) {
     const myTestContract = new Contract(abi, contractAddress, provider);
     myTestContract.connect(account0);
 
-    for (let {position, image_data} of pixelRows) {
+    for (const {position, image_data} of pixelRows) {
         const defaultParams = {
             for_player: 0,
             for_system: 0,

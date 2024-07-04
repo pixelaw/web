@@ -1,7 +1,7 @@
-import {Coordinate, Dimension, Pixel} from "../../types.ts";
-import {getCellSize, numRGBToHex, applyWorldOffset} from "../../utils.ts";
-import {ZOOM_TILEMODE} from "./constants.ts";
-import {numRGBAToHex} from "@/global/utils.ts";
+import { type Coordinate, type Dimension, type Pixel } from '../../types.ts';
+import { getCellSize, applyWorldOffset } from '../../utils.ts';
+import { ZOOM_TILEMODE } from './constants.ts';
+import { numRGBAToHex } from '@/global/utils.ts';
 
 export function drawPixels(
     context: CanvasRenderingContext2D,
@@ -10,32 +10,29 @@ export function drawPixels(
     dimensions: Dimension,
     worldTranslation: Coordinate,
     hoveredCell: Coordinate | undefined,
-    getPixel: (coord: Coordinate) => Pixel | undefined
+    getPixel: (coord: Coordinate) => Pixel | undefined,
 ) {
     const cellSize = getCellSize(zoom);
     const gridDimensions = [
         Math.ceil(dimensions[0] / cellSize),
-        Math.ceil(dimensions[1] / cellSize)
+        Math.ceil(dimensions[1] / cellSize),
     ];
     context.beginPath();
     const doBorder = zoom <= ZOOM_TILEMODE ? 1 : 0;
 
     // How many pixels a cell extends offscreen
-    const offsets: Coordinate = [
-        0 - pixelOffset[0],
-        0 - pixelOffset[1]
-    ]
+    const offsets: Coordinate = [0 - pixelOffset[0], 0 - pixelOffset[1]];
 
     // console.log("p", cellSize)
     const drawPixel = (cellX: number, cellY: number, sizeAdjustment: number = 0) => {
-        const worldCoords = applyWorldOffset(worldTranslation, [cellX, cellY])
+        const worldCoords = applyWorldOffset(worldTranslation, [cellX, cellY]);
 
         const pixel = getPixel(worldCoords);
         if (!pixel) return;
 
         context.fillStyle = numRGBAToHex(pixel.color as number);
 
-        const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment)
+        const [x, y, w, h] = getRect(offsets, cellX, cellY, cellSize, doBorder, sizeAdjustment);
 
         context.fillRect(x, y, w, h);
     };
@@ -45,7 +42,6 @@ export function drawPixels(
             drawPixel(x, y);
         }
     }
-
 
     if (hoveredCell && zoom > ZOOM_TILEMODE) {
         drawPixel(hoveredCell[0], hoveredCell[1], 8); // having a shadow/outline or transition animation.
@@ -58,24 +54,21 @@ function getRect(
     y: number,
     cellSize: number,
     doBorder: number,
-    sizeAdjustment: number
+    sizeAdjustment: number,
 ): number[] {
-    const startDrawingAtX = offsetX + (x * cellSize);
-    const startDrawingAtY = offsetY + (y * cellSize);
+    const startDrawingAtX = offsetX + x * cellSize;
+    const startDrawingAtY = offsetY + y * cellSize;
 
     return [
         startDrawingAtX + doBorder - sizeAdjustment,
         startDrawingAtY + doBorder - sizeAdjustment,
         cellSize - doBorder + sizeAdjustment * 2,
-        cellSize - doBorder + sizeAdjustment * 2
-    ]
-
+        cellSize - doBorder + sizeAdjustment * 2,
+    ];
 }
 
-
 if (import.meta.vitest) {
-    const {it, expect, describe} = import.meta.vitest
-
+    const { it, expect, describe } = import.meta.vitest;
 
     describe('getRect', () => {
         it('should return correct rectangle dimensions without border and size adjustment', () => {
