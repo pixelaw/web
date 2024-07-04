@@ -49,12 +49,11 @@ const MenuBar: React.FC<MenuBarProps> = ({ address, endTime}) => {
                     {formatWalletAddress(address.address || '')}
                 </div>
                 <PxCounter />
-                <div className={styles.buttonContainer}> 
-                {/* <div className={styles.buttonContainer}> uncomment here to test client update*/}
-                    {/* {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>} */}
-                    {/* <button className={styles.menuButton} onClick={toggleSettings}>Settings</button> */}
-                    <button className={styles.menuButton}>Settings</button>
-                </div>
+                {/* <div className={styles.buttonContainer}>
+                <div className={styles.buttonContainer}>
+                    {!showGovernance && <button className={styles.menuButton} onClick={() => navigate('/')}>Draw</button>}
+                    <button className={styles.menuButton} onClick={toggleSettings}>Settings</button>
+                </div> */}
             </div>
         </div>
     );
