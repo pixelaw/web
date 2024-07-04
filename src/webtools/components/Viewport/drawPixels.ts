@@ -48,7 +48,7 @@ export function drawPixels(
 
 
     if (hoveredCell && zoom > ZOOM_TILEMODE) {
-        drawPixel(hoveredCell[0], hoveredCell[1], 8);
+        drawPixel(hoveredCell[0], hoveredCell[1], 8); // having a shadow/outline or transition animation.
     }
 }
 
