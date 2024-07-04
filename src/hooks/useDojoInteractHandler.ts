@@ -4,7 +4,7 @@ import {useDojoAppStore} from "@/stores/DojoAppStore.ts";
 import {PixelStore} from "@/webtools/types.ts";
 import {IPixelawGameData} from "@/dojo/setupPixelaw.ts";
 import getParamsDef from "@/dojo/utils/paramsDef.ts";
-import {coordinateToPosition, hexRGBtoNumber} from "@/global/utils.ts";
+import {coordinateToPosition, hexRGBtoNumber, toastContractError} from "@/global/utils.ts";
 import {DojoCall} from "@dojoengine/core";
 import {Manifest, Position} from "@/global/types.ts";
 import {generateDojoCall} from "@/dojo/utils/call.ts";
@@ -46,6 +46,10 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             // TODO lets first make the scenario without params work (paint)
         }
 
+        console.log("useDojoInteractHandler");
+        console.log("Params", params);
+        console.log(color);
+
         // Generate the DojoCall
         const dojoCall: DojoCall = generateDojoCall(
             params,
@@ -56,6 +60,9 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
             hexRGBtoNumber(color),
         )
 
+        console.log("DojoCall", dojoCall);
+        console.log(hexRGBtoNumber(color));
+
         // Execute the call
         gameData.dojoProvider.execute(gameData.account.account!, dojoCall)
             .then(res => {
@@ -64,6 +71,10 @@ export const useDojoInteractHandler = (pixelStore: PixelStore, gameData: IPixela
                 pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
                 pixelStore.setCacheUpdated(Date.now())
                 // Do something with the UI?
+            })
+            .catch(e => {
+                console.error(e)
+                toastContractError(e)
             })
         setClickedCell(undefined)
     }, [setClickedCell, clickedCell]);

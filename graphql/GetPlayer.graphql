@@ -1,0 +1,15 @@
+ query GetPlayer($player_address: ContractAddress) {
+   playerModels(where: { addressEQ: $player_address}) {
+    edges {
+      node {
+       address
+        max_px
+        num_owns
+        num_commit
+        current_px
+        last_date
+        is_banned
+      }
+    }
+  }
+}

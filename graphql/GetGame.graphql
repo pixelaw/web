@@ -1,0 +1,15 @@
+query GetGame($id: usize) {
+  boardModels (where: { idEQ: $id }) {
+    edges {
+      node {
+        id,
+        origin {
+          x
+          y
+        }
+        height,
+        width
+      }
+    }
+  }
+}

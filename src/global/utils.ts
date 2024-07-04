@@ -1,6 +1,7 @@
 import {shortString} from 'starknet'
 import {Coordinate} from "@/webtools/types.ts";
 import {Position} from "@/global/types.ts";
+import {toastError, toastSuccess} from "@/components/Toast";
 
 /*
 * @notice converts a number to hexadecimal
@@ -63,13 +64,20 @@ export const felt252ToUnicode = (felt252: string | number) => {
     return string
 }
 
-export const formatAddress = (address: string) => {
-    if (address.length > 30) {
-        return address.substr(0, 6) + '...' + address.substr(address.length - 4, address.length)
-    }
+// export const formatAddress = (address: string) => {
+//     if (address.length > 30) {
+//         return address.substr(0, 6) + '...' + address.substr(address.length - 4, address.length)
+//     }
 
-    return address
-}
+//     return address
+// }
+
+export const formatWalletAddress = (address: string) => {
+    if (address.length > 10) {
+        return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    }
+    return address;
+};
 
 // Takes a RGB hex nr and converts it to numeric rgba (0 alpha)
 export const coordinateToPosition = (coord: Coordinate): Position => {
@@ -77,9 +85,12 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
 }
 
 export const hexRGBtoNumber = (color: string) => {
-    return parseInt(`0x${color}00`, 16)
+    return parseInt(`0x${color}FF`, 16)
 }
 
+export const hexRGBAtoNumber = (color: string) => {
+    return parseInt(`0x${color}`, 16)
+}
 
 // Converts the numeric RGBA to a normal hex color
 // @dev this removes the Alpha channel.
@@ -90,7 +101,51 @@ export const numRGBAToHex = (rgba: number) => {
     return '#' + (color).toString(16).padStart(6, "0")
 }
 
+// Converts the numeric RGB to a normal hex color
+export const numRGBToHex = (rgb: number) => {
+    return '#' + (rgb).toString(16).padStart(6, "0")
+}
 
 export const removeNullsFromArray = <T>(array: (T | null)[]) => {
     return array.filter(element => element !== null) as T[]
+}
+
+
+export const toastProposalAdded = (m: string) => {
+    toastSuccess({message: m});
+}
+
+export const toastContractError = (e: any) => {
+    const message = e.message || e.toString();
+    const transactionErrorIndex = message.indexOf("Transaction execution error: {");
+
+    if (transactionErrorIndex > -1) {
+        const transactionExecutionErrorMessage = message.substring(transactionErrorIndex + ("Transaction execution error: {").length - 1);
+        try {
+            const transactionExecutionError = JSON.parse(transactionExecutionErrorMessage);
+            toastError({ message: extractError(transactionExecutionError.execution_error || transactionExecutionErrorMessage) });
+        } catch {
+            toastError({ message: extractError(transactionExecutionErrorMessage) });
+        }
+    } else {
+        toastError({ message: extractError(message) });
+    }
+}
+
+const extractError = (message: string): string => {
+    const patterns = [
+        /'([^']+)'/,
+        /not found in contract/,
+        /Failure reason:\s(.*?)\./,
+        // 他のパターンをここに追加できます
+    ];
+
+
+    for (const pattern of patterns) {
+        const match = message.match(pattern);
+        if (match) {
+            return match[1] || match[0];
+        }
+    }
+    return "Unknown error";
 }

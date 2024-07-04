@@ -1,6 +1,7 @@
 import {Coordinate, Dimension, Pixel} from "../../types.ts";
-import {getCellSize, numRGBAToHex, applyWorldOffset} from "../../utils.ts";
+import {getCellSize, numRGBToHex, applyWorldOffset} from "../../utils.ts";
 import {ZOOM_TILEMODE} from "./constants.ts";
+import {numRGBAToHex} from "@/global/utils.ts";
 
 export function drawPixels(
     context: CanvasRenderingContext2D,
@@ -47,7 +48,7 @@ export function drawPixels(
 
 
     if (hoveredCell && zoom > ZOOM_TILEMODE) {
-        drawPixel(hoveredCell[0], hoveredCell[1], 15);
+        drawPixel(hoveredCell[0], hoveredCell[1], 8); // having a shadow/outline or transition animation.
     }
 }
 

@@ -1,0 +1,11 @@
+query GetAllowedColors($game_id: usize) {
+  allowedColorModels (where: { game_idEQ: $game_id } ) {
+    edges {
+      node {
+        game_id
+        color
+        is_allowed
+      }
+    }
+  }
+}

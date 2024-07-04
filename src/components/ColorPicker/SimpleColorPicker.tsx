@@ -1,4 +1,7 @@
 import styles from './SimpleColorPicker.module.css';
+import SimpleColorPickerItem from "@/components/ColorPicker/SimpleColorPickerItem.tsx";
+import usePaletteColors from "@/hooks/usePaletteColors.ts";
+import { original } from 'immer';
 
 const colors = [
     "#FF0000",
@@ -17,21 +20,46 @@ export interface ColorPickerProps {
     color: string;
 }
 
+
 const SimpleColorPicker: React.FC<ColorPickerProps> = ({onColorSelect, color: selectedColor}) => {
     selectedColor = `#${selectedColor}`
+
+    const paletteColors = usePaletteColors()
+
+    if (paletteColors.data?.length) {
+        const reversedData = (paletteColors?.data ?? []).slice().reverse();
+        return (
+            <div className={styles.inner}>
+                {reversedData.map(({ color }, idx) => (
+                    <SimpleColorPickerItem
+                        key={color}
+                        color={color}
+                        onSelect={onColorSelect}
+                        selectedColor={selectedColor}
+                        old={idx === reversedData.length - 1 }
+                        latest={idx === 0}
+                    />
+                ))}
+            </div>
+        );
+    }
+    
+    
+
     return (
         <div className={styles.inner}>
             {colors.map((color, index) => (
-                <button
-                    key={index}
-                    style={{backgroundColor: color, outline: selectedColor === color ? '4px solid black' : 'none'}}
-                    className={`${styles.button} ${color === '#FFFFFF' ? styles['button-white'] : ''}`}
-                    aria-label={`Color ${color}`}
-                    onClick={() => onColorSelect(color)}
-                ></button>
+                <SimpleColorPickerItem
+                    key={color}
+                    color={color}
+                    onSelect={onColorSelect}
+                    selectedColor={selectedColor}
+                    old={index === 0}
+                    latest={index === colors.length - 1}
+                />
             ))}
         </div>
-    );
+      );
 };
 
 export default SimpleColorPicker;
