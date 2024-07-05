@@ -62,8 +62,8 @@ export const useDojoInteractHandler = (
         console.log("pd", paramData)
         // Generate the DojoCall
         const dojoCall: DojoCall = generateDojoCall(
-            paramData || params,
-            gameData.setup.manifest,
+            params,
+            paramData ,
             contractName,
             action,
             coordinateToPosition(clickedCell),

@@ -1,14 +1,13 @@
 services:
   pixelaw-core:
-    image: ghcr.io/pixelaw/core:0.3.20
+    image: ghcr.io/pixelaw/core:0.3.27
     platform: linux/x86_64
     container_name: pixelaw-core
     environment:
       - DISABLE_FEE=true
       - DISABLE_VALIDATE=true
       - RUST_LOG=info,hyper=off
-#      - WORLD_ADDRESS=0xfc685b398bc4692ab3a4acd380859e71f97d2c319f188854d3a01948ba276a
-      - WORLD_ADDRESS=0xfc685b398bc4692ab3a4acd380859e71f97d2c319f188854d3a01948ba276a
+      - WORLD_ADDRESS=0x00a712727a27defbf77122fae30c91e90ec62bba8f09a2a396eddc29b768386b
       - INVOKE_MAX_STEPS=4000000
     ports:
       - "127.0.0.1:5050:5050"
@@ -19,10 +18,9 @@ services:
     networks:
       - pixelaw
     volumes:
-      - storage:/keiko/storage
-      - log:/keiko/log
-#      - ./.core/storage:/keiko/storage
-#      - ./.core/log:/keiko/log
+      - storage:/pixelaw/storage
+      - log:/pixelaw/log
+
 networks:
   pixelaw:
     driver: bridge
