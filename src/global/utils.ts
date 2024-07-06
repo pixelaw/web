@@ -21,7 +21,7 @@ export async function streamToString(readableStream: ReadableStream) {
     let result = '';
 
     try {
-        // eslint-disable-next-line no-constant-condition
+         
         while (true) {
             const {done, value} = await reader.read();
 
@@ -86,7 +86,7 @@ export const hexRGBtoNumber = (color: string) => {
 // TODO: Eventually convert to rgb(255 0 153 / 80%)
 // ref: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value
 export const numRGBAToHex = (rgba: number) => {
-    let color = rgba >>> 8
+    const color = rgba >>> 8
     return '#' + (color).toString(16).padStart(6, "0")
 }
 
@@ -94,3 +94,9 @@ export const numRGBAToHex = (rgba: number) => {
 export const removeNullsFromArray = <T>(array: (T | null)[]) => {
     return array.filter(element => element !== null) as T[]
 }
+export const formatWalletAddress = (address: string) => {
+    if (address.length > 10) {
+        return `${address.slice(0, 4)}...${address.slice(-4)}`;
+    }
+    return address;
+};
