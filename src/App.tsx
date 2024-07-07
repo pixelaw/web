@@ -1,20 +1,19 @@
-import styles from './App.module.css';
-import React, {} from "react";
-import MenuBar from "@/components/MenuBar/MenuBar.tsx";
-import {Route, Routes} from "react-router-dom";
-import Loading from "@/components/Loading/Loading.tsx";
-import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
-import ViewportPage from "@/pages/ViewportPage.tsx";
-import SettingsPage from "@/pages/SettingsPage.tsx";
+import Loading from "@/components/Loading/Loading.tsx"
+import MenuBar from "@/components/MenuBar/MenuBar.tsx"
+import SettingsPage from "@/pages/SettingsPage.tsx"
+import ViewportPage from "@/pages/ViewportPage.tsx"
+import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
+import React, {} from "react"
+import { Route, Routes } from "react-router-dom"
+import styles from "./App.module.css"
 
 function App() {
     //<editor-fold desc="State">
 
-
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    const {clientState, error, gameData} = usePixelawProvider();
+    const { clientState, error, gameData } = usePixelawProvider()
 
     //</editor-fold>
 
@@ -28,48 +27,47 @@ function App() {
 
     //<editor-fold desc="Output">
     if (clientState === "loading") {
-        document.title = "PixeLAW: Loading";
-        return <Loading/>;
+        document.title = "PixeLAW: Loading"
+        return <Loading />
     }
 
     if (clientState === "error") {
-        document.title = "PixeLAW: Error";
+        document.title = "PixeLAW: Error"
         const errorMessage = `${error}`
         return (
             <div className={styles.errorContainer}>
                 <div className={styles.errorMessage}>
-                    <h1 className={styles.errorTitle}>
-                        Something went wrong
-                    </h1>
-                    {errorMessage !== '' &&
-                        <p className={styles.errorDetail}>
-                            {errorMessage}
-                        </p>
-                    }
+                    <h1 className={styles.errorTitle}>Something went wrong</h1>
+                    {errorMessage !== "" && <p className={styles.errorDetail}>{errorMessage}</p>}
                     <p className={styles.errorSuggestion}>
                         Try to refresh this page. If issue still persists, alert the team at Discord.
                     </p>
                 </div>
             </div>
-        );
+        )
     }
 
-    document.title = "PixeLAW: World";
+    document.title = "PixeLAW: World"
 
     return (
         <div className={styles.container}>
-            <MenuBar/>
+            <MenuBar />
 
             <div className={styles.main}>
                 <Routes>
-                    <Route path="/settings" element={<SettingsPage />} />
-                    <Route path="/" element={<ViewportPage />} />
+                    <Route
+                        path="/settings"
+                        element={<SettingsPage />}
+                    />
+                    <Route
+                        path="/"
+                        element={<ViewportPage />}
+                    />
                 </Routes>
             </div>
         </div>
     )
     //</editor-fold>
 }
-
 
 export default App

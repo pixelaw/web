@@ -10,7 +10,9 @@ body {
     box-sizing: border-box;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: inherit; /* Ensure box-sizing is consistent */
 }
 
@@ -71,7 +73,8 @@ body {
     font-weight: bold;
 }
 
-.errorDetail, .errorSuggestion {
+.errorDetail,
+.errorSuggestion {
     color: #adb5bd; /* Example suggestion color */
     text-align: center;
     margin-top: 1rem;
