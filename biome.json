@@ -8,10 +8,10 @@
         "enabled": true,
         "formatWithErrors": false,
         "ignore": [],
-        "attributePosition": "auto",
+        "attributePosition": "multiline",
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 120,
+        "lineWidth": 80,
         "lineEnding": "lf"
     },
     "javascript": {
@@ -22,7 +22,13 @@
             "jsxQuoteStyle": "double",
             "quoteProperties": "asNeeded",
             "semicolons": "asNeeded",
-            "trailingCommas": "all"
+            "trailingCommas": "all",
+            "attributePosition": "multiline"
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": true
         }
     },
     "json": {
