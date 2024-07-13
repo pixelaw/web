@@ -38,19 +38,21 @@ export async function streamToString(readableStream: ReadableStream) {
     }
 }
 
-export const felt252ToString = (felt252: string | number | bigint) => {
-    if (typeof felt252 === "bigint" || typeof felt252 === "object") {
-        felt252 = `0x${felt252.toString(16)}`
+export const felt252ToString = (felt252Input: string | number | bigint) => {
+    let result = felt252Input
+
+    if (typeof result === "bigint" || typeof result === "object") {
+        result = `0x${result.toString(16)}`
     }
-    if (felt252 === "0x0" || felt252 === "0") return ""
-    if (typeof felt252 === "string") {
+    if (result === "0x0" || result === "0") return ""
+    if (typeof result === "string") {
         try {
-            return shortString.decodeShortString(felt252)
+            return shortString.decodeShortString(result)
         } catch (e) {
-            return felt252
+            return result
         }
     }
-    return felt252.toString()
+    return result.toString()
 }
 
 export const felt252ToUnicode = (felt252: string | number) => {
