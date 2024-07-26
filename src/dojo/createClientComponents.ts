@@ -1,16 +1,15 @@
-// @ts-ignore
-import { overridableComponent } from "@dojoengine/recs";
-import { ContractComponents } from "./contractComponents";
+import { overridableComponent } from "@dojoengine/recs"
+import type { ContractComponents } from "./contractComponents.ts"
 
-export type ClientComponents = ReturnType<typeof createClientComponents>;
+export type ClientComponents = ReturnType<typeof createClientComponents>
 
 export function createClientComponents({
-  contractComponents,
+    contractComponents,
 }: {
-  contractComponents: ContractComponents;
+    contractComponents: ContractComponents
 }) {
-  return {
-    ...contractComponents,
-    Pixel: overridableComponent(contractComponents.Pixel)
-  };
+    return {
+        ...contractComponents,
+        Pixel: overridableComponent(contractComponents.Pixel),
+    }
 }

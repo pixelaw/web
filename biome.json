@@ -2,7 +2,9 @@
     "organizeImports": { "enabled": true },
     "linter": {
         "enabled": true,
-        "rules": { "recommended": true }
+        "rules": {
+            "recommended": true
+        }
     },
     "formatter": {
         "enabled": true,
@@ -11,7 +13,7 @@
         "attributePosition": "multiline",
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 80,
+        "lineWidth": 120,
         "lineEnding": "lf"
     },
     "javascript": {

@@ -8,8 +8,7 @@ import { shortString } from "starknet"
  * */
 export const convertToHexadecimal = (n: number) => n.toString(16)
 export const prefixString = (prefix: string, base: string) => `${prefix}${base}`
-export const convertToHexadecimalAndLeadWithOx = (n: number) =>
-    prefixString("0x", convertToHexadecimal(n))
+export const convertToHexadecimalAndLeadWithOx = (n: number) => prefixString("0x", convertToHexadecimal(n))
 export const convertToDecimal = (hexadecimalString: string) => {
     const n = hexadecimalString.replace("0x", "")
     return Number.parseInt(n, 16)

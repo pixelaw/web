@@ -14,8 +14,7 @@ export const useDojoInteractHandler = (
     onParamsRequired: (params: any) => void,
     onSubmitParams: (submitParams: (params: any) => void) => void,
 ) => {
-    const { setClickedCell, clickedCell, selectedApp, color } =
-        useViewStateStore()
+    const { setClickedCell, clickedCell, selectedApp, color } = useViewStateStore()
     const { getByName } = useDojoAppStore()
     const [paramData, setParamData] = useState(null)
 
@@ -43,13 +42,7 @@ export const useDojoInteractHandler = (
         const contractName = `${selectedApp}_actions`
         const position = coordinateToPosition(clickedCell)
 
-        const params = getParamsDef(
-            gameData.setup.manifest,
-            contractName,
-            action,
-            position,
-            false,
-        )
+        const params = getParamsDef(gameData.setup.manifest, contractName, action, position, false)
 
         if (params.length && !paramData) {
             onParamsRequired(params) // Use the callback to pass parameters where needed
@@ -69,17 +62,15 @@ export const useDojoInteractHandler = (
         )
 
         // Execute the call
-        gameData.dojoProvider
-            .execute(gameData.account.account!, dojoCall)
-            .then((res) => {
-                console.log("dojocall", res)
+        gameData.dojoProvider.execute(gameData.account.account!, dojoCall).then((res) => {
+            console.log("dojocall", res)
 
-                pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
-                pixelStore.setCacheUpdated(Date.now())
+            pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
+            pixelStore.setCacheUpdated(Date.now())
 
-                // Reset paramData after execution
-                setParamData(null)
-            })
+            // Reset paramData after execution
+            setParamData(null)
+        })
         setClickedCell(undefined)
     }, [setClickedCell, clickedCell, paramData])
 }

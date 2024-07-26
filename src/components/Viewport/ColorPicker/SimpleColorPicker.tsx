@@ -17,22 +17,17 @@ export interface ColorPickerProps {
     color: string
 }
 
-const SimpleColorPicker: React.FC<ColorPickerProps> = ({
-    onColorSelect,
-    color: selectedColor,
-}) => {
+const SimpleColorPicker: React.FC<ColorPickerProps> = ({ onColorSelect, color: selectedColor }) => {
     selectedColor = `#${selectedColor}`
     return (
         <div className={styles.inner}>
-            {colors.map((color, index) => (
+            {colors.map((color) => (
                 <button
-                    key={index}
+                    type={"button"}
+                    key={color}
                     style={{
                         backgroundColor: color,
-                        outline:
-                            selectedColor === color
-                                ? "4px solid black"
-                                : "none",
+                        outline: selectedColor === color ? "4px solid black" : "none",
                     }}
                     className={`${styles.button} ${color === "#FFFFFF" ? styles["button-white"] : ""}`}
                     aria-label={`Color ${color}`}

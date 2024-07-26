@@ -39,16 +39,7 @@ export const useViewStateStore = create<AppState>((set) => ({
 
 export function useSyncedViewStateStore() {
     const location = useLocation()
-    const {
-        selectedApp,
-        setSelectedApp,
-        center,
-        setCenter,
-        zoom,
-        setZoom,
-        color,
-        setColor,
-    } = useViewStateStore()
+    const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } = useViewStateStore()
 
     const initialLoad = useRef(true)
 
@@ -58,10 +49,7 @@ export function useSyncedViewStateStore() {
             initialLoad.current = false
             const queryParams = new URLSearchParams(location.search)
             const appInQuery = queryParams.get("app")
-            const centerInQuery = queryParams
-                .get("center")
-                ?.split(",")
-                .map(Number) as Coordinate
+            const centerInQuery = queryParams.get("center")?.split(",").map(Number) as Coordinate
             const zoomInQuery = Number(queryParams.get("zoom"))
             const colorInQuery = queryParams.get("color")
 

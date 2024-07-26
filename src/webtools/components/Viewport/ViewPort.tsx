@@ -2,19 +2,8 @@ import type React from "react"
 import { useEffect, useRef, useState } from "react"
 import useDimensions from "../../hooks/useDimensions.ts"
 import type { Bounds, Coordinate, PixelStore, Tileset } from "../../types.ts"
-import {
-    applyWorldOffset,
-    areBoundsEqual,
-    cellForPosition,
-    getCellSize,
-    handlePixelChanges,
-} from "../../utils.ts"
-import {
-    ZOOM_MAX,
-    ZOOM_MIN,
-    ZOOM_SCALEFACTOR,
-    ZOOM_TILEMODE,
-} from "./constants.ts"
+import { applyWorldOffset, areBoundsEqual, cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts"
+import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants.ts"
 import { drawGrid } from "./drawGrid.ts"
 import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
@@ -60,9 +49,7 @@ const Viewport: React.FC<ViewportProps> = ({
     const dragStartPoint = useRef<Coordinate | null>(null)
     const [lastDragPoint, setLastDragPoint] = useState<Coordinate>([0, 0])
     const [worldOffset, setWorldOffset] = useState<Coordinate>([0, 0])
-    const [hoveredCell, setHoveredCell] = useState<Coordinate | undefined>(
-        undefined,
-    )
+    const [hoveredCell, setHoveredCell] = useState<Coordinate | undefined>(undefined)
     const [worldView, setWorldView] = useState<Bounds>([
         [0, 0],
         [0, 0],
@@ -100,12 +87,7 @@ const Viewport: React.FC<ViewportProps> = ({
 
     // Render when in pixel mode
     useEffect(() => {
-        if (
-            !bufferContextRef.current ||
-            !bufferContextRef.current ||
-            !bufferCanvasRef.current ||
-            !contextRef.current
-        ) {
+        if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
             return
         }
 
@@ -140,25 +122,13 @@ const Viewport: React.FC<ViewportProps> = ({
 
     // Render when in Tile mode
     useEffect(() => {
-        if (
-            !bufferContextRef.current ||
-            !bufferContextRef.current ||
-            !bufferCanvasRef.current ||
-            !contextRef.current
-        ) {
+        if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
             return
         }
         if (zoom <= ZOOM_TILEMODE && zoom > ZOOM_MIN) {
             prepareCanvas()
 
-            drawTiles(
-                bufferContextRef.current,
-                zoom,
-                pixelOffset,
-                dimensions,
-                worldOffset,
-                tileset,
-            )
+            drawTiles(bufferContextRef.current, zoom, pixelOffset, dimensions, worldOffset, tileset)
             drawOutline(bufferContextRef.current, dimensions)
 
             contextRef.current.drawImage(bufferCanvasRef.current, 0, 0)
@@ -171,11 +141,7 @@ const Viewport: React.FC<ViewportProps> = ({
     const prepareCanvas = () => {
         const [width, height] = dimensions
 
-        if (
-            !canvasRef.current ||
-            !bufferContextRef.current ||
-            !contextRef.current
-        ) {
+        if (!canvasRef.current || !bufferContextRef.current || !contextRef.current) {
             return
         }
 
@@ -196,10 +162,7 @@ const Viewport: React.FC<ViewportProps> = ({
         // Calculate the viewport's center point in pixels
         const viewportCenter: Coordinate = [width / 2, height / 2]
         // Adjust by pixelOffset to get the center in "world" pixels
-        const adjustedCenter: Coordinate = [
-            viewportCenter[0] + pixelOffset[0],
-            viewportCenter[1] + pixelOffset[1],
-        ]
+        const adjustedCenter: Coordinate = [viewportCenter[0] + pixelOffset[0], viewportCenter[1] + pixelOffset[1]]
         // Convert to world coordinates (cells)
         const centerCell = cellForPosition(zoom, [0, 0], adjustedCenter)
         const worldCenterCell = applyWorldOffset(worldOffset, centerCell)
@@ -223,10 +186,7 @@ const Viewport: React.FC<ViewportProps> = ({
     const getWorldViewBounds = (): Bounds => {
         const [width, height] = dimensions
         const topLeft = applyWorldOffset(worldOffset, [0, 0])
-        const bottomRightCell = cellForPosition(zoom, pixelOffset, [
-            width,
-            height,
-        ])
+        const bottomRightCell = cellForPosition(zoom, pixelOffset, [width, height])
         const bottomRight = applyWorldOffset(worldOffset, bottomRightCell)
         return [topLeft, bottomRight]
     }
@@ -254,25 +214,17 @@ const Viewport: React.FC<ViewportProps> = ({
             }
 
             // Ensure newZoom is within bounds
-            newZoom = Math.round(
-                Math.min(Math.max(newZoom, ZOOM_MIN), ZOOM_MAX),
-            )
+            newZoom = Math.round(Math.min(Math.max(newZoom, ZOOM_MIN), ZOOM_MAX))
 
             // Calculate the mouse position relative to the canvas
             const mouseX = e.clientX - rect.left
             const mouseY = e.clientY - rect.top
 
             // Convert mouse position to cell coordinates at the current zoom level
-            const mouseCellBeforeZoom = cellForPosition(zoom, pixelOffset, [
-                mouseX,
-                mouseY,
-            ])
+            const mouseCellBeforeZoom = cellForPosition(zoom, pixelOffset, [mouseX, mouseY])
 
             // Calculate expected mouse cell position after zoom to keep it under the same world point
-            const mouseCellAfterZoom = cellForPosition(newZoom, pixelOffset, [
-                mouseX,
-                mouseY,
-            ])
+            const mouseCellAfterZoom = cellForPosition(newZoom, pixelOffset, [mouseX, mouseY])
 
             // Calculate the difference in cell positions due to zooming
             const cellDiffX = mouseCellAfterZoom[0] - mouseCellBeforeZoom[0]
@@ -314,19 +266,11 @@ const Viewport: React.FC<ViewportProps> = ({
             if (zoom > ZOOM_TILEMODE) {
                 const rect = e.currentTarget.getBoundingClientRect()
 
-                const viewportCell = cellForPosition(zoom, pixelOffset, [
-                    e.clientX - rect.left,
-                    e.clientY - rect.top,
-                ])
-                const hoveredWorldCell = applyWorldOffset(
-                    worldOffset,
-                    viewportCell,
-                )
+                const viewportCell = cellForPosition(zoom, pixelOffset, [e.clientX - rect.left, e.clientY - rect.top])
+                const hoveredWorldCell = applyWorldOffset(worldOffset, viewportCell)
                 if (
                     (!hoveredCell && viewportCell) ||
-                    (hoveredCell &&
-                        (hoveredCell[0] !== hoveredWorldCell[0] ||
-                            hoveredCell[1] !== hoveredWorldCell[1]))
+                    (hoveredCell && (hoveredCell[0] !== hoveredWorldCell[0] || hoveredCell[1] !== hoveredWorldCell[1]))
                 ) {
                     setHoveredCell(viewportCell)
                     onCellHover(hoveredWorldCell)
@@ -348,9 +292,7 @@ const Viewport: React.FC<ViewportProps> = ({
         if (dragStartPoint.current !== null) {
             const startPos = dragStartPoint.current
             const endPos: Coordinate = [e.clientX, e.clientY]
-            distance = Math.sqrt(
-                (endPos[0] - startPos[0]) ** 2 + (endPos[1] - startPos[1]) ** 2,
-            )
+            distance = Math.sqrt((endPos[0] - startPos[0]) ** 2 + (endPos[1] - startPos[1]) ** 2)
         }
 
         const timeDiff = Date.now() - dragStart
@@ -358,10 +300,7 @@ const Viewport: React.FC<ViewportProps> = ({
         // If we didnt really drag, its a click
         if (timeDiff < 500 && distance < 10) {
             const rect = e.currentTarget.getBoundingClientRect()
-            const viewportCell = cellForPosition(zoom, pixelOffset, [
-                e.clientX - rect.left,
-                e.clientY - rect.top,
-            ])
+            const viewportCell = cellForPosition(zoom, pixelOffset, [e.clientX - rect.left, e.clientY - rect.top])
             const worldClicked = applyWorldOffset(worldOffset, viewportCell)
             onCellClick(worldClicked)
         } else {

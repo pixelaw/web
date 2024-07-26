@@ -1,66 +1,70 @@
-import {produce} from 'immer';
-import {useState, useEffect, useRef} from 'react';
-import {Bounds, DEFAULT_SCALEFACTOR, MAX_UINT32, Tile, Tileset, TILESIZE, TileStore} from "../types.ts";
-import {set as setIdb, get as getIdb, keys} from 'idb-keyval';
-import {areBoundsEqual, calculateTileBounds, getWrappedTileCoordinate, MAX_VIEW_SIZE} from "../utils.ts";
+import { get as getIdb, keys, set as setIdb } from "idb-keyval"
+import { useEffect, useRef, useState } from "react"
+import {
+    type Bounds,
+    DEFAULT_SCALEFACTOR,
+    MAX_UINT32,
+    TILESIZE,
+    type Tile,
+    type TileStore,
+    type Tileset,
+} from "../types.ts"
+import { MAX_VIEW_SIZE, areBoundsEqual, calculateTileBounds, getWrappedTileCoordinate } from "../utils.ts"
 
-type State = { [key: string]: HTMLImageElement | undefined | "" };
-
+type State = { [key: string]: HTMLImageElement | undefined | "" }
 
 export function useSimpleTileStore(baseUrl: string): TileStore {
     // const [state, setState] = useState<State>({});
-    const tilesLoadedRef = useRef(false); // Add this line
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const fetchCounter = useRef(0);
-    const tileset = useRef<Tileset | null>(null);
-    const tileCache = useRef<State>({});
-    const actualBounds = useRef<Bounds | null>(null);
-    const inputBounds = useRef<Bounds | null>(null);
-    const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now());
-
+    const tilesLoadedRef = useRef(false) // Add this line
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const fetchCounter = useRef(0)
+    const tileset = useRef<Tileset | null>(null)
+    const tileCache = useRef<State>({})
+    const actualBounds = useRef<Bounds | null>(null)
+    const inputBounds = useRef<Bounds | null>(null)
+    const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now())
 
     const fetchTile = (key: string) => {
         fetchCounter.current++
 
-        fetchImage(`${baseUrl}/${key}.png`).then(async base64Img => {
-            await setIdb(key, base64Img);
+        fetchImage(`${baseUrl}/${key}.png`)
+            .then(async (base64Img) => {
+                await setIdb(key, base64Img)
 
-            // Cannot use immer here because it won't work with HTMLImageElement, which is a read-only type
-            // setState(prevState => ({...prevState, [key]: img}));
-            tileCache.current[key] = await loadImage(base64Img); // Cache the loaded image
-            fetchCounter.current--
-            setCacheUpdated(Date.now())
-
-        }).catch(e => {
-            setIdb(key, "").then(() => {
-                tileCache.current[key] = ""; // Cache the loaded image
-
+                // Cannot use immer here because it won't work with HTMLImageElement, which is a read-only type
+                // setState(prevState => ({...prevState, [key]: img}));
+                tileCache.current[key] = await loadImage(base64Img) // Cache the loaded image
                 fetchCounter.current--
+                setCacheUpdated(Date.now())
+            })
+            .catch((e) => {
+                setIdb(key, "").then(() => {
+                    tileCache.current[key] = "" // Cache the loaded image
 
-            });
-            setCacheUpdated(Date.now())
-            console.info('Error loading image:', key, e);
-        });
+                    fetchCounter.current--
+                })
+                setCacheUpdated(Date.now())
+                console.info("Error loading image:", key, e)
+            })
     }
 
     useEffect(() => {
         if (tilesLoadedRef.current) return
 
         async function loadFromIdb() {
-            setIsLoading(true);
-            const keysArray = await keys();
-            const tilesObj: Record<string, Tile | undefined | ""> = {};
+            setIsLoading(true)
+            const keysArray = await keys()
+            const tilesObj: Record<string, Tile | undefined | ""> = {}
 
             for (const key of keysArray) {
-                if (typeof key === 'string') {
+                if (typeof key === "string") {
                     try {
                         const base64 = await getIdb(key)
-                        if (base64.length == 0) {
+                        if (base64.length === 0) {
                             tilesObj[key] = ""
                         } else {
                             tilesObj[key] = await loadImage(base64)
                         }
-
                     } catch (e) {
                         console.log("Error loading", key, e)
                     }
@@ -69,13 +73,11 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
             tileCache.current = tilesObj
             tilesLoadedRef.current = true
             setCacheUpdated(Date.now())
-            setIsLoading(false);
+            setIsLoading(false)
         }
 
         loadFromIdb()
-
-    }, []);
-
+    }, [])
 
     const prepare = (newBounds: Bounds): void => {
         if (!inputBounds.current || !areBoundsEqual(inputBounds.current, newBounds)) {
@@ -84,13 +86,12 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
 
             if (!actualBounds.current || !areBoundsEqual(actualBounds.current, ab)) {
                 actualBounds.current = ab
-                refresh();
+                refresh()
             }
         }
-    };
+    }
 
     const refresh = (): void => {
-
         if (isLoading || !actualBounds.current) return
 
         const [[leftTileCoord, topTileCoord], [rightTileCoord, bottomTileCoord]] = actualBounds.current
@@ -112,11 +113,9 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
         for (let x = 0; x <= width; x += tileWorldSize) {
             const tileRow: (Tile | undefined | "")[] = []
             for (let y = 0; y <= height; y += tileWorldSize) {
-                const tileX = getWrappedTileCoordinate(leftTileCoord, x, tileWorldSize);
-                const tileY = getWrappedTileCoordinate(topTileCoord, y, tileWorldSize);
-                tileRow.push(
-                    getTile(`${DEFAULT_SCALEFACTOR}_${TILESIZE}_${tileX}_${tileY}`)
-                )
+                const tileX = getWrappedTileCoordinate(leftTileCoord, x, tileWorldSize)
+                const tileY = getWrappedTileCoordinate(topTileCoord, y, tileWorldSize)
+                tileRow.push(getTile(`${DEFAULT_SCALEFACTOR}_${TILESIZE}_${tileX}_${tileY}`))
             }
             tileRows.push(tileRow)
         }
@@ -125,57 +124,50 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
             tileSize: TILESIZE,
             bounds: actualBounds.current,
             scaleFactor: DEFAULT_SCALEFACTOR,
-            tileRows
+            tileRows,
         }
 
         setCacheUpdated(Date.now())
     }
 
     const getTile = (key: string): Tile | undefined | "" => {
-
         if (tileCache.current[key] === undefined) {
-
-            tileCache.current[key] = ""; // Cache the loaded image
+            tileCache.current[key] = "" // Cache the loaded image
 
             fetchTile(key)
-
         }
-        return tileCache.current[key];
-    };
+        return tileCache.current[key]
+    }
 
-
-
-    const setTiles = async (tiles: { key: string, tile: Tile }[]): Promise<void> => {
+    const setTiles = async (_tiles: { key: string; tile: Tile }[]): Promise<void> => {
         // const newTiles = {...state};
         // for (const {key, tile} of tiles) {
         //     await setIdb(key, tile);
         //     newTiles[key] = tile;
         // }
         // setState(newTiles);
-    };
+    }
 
-    return {fetchTile, setTiles, tileset: tileset.current, prepare, refresh, cacheUpdated};
+    return { fetchTile, setTiles, tileset: tileset.current, prepare, refresh, cacheUpdated }
 }
 
-
 const loadImage = (base64: string): Promise<HTMLImageElement> => {
-
     return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        img.src = base64;
-    });
-};
+        const img = new Image()
+        img.onload = () => resolve(img)
+        img.onerror = reject
+        img.src = base64
+    })
+}
 
 const fetchImage = async (src: string): Promise<string> => {
-    const response = await fetch(src);
+    const response = await fetch(src)
 
-    const blob = await response.blob();
+    const blob = await response.blob()
     return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-};
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(blob)
+    })
+}

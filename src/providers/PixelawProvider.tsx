@@ -1,19 +1,7 @@
-import {
-    type IPixelawGameData,
-    type TPixelLawError,
-    setupPixelaw,
-} from "@/dojo/setupPixelaw"
+import { type IPixelawGameData, type TPixelLawError, setupPixelaw } from "@/dojo/setupPixelaw.ts"
 import { useSettingsStore } from "@/stores/SettingsStore.ts"
 import { createDojoConfig } from "@dojoengine/core"
-import {
-    type ReactNode,
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-} from "react"
+import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 export type IPixelLawContext = {
     clientState: "worldSelect" | "loading" | "error" | "gameActive"
@@ -28,13 +16,11 @@ let activeLoad = false
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     const currentValue = useContext(PixelawContext)
-    const [contextValues, setContextValues] = useState<IPixelLawContext | null>(
-        {
-            clientState: "loading",
-            error: null,
-            gameData: undefined,
-        },
-    )
+    const [contextValues, setContextValues] = useState<IPixelLawContext | null>({
+        clientState: "loading",
+        error: null,
+        gameData: undefined,
+    })
 
     if (currentValue) throw new Error("DojoProvider can only be used once")
 
@@ -80,18 +66,11 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         }
     }, [config, configIsValid, setupDojo])
 
-    return (
-        <PixelawContext.Provider value={contextValues}>
-            {children}
-        </PixelawContext.Provider>
-    )
+    return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>
 }
 
 export const usePixelawProvider = (): IPixelLawContext => {
     const context = useContext(PixelawContext)
-    if (!context)
-        throw new Error(
-            "PixelLawProvider can only be used within a PixelLawProvider",
-        )
+    if (!context) throw new Error("PixelLawProvider can only be used within a PixelLawProvider")
     return context
 }

@@ -1,11 +1,11 @@
-import React from 'react';
-import {clearIdb} from "@/webtools/utils.ts";
-import styles from './SettingsPage.module.css';
+import { clearIdb } from "@/webtools/utils.ts"
+import React from "react"
+import styles from "./SettingsPage.module.css"
 
 const SettingsPage = () => {
     const handleClearIdb = async () => {
-        await clearIdb();
-    };
+        await clearIdb()
+    }
 
     return (
         <div className={styles.inner}>
@@ -13,15 +13,23 @@ const SettingsPage = () => {
             <ul className={styles.settingsList}>
                 <li className={styles.settingItem}>
                     <span className={styles.settingLabel}>Clear IndexedDB</span>
-                    <button onClick={handleClearIdb}>Clear</button>
+                    <button
+                        type={"button"}
+                        onClick={handleClearIdb}
+                    >
+                        Clear
+                    </button>
                 </li>
                 <li className={styles.settingItem}>
                     <span className={styles.settingLabel}>Example Setting</span>
-                    <input type="text" className={styles.settingInput}/>
+                    <input
+                        type="text"
+                        className={styles.settingInput}
+                    />
                 </li>
             </ul>
         </div>
-    );
-};
+    )
+}
 
-export default SettingsPage;
+export default SettingsPage

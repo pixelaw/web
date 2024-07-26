@@ -5,14 +5,14 @@ import { getSyncEntities } from "@dojoengine/state"
 import * as torii from "@dojoengine/torii-client"
 import { GraphQLClient } from "graphql-request"
 import { Account, RpcProvider } from "starknet"
-import { getSdk } from "../generated/graphql"
+import { getSdk } from "../generated/graphql.ts"
 import type { Manifest } from "../global/types.ts"
-import { felt252ToString } from "../global/utils"
-import { defineContractComponents } from "./contractComponents"
-import { createClientComponents } from "./createClientComponents"
-import { createSystemCalls } from "./createSystemCalls"
-import { setupWorld } from "./generated"
-import { world } from "./world"
+import { felt252ToString } from "../global/utils.ts"
+import { defineContractComponents } from "./contractComponents.ts"
+import { createClientComponents } from "./createClientComponents.ts"
+import { createSystemCalls } from "./createSystemCalls.ts"
+import { setupWorld } from "./generated.ts"
+import { world } from "./world.ts"
 
 export type TPixelLawError = Error & {
     type?: "DojoStateError" | "ConfigError"
@@ -55,9 +55,7 @@ async function getAbi(provider: RpcProvider, app: any): Promise<any> {
     }
 }
 
-export async function setupPixelaw({
-    ...config
-}: DojoConfig): Promise<IPixelawGameData> {
+export async function setupPixelaw({ ...config }: DojoConfig): Promise<IPixelawGameData> {
     console.group("🏵 Setting up Dojo 🔨")
     console.log("⚙ Config:", config)
     console.log("torii.createClient", config.manifest.world.address)
@@ -77,14 +75,12 @@ export async function setupPixelaw({
     // Get apps from the world
     const entities = getComponentEntities(contractComponents.App)
 
-    const apps: ReturnType<typeof getComponentValue>[] = [...entities].map(
-        (entityId) => getComponentValue(contractComponents.App, entityId),
+    const apps: ReturnType<typeof getComponentValue>[] = [...entities].map((entityId) =>
+        getComponentValue(contractComponents.App, entityId),
     )
 
     const contracts = await Promise.all(
-        apps.map((address) =>
-            getAbi(new RpcProvider({ nodeUrl: config?.rpcUrl }), address),
-        ),
+        apps.map((address) => getAbi(new RpcProvider({ nodeUrl: config?.rpcUrl }), address)),
     )
 
     // Manifest with updated contract ABIs
@@ -99,11 +95,7 @@ export async function setupPixelaw({
 
     // Create burner manager
     const burnerManager = new BurnerManager({
-        masterAccount: new Account(
-            dojoProvider.provider,
-            config.masterAddress,
-            config.masterPrivateKey,
-        ),
+        masterAccount: new Account(dojoProvider.provider, config.masterAddress, config.masterPrivateKey),
         accountClassHash: config.accountClassHash,
         rpcProvider: dojoProvider.provider,
         feeTokenAddress: config.feeTokenAddress,
@@ -119,18 +111,11 @@ export async function setupPixelaw({
         }
     }
 
-    const masterAccount = new Account(
-        dojoProvider.provider,
-        config.masterAddress,
-        config.masterPrivateKey,
-        "1",
-    )
-    const { create, list, get, select, clear, account, isDeploying } =
-        burnerManager
+    const masterAccount = new Account(dojoProvider.provider, config.masterAddress, config.masterPrivateKey, "1")
+    const { create, list, get, select, clear, account, isDeploying } = burnerManager
 
     // Create Graph SDK
-    const createGraphSdk = () =>
-        getSdk(new GraphQLClient(`${config.toriiUrl}/graphql`))
+    const createGraphSdk = () => getSdk(new GraphQLClient(`${config.toriiUrl}/graphql`))
 
     // Wrap up
     console.groupEnd()

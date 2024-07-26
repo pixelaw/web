@@ -1,14 +1,15 @@
-import {useRef, useState} from "react";
-import {Bounds, TILESIZE, UpdateService} from "../types.ts";
-import {areBoundsEqual, calculateTileBounds} from "@/webtools/utils.js";
-
+import { areBoundsEqual, calculateTileBounds } from "@/webtools/utils.js"
+import { useRef, useState } from "react"
+import { type Bounds, TILESIZE, type UpdateService } from "../types.ts"
 
 type Message = {
-    cmd: string, data: unknown | TileChangedMessage
+    cmd: string
+    data: unknown | TileChangedMessage
 }
 
 type TileChangedMessage = {
-    tileName: string, timestamp: number
+    tileName: string
+    timestamp: number
 }
 
 export const useUpdateService = (url: string | undefined): UpdateService => {
@@ -16,53 +17,49 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
     const bounds = useRef<Bounds | null>(null)
     const socket = useRef<WebSocket | null>(null)
 
-
     const initializeSocket = (url: string) => {
         if (!url) return
 
         if (!socket.current) {
-
-            socket.current = new WebSocket(`${url}/tiles`);
+            socket.current = new WebSocket(`${url}/tiles`)
 
             socket.current.onerror = () => {
                 console.log("err")
             }
             socket.current.onopen = () => {
-
-                console.log("sopen", socket.current!.readyState)
+                console.log("sopen", socket.current?.readyState)
 
                 if (bounds.current) {
-                    const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: bounds.current}})
-                    socket.current!.send(message)
+                    const message = JSON.stringify({ cmd: "subscribe", data: { boundingBox: bounds.current } })
+                    socket.current?.send(message)
                 }
             }
 
             socket.current.onclose = () => {
-                console.log("sclose");
+                console.log("sclose")
                 socket.current = null
-                setTimeout(() => initializeSocket(url), 10000);
-            };
+                setTimeout(() => initializeSocket(url), 10000)
+            }
 
             socket.current.onmessage = (event) => {
-                const msg: Message = JSON.parse(event.data);
+                const msg: Message = JSON.parse(event.data)
 
                 if (msg.cmd === "tileChanged") {
-                    const tileChangedMsg = msg.data as TileChangedMessage;
+                    const tileChangedMsg = msg.data as TileChangedMessage
 
-                    setTileChanged(tileChangedMsg);
+                    setTileChanged(tileChangedMsg)
                 } else {
-                    console.log("Unrecognized message from ws: ", msg);
+                    console.log("Unrecognized message from ws: ", msg)
                 }
-            };
+            }
         }
     }
 
-
-    const setBounds = (newBounds: Bounds) => {
+    const setBounds = (b: Bounds) => {
+        let newBounds = b
         if (!url) return
 
         if (!socket.current || socket.current.readyState !== WebSocket.OPEN) {
-
             initializeSocket(url)
         } else {
             // Expand the newBounds to include the whole tile (top-right coord) because
@@ -70,18 +67,16 @@ export const useUpdateService = (url: string | undefined): UpdateService => {
             newBounds = calculateTileBounds(newBounds)
 
             if (!bounds.current || !areBoundsEqual(newBounds, bounds.current)) {
-
-                const message = JSON.stringify({cmd: "subscribe", data: {boundingBox: newBounds}})
-                socket.current!.send(message)
+                const message = JSON.stringify({ cmd: "subscribe", data: { boundingBox: newBounds } })
+                socket.current?.send(message)
             }
         }
 
         bounds.current = newBounds
     }
 
-
     return {
         tileChanged,
-        setBounds
+        setBounds,
     }
 }

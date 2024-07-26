@@ -6,10 +6,7 @@ import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useDojoPixelStore } from "@/stores/DojoPixelStore.ts"
 import { useSettingsStore } from "@/stores/SettingsStore.ts"
-import {
-    useSyncedViewStateStore,
-    useViewStateStore,
-} from "@/stores/ViewStateStore.ts"
+import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
 import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
@@ -22,9 +19,7 @@ const ViewportPage: React.FC = () => {
 
     const [paramDialogVisible, setParamDialogVisible] = useState(false)
     const [paramDialogParams, setParamDialogParams] = useState<any>(null)
-    const [submitParamsCallback, setSubmitParamsCallback] = useState<
-        (params: any) => void
-    >(() => () => {})
+    const [submitParamsCallback, setSubmitParamsCallback] = useState<(params: any) => void>(() => () => {})
 
     //</editor-fold>
 
@@ -35,16 +30,7 @@ const ViewportPage: React.FC = () => {
     const updateService = useUpdateService(settings.config?.serverUrl!)
     const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!)
     const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
-    const {
-        color,
-        setColor,
-        center,
-        setCenter,
-        zoom,
-        setZoom,
-        setHoveredCell,
-        setClickedCell,
-    } = useViewStateStore()
+    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
     const appStore = useDojoAppStore()
     useSyncedViewStateStore()
 
@@ -58,14 +44,9 @@ const ViewportPage: React.FC = () => {
         setParamDialogVisible(false)
     }
 
-    useDojoInteractHandler(
-        pixelStore,
-        gameData,
-        handleParamsRequired,
-        (submit) => {
-            setSubmitParamsCallback(() => submit) // Store the submitParams function provided by the hook
-        },
-    )
+    useDojoInteractHandler(pixelStore, gameData, handleParamsRequired, (submit) => {
+        setSubmitParamsCallback(() => submit) // Store the submitParams function provided by the hook
+    })
 
     const closeParamDialog = () => {
         setParamDialogVisible(false)
