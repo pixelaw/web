@@ -92,10 +92,6 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Output">
 
-    if (!tileStore.tileset) {
-        // TODO properly handle this
-        return <></>
-    }
     return (
         <>
             <Viewport

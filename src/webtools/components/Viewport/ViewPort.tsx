@@ -11,7 +11,7 @@ import { drawTiles } from "./drawTiles.ts"
 
 interface ViewportProps {
     pixelStore: PixelStore
-    tileset: Tileset
+    tileset: Tileset | null
     zoom: number
     center: Coordinate
     setCenter: (newCenter: Coordinate) => void
