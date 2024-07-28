@@ -1,6 +1,7 @@
 import type { IPixelawGameData } from "@/dojo/setupPixelaw.ts"
 import { generateDojoCall } from "@/dojo/utils/call.ts"
 import getParamsDef from "@/dojo/utils/paramsDef.ts"
+import { NAMESPACE } from "@/global/constants.js"
 import { coordinateToPosition, hexRGBtoNumber } from "@/global/utils.ts"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
@@ -62,7 +63,7 @@ export const useDojoInteractHandler = (
         )
 
         // Execute the call
-        gameData.dojoProvider.execute(gameData.account.account!, dojoCall).then((res) => {
+        gameData.dojoProvider.execute(gameData.account.account!, dojoCall, NAMESPACE, {}).then((res) => {
             console.log("dojocall", res)
 
             pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
