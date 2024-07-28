@@ -1,6 +1,4 @@
 import { GraphQLClient, RequestOptions } from 'graphql-request';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { GraphQLError, print } from 'graphql'
 import gql from 'graphql-tag';
 export type Maybe<T> = T | null;
@@ -29,701 +27,12 @@ export type Scalars = {
   u64: { input: any; output: any; }
 };
 
-export type App = {
-  __typename?: 'App';
-  action?: Maybe<Scalars['felt252']['output']>;
-  entity?: Maybe<World__Entity>;
-  icon?: Maybe<Scalars['felt252']['output']>;
-  manifest?: Maybe<Scalars['felt252']['output']>;
-  name?: Maybe<Scalars['felt252']['output']>;
-  system?: Maybe<Scalars['ContractAddress']['output']>;
-};
-
-export type AppConnection = {
-  __typename?: 'AppConnection';
-  edges?: Maybe<Array<Maybe<AppEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type AppEdge = {
-  __typename?: 'AppEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<App>;
-};
-
-export type AppName = {
-  __typename?: 'AppName';
-  entity?: Maybe<World__Entity>;
-  name?: Maybe<Scalars['felt252']['output']>;
-  system?: Maybe<Scalars['ContractAddress']['output']>;
-};
-
-export type AppNameConnection = {
-  __typename?: 'AppNameConnection';
-  edges?: Maybe<Array<Maybe<AppNameEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type AppNameEdge = {
-  __typename?: 'AppNameEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<AppName>;
-};
-
-export type AppNameOrder = {
-  direction: OrderDirection;
-  field: AppNameOrderField;
-};
-
-export enum AppNameOrderField {
-  Name = 'NAME',
-  System = 'SYSTEM'
-}
-
-export type AppNameWhereInput = {
-  name?: InputMaybe<Scalars['felt252']['input']>;
-  nameEQ?: InputMaybe<Scalars['felt252']['input']>;
-  nameGT?: InputMaybe<Scalars['felt252']['input']>;
-  nameGTE?: InputMaybe<Scalars['felt252']['input']>;
-  nameLT?: InputMaybe<Scalars['felt252']['input']>;
-  nameLTE?: InputMaybe<Scalars['felt252']['input']>;
-  nameNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  system?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type AppOrder = {
-  direction: OrderDirection;
-  field: AppOrderField;
-};
-
-export enum AppOrderField {
-  Action = 'ACTION',
-  Icon = 'ICON',
-  Manifest = 'MANIFEST',
-  Name = 'NAME',
-  System = 'SYSTEM'
-}
-
-export type AppUser = {
-  __typename?: 'AppUser';
-  action?: Maybe<Scalars['felt252']['output']>;
-  entity?: Maybe<World__Entity>;
-  player?: Maybe<Scalars['ContractAddress']['output']>;
-  system?: Maybe<Scalars['ContractAddress']['output']>;
-};
-
-export type AppUserConnection = {
-  __typename?: 'AppUserConnection';
-  edges?: Maybe<Array<Maybe<AppUserEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type AppUserEdge = {
-  __typename?: 'AppUserEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<AppUser>;
-};
-
-export type AppUserOrder = {
-  direction: OrderDirection;
-  field: AppUserOrderField;
-};
-
-export enum AppUserOrderField {
-  Action = 'ACTION',
-  Player = 'PLAYER',
-  System = 'SYSTEM'
-}
-
-export type AppUserWhereInput = {
-  action?: InputMaybe<Scalars['felt252']['input']>;
-  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
-  actionGT?: InputMaybe<Scalars['felt252']['input']>;
-  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionLT?: InputMaybe<Scalars['felt252']['input']>;
-  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  player?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  playerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  system?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type AppWhereInput = {
-  action?: InputMaybe<Scalars['felt252']['input']>;
-  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
-  actionGT?: InputMaybe<Scalars['felt252']['input']>;
-  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionLT?: InputMaybe<Scalars['felt252']['input']>;
-  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  icon?: InputMaybe<Scalars['felt252']['input']>;
-  iconEQ?: InputMaybe<Scalars['felt252']['input']>;
-  iconGT?: InputMaybe<Scalars['felt252']['input']>;
-  iconGTE?: InputMaybe<Scalars['felt252']['input']>;
-  iconLT?: InputMaybe<Scalars['felt252']['input']>;
-  iconLTE?: InputMaybe<Scalars['felt252']['input']>;
-  iconNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  manifest?: InputMaybe<Scalars['felt252']['input']>;
-  manifestEQ?: InputMaybe<Scalars['felt252']['input']>;
-  manifestGT?: InputMaybe<Scalars['felt252']['input']>;
-  manifestGTE?: InputMaybe<Scalars['felt252']['input']>;
-  manifestLT?: InputMaybe<Scalars['felt252']['input']>;
-  manifestLTE?: InputMaybe<Scalars['felt252']['input']>;
-  manifestNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  name?: InputMaybe<Scalars['felt252']['input']>;
-  nameEQ?: InputMaybe<Scalars['felt252']['input']>;
-  nameGT?: InputMaybe<Scalars['felt252']['input']>;
-  nameGTE?: InputMaybe<Scalars['felt252']['input']>;
-  nameLT?: InputMaybe<Scalars['felt252']['input']>;
-  nameLTE?: InputMaybe<Scalars['felt252']['input']>;
-  nameNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  system?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type CoreActionsAddress = {
-  __typename?: 'CoreActionsAddress';
-  entity?: Maybe<World__Entity>;
-  key?: Maybe<Scalars['felt252']['output']>;
-  value?: Maybe<Scalars['ContractAddress']['output']>;
-};
-
-export type CoreActionsAddressConnection = {
-  __typename?: 'CoreActionsAddressConnection';
-  edges?: Maybe<Array<Maybe<CoreActionsAddressEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type CoreActionsAddressEdge = {
-  __typename?: 'CoreActionsAddressEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<CoreActionsAddress>;
-};
-
-export type CoreActionsAddressOrder = {
-  direction: OrderDirection;
-  field: CoreActionsAddressOrderField;
-};
-
-export enum CoreActionsAddressOrderField {
-  Key = 'KEY',
-  Value = 'VALUE'
-}
-
-export type CoreActionsAddressWhereInput = {
-  key?: InputMaybe<Scalars['felt252']['input']>;
-  keyEQ?: InputMaybe<Scalars['felt252']['input']>;
-  keyGT?: InputMaybe<Scalars['felt252']['input']>;
-  keyGTE?: InputMaybe<Scalars['felt252']['input']>;
-  keyLT?: InputMaybe<Scalars['felt252']['input']>;
-  keyLTE?: InputMaybe<Scalars['felt252']['input']>;
-  keyNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  value?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  valueNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type Instruction = {
-  __typename?: 'Instruction';
-  entity?: Maybe<World__Entity>;
-  instruction?: Maybe<Scalars['felt252']['output']>;
-  selector?: Maybe<Scalars['felt252']['output']>;
-  system?: Maybe<Scalars['ContractAddress']['output']>;
-};
-
-export type InstructionConnection = {
-  __typename?: 'InstructionConnection';
-  edges?: Maybe<Array<Maybe<InstructionEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type InstructionEdge = {
-  __typename?: 'InstructionEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<Instruction>;
-};
-
-export type InstructionOrder = {
-  direction: OrderDirection;
-  field: InstructionOrderField;
-};
-
-export enum InstructionOrderField {
-  Instruction = 'INSTRUCTION',
-  Selector = 'SELECTOR',
-  System = 'SYSTEM'
-}
-
-export type InstructionWhereInput = {
-  instruction?: InputMaybe<Scalars['felt252']['input']>;
-  instructionEQ?: InputMaybe<Scalars['felt252']['input']>;
-  instructionGT?: InputMaybe<Scalars['felt252']['input']>;
-  instructionGTE?: InputMaybe<Scalars['felt252']['input']>;
-  instructionLT?: InputMaybe<Scalars['felt252']['input']>;
-  instructionLTE?: InputMaybe<Scalars['felt252']['input']>;
-  instructionNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  selector?: InputMaybe<Scalars['felt252']['input']>;
-  selectorEQ?: InputMaybe<Scalars['felt252']['input']>;
-  selectorGT?: InputMaybe<Scalars['felt252']['input']>;
-  selectorGTE?: InputMaybe<Scalars['felt252']['input']>;
-  selectorLT?: InputMaybe<Scalars['felt252']['input']>;
-  selectorLTE?: InputMaybe<Scalars['felt252']['input']>;
-  selectorNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  system?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type ModelUnion = App | AppName | AppUser | CoreActionsAddress | Instruction | Permissions | Pixel | QueueItem | Snake | SnakeSegment;
+export type ModelUnion = Pixelaw_App | Pixelaw_AppName | Pixelaw_AppUser | Pixelaw_CoreActionsAddress | Pixelaw_Instruction | Pixelaw_Permissions | Pixelaw_Pixel | Pixelaw_QueueItem | Pixelaw_Snake | Pixelaw_SnakeSegment;
 
 export enum OrderDirection {
   Asc = 'ASC',
   Desc = 'DESC'
 }
-
-export type Permissions = {
-  __typename?: 'Permissions';
-  allowed_app?: Maybe<Scalars['ContractAddress']['output']>;
-  allowing_app?: Maybe<Scalars['ContractAddress']['output']>;
-  entity?: Maybe<World__Entity>;
-  permission?: Maybe<Permissions_Permission>;
-};
-
-export type PermissionsConnection = {
-  __typename?: 'PermissionsConnection';
-  edges?: Maybe<Array<Maybe<PermissionsEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PermissionsEdge = {
-  __typename?: 'PermissionsEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<Permissions>;
-};
-
-export type PermissionsOrder = {
-  direction: OrderDirection;
-  field: PermissionsOrderField;
-};
-
-export enum PermissionsOrderField {
-  AllowedApp = 'ALLOWED_APP',
-  AllowingApp = 'ALLOWING_APP',
-  Permission = 'PERMISSION'
-}
-
-export type PermissionsWhereInput = {
-  allowed_app?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowed_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_app?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  allowing_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-};
-
-export type Permissions_Permission = {
-  __typename?: 'Permissions_Permission';
-  action?: Maybe<Scalars['bool']['output']>;
-  app?: Maybe<Scalars['bool']['output']>;
-  color?: Maybe<Scalars['bool']['output']>;
-  owner?: Maybe<Scalars['bool']['output']>;
-  text?: Maybe<Scalars['bool']['output']>;
-  timestamp?: Maybe<Scalars['bool']['output']>;
-};
-
-export type Pixel = {
-  __typename?: 'Pixel';
-  action?: Maybe<Scalars['felt252']['output']>;
-  app?: Maybe<Scalars['ContractAddress']['output']>;
-  color?: Maybe<Scalars['u32']['output']>;
-  created_at?: Maybe<Scalars['u64']['output']>;
-  entity?: Maybe<World__Entity>;
-  owner?: Maybe<Scalars['ContractAddress']['output']>;
-  text?: Maybe<Scalars['felt252']['output']>;
-  timestamp?: Maybe<Scalars['u64']['output']>;
-  updated_at?: Maybe<Scalars['u64']['output']>;
-  x?: Maybe<Scalars['u32']['output']>;
-  y?: Maybe<Scalars['u32']['output']>;
-};
-
-export type PixelConnection = {
-  __typename?: 'PixelConnection';
-  edges?: Maybe<Array<Maybe<PixelEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PixelEdge = {
-  __typename?: 'PixelEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<Pixel>;
-};
-
-export type PixelOrder = {
-  direction: OrderDirection;
-  field: PixelOrderField;
-};
-
-export enum PixelOrderField {
-  Action = 'ACTION',
-  App = 'APP',
-  Color = 'COLOR',
-  CreatedAt = 'CREATED_AT',
-  Owner = 'OWNER',
-  Text = 'TEXT',
-  Timestamp = 'TIMESTAMP',
-  UpdatedAt = 'UPDATED_AT',
-  X = 'X',
-  Y = 'Y'
-}
-
-export type PixelWhereInput = {
-  action?: InputMaybe<Scalars['felt252']['input']>;
-  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
-  actionGT?: InputMaybe<Scalars['felt252']['input']>;
-  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionLT?: InputMaybe<Scalars['felt252']['input']>;
-  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
-  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  app?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  color?: InputMaybe<Scalars['u32']['input']>;
-  colorEQ?: InputMaybe<Scalars['u32']['input']>;
-  colorGT?: InputMaybe<Scalars['u32']['input']>;
-  colorGTE?: InputMaybe<Scalars['u32']['input']>;
-  colorLT?: InputMaybe<Scalars['u32']['input']>;
-  colorLTE?: InputMaybe<Scalars['u32']['input']>;
-  colorNEQ?: InputMaybe<Scalars['u32']['input']>;
-  created_at?: InputMaybe<Scalars['u64']['input']>;
-  created_atEQ?: InputMaybe<Scalars['u64']['input']>;
-  created_atGT?: InputMaybe<Scalars['u64']['input']>;
-  created_atGTE?: InputMaybe<Scalars['u64']['input']>;
-  created_atLT?: InputMaybe<Scalars['u64']['input']>;
-  created_atLTE?: InputMaybe<Scalars['u64']['input']>;
-  created_atNEQ?: InputMaybe<Scalars['u64']['input']>;
-  owner?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  text?: InputMaybe<Scalars['felt252']['input']>;
-  textEQ?: InputMaybe<Scalars['felt252']['input']>;
-  textGT?: InputMaybe<Scalars['felt252']['input']>;
-  textGTE?: InputMaybe<Scalars['felt252']['input']>;
-  textLT?: InputMaybe<Scalars['felt252']['input']>;
-  textLTE?: InputMaybe<Scalars['felt252']['input']>;
-  textNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  timestamp?: InputMaybe<Scalars['u64']['input']>;
-  timestampEQ?: InputMaybe<Scalars['u64']['input']>;
-  timestampGT?: InputMaybe<Scalars['u64']['input']>;
-  timestampGTE?: InputMaybe<Scalars['u64']['input']>;
-  timestampLT?: InputMaybe<Scalars['u64']['input']>;
-  timestampLTE?: InputMaybe<Scalars['u64']['input']>;
-  timestampNEQ?: InputMaybe<Scalars['u64']['input']>;
-  updated_at?: InputMaybe<Scalars['u64']['input']>;
-  updated_atEQ?: InputMaybe<Scalars['u64']['input']>;
-  updated_atGT?: InputMaybe<Scalars['u64']['input']>;
-  updated_atGTE?: InputMaybe<Scalars['u64']['input']>;
-  updated_atLT?: InputMaybe<Scalars['u64']['input']>;
-  updated_atLTE?: InputMaybe<Scalars['u64']['input']>;
-  updated_atNEQ?: InputMaybe<Scalars['u64']['input']>;
-  x?: InputMaybe<Scalars['u32']['input']>;
-  xEQ?: InputMaybe<Scalars['u32']['input']>;
-  xGT?: InputMaybe<Scalars['u32']['input']>;
-  xGTE?: InputMaybe<Scalars['u32']['input']>;
-  xLT?: InputMaybe<Scalars['u32']['input']>;
-  xLTE?: InputMaybe<Scalars['u32']['input']>;
-  xNEQ?: InputMaybe<Scalars['u32']['input']>;
-  y?: InputMaybe<Scalars['u32']['input']>;
-  yEQ?: InputMaybe<Scalars['u32']['input']>;
-  yGT?: InputMaybe<Scalars['u32']['input']>;
-  yGTE?: InputMaybe<Scalars['u32']['input']>;
-  yLT?: InputMaybe<Scalars['u32']['input']>;
-  yLTE?: InputMaybe<Scalars['u32']['input']>;
-  yNEQ?: InputMaybe<Scalars['u32']['input']>;
-};
-
-export type QueueItem = {
-  __typename?: 'QueueItem';
-  entity?: Maybe<World__Entity>;
-  id?: Maybe<Scalars['felt252']['output']>;
-  valid?: Maybe<Scalars['bool']['output']>;
-};
-
-export type QueueItemConnection = {
-  __typename?: 'QueueItemConnection';
-  edges?: Maybe<Array<Maybe<QueueItemEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type QueueItemEdge = {
-  __typename?: 'QueueItemEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<QueueItem>;
-};
-
-export type QueueItemOrder = {
-  direction: OrderDirection;
-  field: QueueItemOrderField;
-};
-
-export enum QueueItemOrderField {
-  Id = 'ID',
-  Valid = 'VALID'
-}
-
-export type QueueItemWhereInput = {
-  id?: InputMaybe<Scalars['felt252']['input']>;
-  idEQ?: InputMaybe<Scalars['felt252']['input']>;
-  idGT?: InputMaybe<Scalars['felt252']['input']>;
-  idGTE?: InputMaybe<Scalars['felt252']['input']>;
-  idLT?: InputMaybe<Scalars['felt252']['input']>;
-  idLTE?: InputMaybe<Scalars['felt252']['input']>;
-  idNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  valid?: InputMaybe<Scalars['bool']['input']>;
-};
-
-export type Snake = {
-  __typename?: 'Snake';
-  color?: Maybe<Scalars['u32']['output']>;
-  direction?: Maybe<Scalars['Enum']['output']>;
-  entity?: Maybe<World__Entity>;
-  first_segment_id?: Maybe<Scalars['u32']['output']>;
-  is_dying?: Maybe<Scalars['bool']['output']>;
-  last_segment_id?: Maybe<Scalars['u32']['output']>;
-  length?: Maybe<Scalars['u8']['output']>;
-  owner?: Maybe<Scalars['ContractAddress']['output']>;
-  text?: Maybe<Scalars['felt252']['output']>;
-};
-
-export type SnakeConnection = {
-  __typename?: 'SnakeConnection';
-  edges?: Maybe<Array<Maybe<SnakeEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type SnakeEdge = {
-  __typename?: 'SnakeEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<Snake>;
-};
-
-export type SnakeOrder = {
-  direction: OrderDirection;
-  field: SnakeOrderField;
-};
-
-export enum SnakeOrderField {
-  Color = 'COLOR',
-  Direction = 'DIRECTION',
-  FirstSegmentId = 'FIRST_SEGMENT_ID',
-  IsDying = 'IS_DYING',
-  LastSegmentId = 'LAST_SEGMENT_ID',
-  Length = 'LENGTH',
-  Owner = 'OWNER',
-  Text = 'TEXT'
-}
-
-export type SnakeSegment = {
-  __typename?: 'SnakeSegment';
-  entity?: Maybe<World__Entity>;
-  id?: Maybe<Scalars['u32']['output']>;
-  next_id?: Maybe<Scalars['u32']['output']>;
-  pixel_original_app?: Maybe<Scalars['ContractAddress']['output']>;
-  pixel_original_color?: Maybe<Scalars['u32']['output']>;
-  pixel_original_text?: Maybe<Scalars['felt252']['output']>;
-  previous_id?: Maybe<Scalars['u32']['output']>;
-  x?: Maybe<Scalars['u32']['output']>;
-  y?: Maybe<Scalars['u32']['output']>;
-};
-
-export type SnakeSegmentConnection = {
-  __typename?: 'SnakeSegmentConnection';
-  edges?: Maybe<Array<Maybe<SnakeSegmentEdge>>>;
-  pageInfo: World__PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type SnakeSegmentEdge = {
-  __typename?: 'SnakeSegmentEdge';
-  cursor?: Maybe<Scalars['Cursor']['output']>;
-  node?: Maybe<SnakeSegment>;
-};
-
-export type SnakeSegmentOrder = {
-  direction: OrderDirection;
-  field: SnakeSegmentOrderField;
-};
-
-export enum SnakeSegmentOrderField {
-  Id = 'ID',
-  NextId = 'NEXT_ID',
-  PixelOriginalApp = 'PIXEL_ORIGINAL_APP',
-  PixelOriginalColor = 'PIXEL_ORIGINAL_COLOR',
-  PixelOriginalText = 'PIXEL_ORIGINAL_TEXT',
-  PreviousId = 'PREVIOUS_ID',
-  X = 'X',
-  Y = 'Y'
-}
-
-export type SnakeSegmentWhereInput = {
-  id?: InputMaybe<Scalars['u32']['input']>;
-  idEQ?: InputMaybe<Scalars['u32']['input']>;
-  idGT?: InputMaybe<Scalars['u32']['input']>;
-  idGTE?: InputMaybe<Scalars['u32']['input']>;
-  idLT?: InputMaybe<Scalars['u32']['input']>;
-  idLTE?: InputMaybe<Scalars['u32']['input']>;
-  idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  next_id?: InputMaybe<Scalars['u32']['input']>;
-  next_idEQ?: InputMaybe<Scalars['u32']['input']>;
-  next_idGT?: InputMaybe<Scalars['u32']['input']>;
-  next_idGTE?: InputMaybe<Scalars['u32']['input']>;
-  next_idLT?: InputMaybe<Scalars['u32']['input']>;
-  next_idLTE?: InputMaybe<Scalars['u32']['input']>;
-  next_idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_app?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  pixel_original_color?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorEQ?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorGT?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorGTE?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorLT?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorLTE?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_colorNEQ?: InputMaybe<Scalars['u32']['input']>;
-  pixel_original_text?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textEQ?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textGT?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textGTE?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textLT?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textLTE?: InputMaybe<Scalars['felt252']['input']>;
-  pixel_original_textNEQ?: InputMaybe<Scalars['felt252']['input']>;
-  previous_id?: InputMaybe<Scalars['u32']['input']>;
-  previous_idEQ?: InputMaybe<Scalars['u32']['input']>;
-  previous_idGT?: InputMaybe<Scalars['u32']['input']>;
-  previous_idGTE?: InputMaybe<Scalars['u32']['input']>;
-  previous_idLT?: InputMaybe<Scalars['u32']['input']>;
-  previous_idLTE?: InputMaybe<Scalars['u32']['input']>;
-  previous_idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  x?: InputMaybe<Scalars['u32']['input']>;
-  xEQ?: InputMaybe<Scalars['u32']['input']>;
-  xGT?: InputMaybe<Scalars['u32']['input']>;
-  xGTE?: InputMaybe<Scalars['u32']['input']>;
-  xLT?: InputMaybe<Scalars['u32']['input']>;
-  xLTE?: InputMaybe<Scalars['u32']['input']>;
-  xNEQ?: InputMaybe<Scalars['u32']['input']>;
-  y?: InputMaybe<Scalars['u32']['input']>;
-  yEQ?: InputMaybe<Scalars['u32']['input']>;
-  yGT?: InputMaybe<Scalars['u32']['input']>;
-  yGTE?: InputMaybe<Scalars['u32']['input']>;
-  yLT?: InputMaybe<Scalars['u32']['input']>;
-  yLTE?: InputMaybe<Scalars['u32']['input']>;
-  yNEQ?: InputMaybe<Scalars['u32']['input']>;
-};
-
-export type SnakeWhereInput = {
-  color?: InputMaybe<Scalars['u32']['input']>;
-  colorEQ?: InputMaybe<Scalars['u32']['input']>;
-  colorGT?: InputMaybe<Scalars['u32']['input']>;
-  colorGTE?: InputMaybe<Scalars['u32']['input']>;
-  colorLT?: InputMaybe<Scalars['u32']['input']>;
-  colorLTE?: InputMaybe<Scalars['u32']['input']>;
-  colorNEQ?: InputMaybe<Scalars['u32']['input']>;
-  direction?: InputMaybe<Scalars['Enum']['input']>;
-  first_segment_id?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idEQ?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idGT?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idGTE?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idLT?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idLTE?: InputMaybe<Scalars['u32']['input']>;
-  first_segment_idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  is_dying?: InputMaybe<Scalars['bool']['input']>;
-  last_segment_id?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idEQ?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idGT?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idGTE?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idLT?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idLTE?: InputMaybe<Scalars['u32']['input']>;
-  last_segment_idNEQ?: InputMaybe<Scalars['u32']['input']>;
-  length?: InputMaybe<Scalars['u8']['input']>;
-  lengthEQ?: InputMaybe<Scalars['u8']['input']>;
-  lengthGT?: InputMaybe<Scalars['u8']['input']>;
-  lengthGTE?: InputMaybe<Scalars['u8']['input']>;
-  lengthLT?: InputMaybe<Scalars['u8']['input']>;
-  lengthLTE?: InputMaybe<Scalars['u8']['input']>;
-  lengthNEQ?: InputMaybe<Scalars['u8']['input']>;
-  owner?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
-  ownerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
-  text?: InputMaybe<Scalars['felt252']['input']>;
-  textEQ?: InputMaybe<Scalars['felt252']['input']>;
-  textGT?: InputMaybe<Scalars['felt252']['input']>;
-  textGTE?: InputMaybe<Scalars['felt252']['input']>;
-  textLT?: InputMaybe<Scalars['felt252']['input']>;
-  textLTE?: InputMaybe<Scalars['felt252']['input']>;
-  textNEQ?: InputMaybe<Scalars['felt252']['input']>;
-};
 
 export type World__Content = {
   __typename?: 'World__Content';
@@ -876,74 +185,26 @@ export type World__PageInfo = {
 
 export type World__Query = {
   __typename?: 'World__Query';
-  appModels?: Maybe<AppConnection>;
-  appNameModels?: Maybe<AppNameConnection>;
-  appUserModels?: Maybe<AppUserConnection>;
-  coreActionsAddressModels?: Maybe<CoreActionsAddressConnection>;
   entities?: Maybe<World__EntityConnection>;
   entity: World__Entity;
   eventMessage: World__EventMessage;
   eventMessages?: Maybe<World__EventMessageConnection>;
   events?: Maybe<World__EventConnection>;
-  instructionModels?: Maybe<InstructionConnection>;
   metadatas?: Maybe<World__MetadataConnection>;
   model: World__Model;
   models?: Maybe<World__ModelConnection>;
-  permissionsModels?: Maybe<PermissionsConnection>;
-  pixelModels?: Maybe<PixelConnection>;
-  queueItemModels?: Maybe<QueueItemConnection>;
-  snakeModels?: Maybe<SnakeConnection>;
-  snakeSegmentModels?: Maybe<SnakeSegmentConnection>;
+  pixelawAppModels?: Maybe<Pixelaw_AppConnection>;
+  pixelawAppNameModels?: Maybe<Pixelaw_AppNameConnection>;
+  pixelawAppUserModels?: Maybe<Pixelaw_AppUserConnection>;
+  pixelawCoreActionsAddressModels?: Maybe<Pixelaw_CoreActionsAddressConnection>;
+  pixelawInstructionModels?: Maybe<Pixelaw_InstructionConnection>;
+  pixelawPermissionsModels?: Maybe<Pixelaw_PermissionsConnection>;
+  pixelawPixelModels?: Maybe<Pixelaw_PixelConnection>;
+  pixelawQueueItemModels?: Maybe<Pixelaw_QueueItemConnection>;
+  pixelawSnakeModels?: Maybe<Pixelaw_SnakeConnection>;
+  pixelawSnakeSegmentModels?: Maybe<Pixelaw_SnakeSegmentConnection>;
   transaction: World__Transaction;
   transactions?: Maybe<World__TransactionConnection>;
-};
-
-
-export type World__QueryAppModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<AppOrder>;
-  where?: InputMaybe<AppWhereInput>;
-};
-
-
-export type World__QueryAppNameModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<AppNameOrder>;
-  where?: InputMaybe<AppNameWhereInput>;
-};
-
-
-export type World__QueryAppUserModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<AppUserOrder>;
-  where?: InputMaybe<AppUserWhereInput>;
-};
-
-
-export type World__QueryCoreActionsAddressModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<CoreActionsAddressOrder>;
-  where?: InputMaybe<CoreActionsAddressWhereInput>;
 };
 
 
@@ -990,18 +251,6 @@ export type World__QueryEventsArgs = {
 };
 
 
-export type World__QueryInstructionModelsArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<InstructionOrder>;
-  where?: InputMaybe<InstructionWhereInput>;
-};
-
-
 export type World__QueryMetadatasArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
@@ -1028,63 +277,123 @@ export type World__QueryModelsArgs = {
 };
 
 
-export type World__QueryPermissionsModelsArgs = {
+export type World__QueryPixelawAppModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<PermissionsOrder>;
-  where?: InputMaybe<PermissionsWhereInput>;
+  order?: InputMaybe<Pixelaw_AppOrder>;
+  where?: InputMaybe<Pixelaw_AppWhereInput>;
 };
 
 
-export type World__QueryPixelModelsArgs = {
+export type World__QueryPixelawAppNameModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<PixelOrder>;
-  where?: InputMaybe<PixelWhereInput>;
+  order?: InputMaybe<Pixelaw_AppNameOrder>;
+  where?: InputMaybe<Pixelaw_AppNameWhereInput>;
 };
 
 
-export type World__QueryQueueItemModelsArgs = {
+export type World__QueryPixelawAppUserModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<QueueItemOrder>;
-  where?: InputMaybe<QueueItemWhereInput>;
+  order?: InputMaybe<Pixelaw_AppUserOrder>;
+  where?: InputMaybe<Pixelaw_AppUserWhereInput>;
 };
 
 
-export type World__QuerySnakeModelsArgs = {
+export type World__QueryPixelawCoreActionsAddressModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<SnakeOrder>;
-  where?: InputMaybe<SnakeWhereInput>;
+  order?: InputMaybe<Pixelaw_CoreActionsAddressOrder>;
+  where?: InputMaybe<Pixelaw_CoreActionsAddressWhereInput>;
 };
 
 
-export type World__QuerySnakeSegmentModelsArgs = {
+export type World__QueryPixelawInstructionModelsArgs = {
   after?: InputMaybe<Scalars['Cursor']['input']>;
   before?: InputMaybe<Scalars['Cursor']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  order?: InputMaybe<SnakeSegmentOrder>;
-  where?: InputMaybe<SnakeSegmentWhereInput>;
+  order?: InputMaybe<Pixelaw_InstructionOrder>;
+  where?: InputMaybe<Pixelaw_InstructionWhereInput>;
+};
+
+
+export type World__QueryPixelawPermissionsModelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Pixelaw_PermissionsOrder>;
+  where?: InputMaybe<Pixelaw_PermissionsWhereInput>;
+};
+
+
+export type World__QueryPixelawPixelModelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Pixelaw_PixelOrder>;
+  where?: InputMaybe<Pixelaw_PixelWhereInput>;
+};
+
+
+export type World__QueryPixelawQueueItemModelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Pixelaw_QueueItemOrder>;
+  where?: InputMaybe<Pixelaw_QueueItemWhereInput>;
+};
+
+
+export type World__QueryPixelawSnakeModelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Pixelaw_SnakeOrder>;
+  where?: InputMaybe<Pixelaw_SnakeWhereInput>;
+};
+
+
+export type World__QueryPixelawSnakeSegmentModelsArgs = {
+  after?: InputMaybe<Scalars['Cursor']['input']>;
+  before?: InputMaybe<Scalars['Cursor']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Pixelaw_SnakeSegmentOrder>;
+  where?: InputMaybe<Pixelaw_SnakeSegmentWhereInput>;
 };
 
 
@@ -1162,47 +471,915 @@ export type World__TransactionEdge = {
   node?: Maybe<World__Transaction>;
 };
 
-export type AlertsQueryVariables = Exact<{
+export type Pixelaw_App = {
+  __typename?: 'pixelaw_App';
+  action?: Maybe<Scalars['felt252']['output']>;
+  entity?: Maybe<World__Entity>;
+  icon?: Maybe<Scalars['felt252']['output']>;
+  manifest?: Maybe<Scalars['felt252']['output']>;
+  name?: Maybe<Scalars['felt252']['output']>;
+  system?: Maybe<Scalars['ContractAddress']['output']>;
+};
+
+export type Pixelaw_AppConnection = {
+  __typename?: 'pixelaw_AppConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_AppEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_AppEdge = {
+  __typename?: 'pixelaw_AppEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_App>;
+};
+
+export type Pixelaw_AppName = {
+  __typename?: 'pixelaw_AppName';
+  entity?: Maybe<World__Entity>;
+  name?: Maybe<Scalars['felt252']['output']>;
+  system?: Maybe<Scalars['ContractAddress']['output']>;
+};
+
+export type Pixelaw_AppNameConnection = {
+  __typename?: 'pixelaw_AppNameConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_AppNameEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_AppNameEdge = {
+  __typename?: 'pixelaw_AppNameEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_AppName>;
+};
+
+export type Pixelaw_AppNameOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_AppNameOrderField;
+};
+
+export enum Pixelaw_AppNameOrderField {
+  Name = 'NAME',
+  System = 'SYSTEM'
+}
+
+export type Pixelaw_AppNameWhereInput = {
+  name?: InputMaybe<Scalars['felt252']['input']>;
+  nameEQ?: InputMaybe<Scalars['felt252']['input']>;
+  nameGT?: InputMaybe<Scalars['felt252']['input']>;
+  nameGTE?: InputMaybe<Scalars['felt252']['input']>;
+  nameIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  nameLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  nameLT?: InputMaybe<Scalars['felt252']['input']>;
+  nameLTE?: InputMaybe<Scalars['felt252']['input']>;
+  nameNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  nameNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  nameNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  system?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_AppOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_AppOrderField;
+};
+
+export enum Pixelaw_AppOrderField {
+  Action = 'ACTION',
+  Icon = 'ICON',
+  Manifest = 'MANIFEST',
+  Name = 'NAME',
+  System = 'SYSTEM'
+}
+
+export type Pixelaw_AppUser = {
+  __typename?: 'pixelaw_AppUser';
+  action?: Maybe<Scalars['felt252']['output']>;
+  entity?: Maybe<World__Entity>;
+  player?: Maybe<Scalars['ContractAddress']['output']>;
+  system?: Maybe<Scalars['ContractAddress']['output']>;
+};
+
+export type Pixelaw_AppUserConnection = {
+  __typename?: 'pixelaw_AppUserConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_AppUserEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_AppUserEdge = {
+  __typename?: 'pixelaw_AppUserEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_AppUser>;
+};
+
+export type Pixelaw_AppUserOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_AppUserOrderField;
+};
+
+export enum Pixelaw_AppUserOrderField {
+  Action = 'ACTION',
+  Player = 'PLAYER',
+  System = 'SYSTEM'
+}
+
+export type Pixelaw_AppUserWhereInput = {
+  action?: InputMaybe<Scalars['felt252']['input']>;
+  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionGT?: InputMaybe<Scalars['felt252']['input']>;
+  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  actionLT?: InputMaybe<Scalars['felt252']['input']>;
+  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  player?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  playerLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  playerNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  playerNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  system?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_AppWhereInput = {
+  action?: InputMaybe<Scalars['felt252']['input']>;
+  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionGT?: InputMaybe<Scalars['felt252']['input']>;
+  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  actionLT?: InputMaybe<Scalars['felt252']['input']>;
+  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  icon?: InputMaybe<Scalars['felt252']['input']>;
+  iconEQ?: InputMaybe<Scalars['felt252']['input']>;
+  iconGT?: InputMaybe<Scalars['felt252']['input']>;
+  iconGTE?: InputMaybe<Scalars['felt252']['input']>;
+  iconIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  iconLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  iconLT?: InputMaybe<Scalars['felt252']['input']>;
+  iconLTE?: InputMaybe<Scalars['felt252']['input']>;
+  iconNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  iconNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  iconNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  manifest?: InputMaybe<Scalars['felt252']['input']>;
+  manifestEQ?: InputMaybe<Scalars['felt252']['input']>;
+  manifestGT?: InputMaybe<Scalars['felt252']['input']>;
+  manifestGTE?: InputMaybe<Scalars['felt252']['input']>;
+  manifestIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  manifestLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  manifestLT?: InputMaybe<Scalars['felt252']['input']>;
+  manifestLTE?: InputMaybe<Scalars['felt252']['input']>;
+  manifestNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  manifestNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  manifestNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  name?: InputMaybe<Scalars['felt252']['input']>;
+  nameEQ?: InputMaybe<Scalars['felt252']['input']>;
+  nameGT?: InputMaybe<Scalars['felt252']['input']>;
+  nameGTE?: InputMaybe<Scalars['felt252']['input']>;
+  nameIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  nameLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  nameLT?: InputMaybe<Scalars['felt252']['input']>;
+  nameLTE?: InputMaybe<Scalars['felt252']['input']>;
+  nameNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  nameNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  nameNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  system?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_CoreActionsAddress = {
+  __typename?: 'pixelaw_CoreActionsAddress';
+  entity?: Maybe<World__Entity>;
+  key?: Maybe<Scalars['felt252']['output']>;
+  value?: Maybe<Scalars['ContractAddress']['output']>;
+};
+
+export type Pixelaw_CoreActionsAddressConnection = {
+  __typename?: 'pixelaw_CoreActionsAddressConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_CoreActionsAddressEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_CoreActionsAddressEdge = {
+  __typename?: 'pixelaw_CoreActionsAddressEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_CoreActionsAddress>;
+};
+
+export type Pixelaw_CoreActionsAddressOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_CoreActionsAddressOrderField;
+};
+
+export enum Pixelaw_CoreActionsAddressOrderField {
+  Key = 'KEY',
+  Value = 'VALUE'
+}
+
+export type Pixelaw_CoreActionsAddressWhereInput = {
+  key?: InputMaybe<Scalars['felt252']['input']>;
+  keyEQ?: InputMaybe<Scalars['felt252']['input']>;
+  keyGT?: InputMaybe<Scalars['felt252']['input']>;
+  keyGTE?: InputMaybe<Scalars['felt252']['input']>;
+  keyIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  keyLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  keyLT?: InputMaybe<Scalars['felt252']['input']>;
+  keyLTE?: InputMaybe<Scalars['felt252']['input']>;
+  keyNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  keyNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  keyNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  value?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  valueLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  valueNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  valueNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_Instruction = {
+  __typename?: 'pixelaw_Instruction';
+  entity?: Maybe<World__Entity>;
+  instruction?: Maybe<Scalars['felt252']['output']>;
+  selector?: Maybe<Scalars['felt252']['output']>;
+  system?: Maybe<Scalars['ContractAddress']['output']>;
+};
+
+export type Pixelaw_InstructionConnection = {
+  __typename?: 'pixelaw_InstructionConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_InstructionEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_InstructionEdge = {
+  __typename?: 'pixelaw_InstructionEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_Instruction>;
+};
+
+export type Pixelaw_InstructionOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_InstructionOrderField;
+};
+
+export enum Pixelaw_InstructionOrderField {
+  Instruction = 'INSTRUCTION',
+  Selector = 'SELECTOR',
+  System = 'SYSTEM'
+}
+
+export type Pixelaw_InstructionWhereInput = {
+  instruction?: InputMaybe<Scalars['felt252']['input']>;
+  instructionEQ?: InputMaybe<Scalars['felt252']['input']>;
+  instructionGT?: InputMaybe<Scalars['felt252']['input']>;
+  instructionGTE?: InputMaybe<Scalars['felt252']['input']>;
+  instructionIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  instructionLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  instructionLT?: InputMaybe<Scalars['felt252']['input']>;
+  instructionLTE?: InputMaybe<Scalars['felt252']['input']>;
+  instructionNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  instructionNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  instructionNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  selector?: InputMaybe<Scalars['felt252']['input']>;
+  selectorEQ?: InputMaybe<Scalars['felt252']['input']>;
+  selectorGT?: InputMaybe<Scalars['felt252']['input']>;
+  selectorGTE?: InputMaybe<Scalars['felt252']['input']>;
+  selectorIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  selectorLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  selectorLT?: InputMaybe<Scalars['felt252']['input']>;
+  selectorLTE?: InputMaybe<Scalars['felt252']['input']>;
+  selectorNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  selectorNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  selectorNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  system?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  systemNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  systemNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_Permissions = {
+  __typename?: 'pixelaw_Permissions';
+  allowed_app?: Maybe<Scalars['ContractAddress']['output']>;
+  allowing_app?: Maybe<Scalars['ContractAddress']['output']>;
+  entity?: Maybe<World__Entity>;
+  permission?: Maybe<Pixelaw_Permissions_Permission>;
+};
+
+export type Pixelaw_PermissionsConnection = {
+  __typename?: 'pixelaw_PermissionsConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_PermissionsEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_PermissionsEdge = {
+  __typename?: 'pixelaw_PermissionsEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_Permissions>;
+};
+
+export type Pixelaw_PermissionsOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_PermissionsOrderField;
+};
+
+export enum Pixelaw_PermissionsOrderField {
+  AllowedApp = 'ALLOWED_APP',
+  AllowingApp = 'ALLOWING_APP',
+  Permission = 'PERMISSION'
+}
+
+export type Pixelaw_PermissionsWhereInput = {
+  allowed_app?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  allowed_appLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowed_appNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  allowed_appNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_app?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  allowing_appLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  allowing_appNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  allowing_appNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+};
+
+export type Pixelaw_Permissions_Permission = {
+  __typename?: 'pixelaw_Permissions_Permission';
+  action?: Maybe<Scalars['bool']['output']>;
+  app?: Maybe<Scalars['bool']['output']>;
+  color?: Maybe<Scalars['bool']['output']>;
+  owner?: Maybe<Scalars['bool']['output']>;
+  text?: Maybe<Scalars['bool']['output']>;
+  timestamp?: Maybe<Scalars['bool']['output']>;
+};
+
+export type Pixelaw_Pixel = {
+  __typename?: 'pixelaw_Pixel';
+  action?: Maybe<Scalars['felt252']['output']>;
+  app?: Maybe<Scalars['ContractAddress']['output']>;
+  color?: Maybe<Scalars['u32']['output']>;
+  created_at?: Maybe<Scalars['u64']['output']>;
+  entity?: Maybe<World__Entity>;
+  owner?: Maybe<Scalars['ContractAddress']['output']>;
+  text?: Maybe<Scalars['felt252']['output']>;
+  timestamp?: Maybe<Scalars['u64']['output']>;
+  updated_at?: Maybe<Scalars['u64']['output']>;
+  x?: Maybe<Scalars['u32']['output']>;
+  y?: Maybe<Scalars['u32']['output']>;
+};
+
+export type Pixelaw_PixelConnection = {
+  __typename?: 'pixelaw_PixelConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_PixelEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_PixelEdge = {
+  __typename?: 'pixelaw_PixelEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_Pixel>;
+};
+
+export type Pixelaw_PixelOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_PixelOrderField;
+};
+
+export enum Pixelaw_PixelOrderField {
+  Action = 'ACTION',
+  App = 'APP',
+  Color = 'COLOR',
+  CreatedAt = 'CREATED_AT',
+  Owner = 'OWNER',
+  Text = 'TEXT',
+  Timestamp = 'TIMESTAMP',
+  UpdatedAt = 'UPDATED_AT',
+  X = 'X',
+  Y = 'Y'
+}
+
+export type Pixelaw_PixelWhereInput = {
+  action?: InputMaybe<Scalars['felt252']['input']>;
+  actionEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionGT?: InputMaybe<Scalars['felt252']['input']>;
+  actionGTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  actionLT?: InputMaybe<Scalars['felt252']['input']>;
+  actionLTE?: InputMaybe<Scalars['felt252']['input']>;
+  actionNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  actionNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  actionNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  app?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  appLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  appNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  appNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  color?: InputMaybe<Scalars['u32']['input']>;
+  colorEQ?: InputMaybe<Scalars['u32']['input']>;
+  colorGT?: InputMaybe<Scalars['u32']['input']>;
+  colorGTE?: InputMaybe<Scalars['u32']['input']>;
+  colorIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  colorLIKE?: InputMaybe<Scalars['u32']['input']>;
+  colorLT?: InputMaybe<Scalars['u32']['input']>;
+  colorLTE?: InputMaybe<Scalars['u32']['input']>;
+  colorNEQ?: InputMaybe<Scalars['u32']['input']>;
+  colorNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  colorNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  created_at?: InputMaybe<Scalars['u64']['input']>;
+  created_atEQ?: InputMaybe<Scalars['u64']['input']>;
+  created_atGT?: InputMaybe<Scalars['u64']['input']>;
+  created_atGTE?: InputMaybe<Scalars['u64']['input']>;
+  created_atIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  created_atLIKE?: InputMaybe<Scalars['u64']['input']>;
+  created_atLT?: InputMaybe<Scalars['u64']['input']>;
+  created_atLTE?: InputMaybe<Scalars['u64']['input']>;
+  created_atNEQ?: InputMaybe<Scalars['u64']['input']>;
+  created_atNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  created_atNOTLIKE?: InputMaybe<Scalars['u64']['input']>;
+  owner?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  ownerLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  ownerNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  text?: InputMaybe<Scalars['felt252']['input']>;
+  textEQ?: InputMaybe<Scalars['felt252']['input']>;
+  textGT?: InputMaybe<Scalars['felt252']['input']>;
+  textGTE?: InputMaybe<Scalars['felt252']['input']>;
+  textIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  textLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  textLT?: InputMaybe<Scalars['felt252']['input']>;
+  textLTE?: InputMaybe<Scalars['felt252']['input']>;
+  textNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  textNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  textNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  timestamp?: InputMaybe<Scalars['u64']['input']>;
+  timestampEQ?: InputMaybe<Scalars['u64']['input']>;
+  timestampGT?: InputMaybe<Scalars['u64']['input']>;
+  timestampGTE?: InputMaybe<Scalars['u64']['input']>;
+  timestampIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  timestampLIKE?: InputMaybe<Scalars['u64']['input']>;
+  timestampLT?: InputMaybe<Scalars['u64']['input']>;
+  timestampLTE?: InputMaybe<Scalars['u64']['input']>;
+  timestampNEQ?: InputMaybe<Scalars['u64']['input']>;
+  timestampNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  timestampNOTLIKE?: InputMaybe<Scalars['u64']['input']>;
+  updated_at?: InputMaybe<Scalars['u64']['input']>;
+  updated_atEQ?: InputMaybe<Scalars['u64']['input']>;
+  updated_atGT?: InputMaybe<Scalars['u64']['input']>;
+  updated_atGTE?: InputMaybe<Scalars['u64']['input']>;
+  updated_atIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  updated_atLIKE?: InputMaybe<Scalars['u64']['input']>;
+  updated_atLT?: InputMaybe<Scalars['u64']['input']>;
+  updated_atLTE?: InputMaybe<Scalars['u64']['input']>;
+  updated_atNEQ?: InputMaybe<Scalars['u64']['input']>;
+  updated_atNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u64']['input']>>>;
+  updated_atNOTLIKE?: InputMaybe<Scalars['u64']['input']>;
+  x?: InputMaybe<Scalars['u32']['input']>;
+  xEQ?: InputMaybe<Scalars['u32']['input']>;
+  xGT?: InputMaybe<Scalars['u32']['input']>;
+  xGTE?: InputMaybe<Scalars['u32']['input']>;
+  xIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  xLIKE?: InputMaybe<Scalars['u32']['input']>;
+  xLT?: InputMaybe<Scalars['u32']['input']>;
+  xLTE?: InputMaybe<Scalars['u32']['input']>;
+  xNEQ?: InputMaybe<Scalars['u32']['input']>;
+  xNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  xNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  y?: InputMaybe<Scalars['u32']['input']>;
+  yEQ?: InputMaybe<Scalars['u32']['input']>;
+  yGT?: InputMaybe<Scalars['u32']['input']>;
+  yGTE?: InputMaybe<Scalars['u32']['input']>;
+  yIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  yLIKE?: InputMaybe<Scalars['u32']['input']>;
+  yLT?: InputMaybe<Scalars['u32']['input']>;
+  yLTE?: InputMaybe<Scalars['u32']['input']>;
+  yNEQ?: InputMaybe<Scalars['u32']['input']>;
+  yNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  yNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+};
+
+export type Pixelaw_QueueItem = {
+  __typename?: 'pixelaw_QueueItem';
+  entity?: Maybe<World__Entity>;
+  id?: Maybe<Scalars['felt252']['output']>;
+  valid?: Maybe<Scalars['bool']['output']>;
+};
+
+export type Pixelaw_QueueItemConnection = {
+  __typename?: 'pixelaw_QueueItemConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_QueueItemEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_QueueItemEdge = {
+  __typename?: 'pixelaw_QueueItemEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_QueueItem>;
+};
+
+export type Pixelaw_QueueItemOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_QueueItemOrderField;
+};
+
+export enum Pixelaw_QueueItemOrderField {
+  Id = 'ID',
+  Valid = 'VALID'
+}
+
+export type Pixelaw_QueueItemWhereInput = {
+  id?: InputMaybe<Scalars['felt252']['input']>;
+  idEQ?: InputMaybe<Scalars['felt252']['input']>;
+  idGT?: InputMaybe<Scalars['felt252']['input']>;
+  idGTE?: InputMaybe<Scalars['felt252']['input']>;
+  idIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  idLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  idLT?: InputMaybe<Scalars['felt252']['input']>;
+  idLTE?: InputMaybe<Scalars['felt252']['input']>;
+  idNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  idNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  valid?: InputMaybe<Scalars['bool']['input']>;
+};
+
+export type Pixelaw_Snake = {
+  __typename?: 'pixelaw_Snake';
+  color?: Maybe<Scalars['u32']['output']>;
+  direction?: Maybe<Scalars['Enum']['output']>;
+  entity?: Maybe<World__Entity>;
+  first_segment_id?: Maybe<Scalars['u32']['output']>;
+  is_dying?: Maybe<Scalars['bool']['output']>;
+  last_segment_id?: Maybe<Scalars['u32']['output']>;
+  length?: Maybe<Scalars['u8']['output']>;
+  owner?: Maybe<Scalars['ContractAddress']['output']>;
+  text?: Maybe<Scalars['felt252']['output']>;
+};
+
+export type Pixelaw_SnakeConnection = {
+  __typename?: 'pixelaw_SnakeConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_SnakeEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_SnakeEdge = {
+  __typename?: 'pixelaw_SnakeEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_Snake>;
+};
+
+export type Pixelaw_SnakeOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_SnakeOrderField;
+};
+
+export enum Pixelaw_SnakeOrderField {
+  Color = 'COLOR',
+  Direction = 'DIRECTION',
+  FirstSegmentId = 'FIRST_SEGMENT_ID',
+  IsDying = 'IS_DYING',
+  LastSegmentId = 'LAST_SEGMENT_ID',
+  Length = 'LENGTH',
+  Owner = 'OWNER',
+  Text = 'TEXT'
+}
+
+export type Pixelaw_SnakeSegment = {
+  __typename?: 'pixelaw_SnakeSegment';
+  entity?: Maybe<World__Entity>;
+  id?: Maybe<Scalars['u32']['output']>;
+  next_id?: Maybe<Scalars['u32']['output']>;
+  pixel_original_app?: Maybe<Scalars['ContractAddress']['output']>;
+  pixel_original_color?: Maybe<Scalars['u32']['output']>;
+  pixel_original_text?: Maybe<Scalars['felt252']['output']>;
+  previous_id?: Maybe<Scalars['u32']['output']>;
+  x?: Maybe<Scalars['u32']['output']>;
+  y?: Maybe<Scalars['u32']['output']>;
+};
+
+export type Pixelaw_SnakeSegmentConnection = {
+  __typename?: 'pixelaw_SnakeSegmentConnection';
+  edges?: Maybe<Array<Maybe<Pixelaw_SnakeSegmentEdge>>>;
+  pageInfo: World__PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Pixelaw_SnakeSegmentEdge = {
+  __typename?: 'pixelaw_SnakeSegmentEdge';
+  cursor?: Maybe<Scalars['Cursor']['output']>;
+  node?: Maybe<Pixelaw_SnakeSegment>;
+};
+
+export type Pixelaw_SnakeSegmentOrder = {
+  direction: OrderDirection;
+  field: Pixelaw_SnakeSegmentOrderField;
+};
+
+export enum Pixelaw_SnakeSegmentOrderField {
+  Id = 'ID',
+  NextId = 'NEXT_ID',
+  PixelOriginalApp = 'PIXEL_ORIGINAL_APP',
+  PixelOriginalColor = 'PIXEL_ORIGINAL_COLOR',
+  PixelOriginalText = 'PIXEL_ORIGINAL_TEXT',
+  PreviousId = 'PREVIOUS_ID',
+  X = 'X',
+  Y = 'Y'
+}
+
+export type Pixelaw_SnakeSegmentWhereInput = {
+  id?: InputMaybe<Scalars['u32']['input']>;
+  idEQ?: InputMaybe<Scalars['u32']['input']>;
+  idGT?: InputMaybe<Scalars['u32']['input']>;
+  idGTE?: InputMaybe<Scalars['u32']['input']>;
+  idIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  idLIKE?: InputMaybe<Scalars['u32']['input']>;
+  idLT?: InputMaybe<Scalars['u32']['input']>;
+  idLTE?: InputMaybe<Scalars['u32']['input']>;
+  idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  idNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  next_id?: InputMaybe<Scalars['u32']['input']>;
+  next_idEQ?: InputMaybe<Scalars['u32']['input']>;
+  next_idGT?: InputMaybe<Scalars['u32']['input']>;
+  next_idGTE?: InputMaybe<Scalars['u32']['input']>;
+  next_idIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  next_idLIKE?: InputMaybe<Scalars['u32']['input']>;
+  next_idLT?: InputMaybe<Scalars['u32']['input']>;
+  next_idLTE?: InputMaybe<Scalars['u32']['input']>;
+  next_idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  next_idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  next_idNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_app?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  pixel_original_appLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_appNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  pixel_original_appNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  pixel_original_color?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorEQ?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorGT?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorGTE?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  pixel_original_colorLIKE?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorLT?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorLTE?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorNEQ?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_colorNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  pixel_original_colorNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  pixel_original_text?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textEQ?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textGT?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textGTE?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  pixel_original_textLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textLT?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textLTE?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  pixel_original_textNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  pixel_original_textNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  previous_id?: InputMaybe<Scalars['u32']['input']>;
+  previous_idEQ?: InputMaybe<Scalars['u32']['input']>;
+  previous_idGT?: InputMaybe<Scalars['u32']['input']>;
+  previous_idGTE?: InputMaybe<Scalars['u32']['input']>;
+  previous_idIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  previous_idLIKE?: InputMaybe<Scalars['u32']['input']>;
+  previous_idLT?: InputMaybe<Scalars['u32']['input']>;
+  previous_idLTE?: InputMaybe<Scalars['u32']['input']>;
+  previous_idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  previous_idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  previous_idNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  x?: InputMaybe<Scalars['u32']['input']>;
+  xEQ?: InputMaybe<Scalars['u32']['input']>;
+  xGT?: InputMaybe<Scalars['u32']['input']>;
+  xGTE?: InputMaybe<Scalars['u32']['input']>;
+  xIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  xLIKE?: InputMaybe<Scalars['u32']['input']>;
+  xLT?: InputMaybe<Scalars['u32']['input']>;
+  xLTE?: InputMaybe<Scalars['u32']['input']>;
+  xNEQ?: InputMaybe<Scalars['u32']['input']>;
+  xNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  xNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  y?: InputMaybe<Scalars['u32']['input']>;
+  yEQ?: InputMaybe<Scalars['u32']['input']>;
+  yGT?: InputMaybe<Scalars['u32']['input']>;
+  yGTE?: InputMaybe<Scalars['u32']['input']>;
+  yIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  yLIKE?: InputMaybe<Scalars['u32']['input']>;
+  yLT?: InputMaybe<Scalars['u32']['input']>;
+  yLTE?: InputMaybe<Scalars['u32']['input']>;
+  yNEQ?: InputMaybe<Scalars['u32']['input']>;
+  yNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  yNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+};
+
+export type Pixelaw_SnakeWhereInput = {
+  color?: InputMaybe<Scalars['u32']['input']>;
+  colorEQ?: InputMaybe<Scalars['u32']['input']>;
+  colorGT?: InputMaybe<Scalars['u32']['input']>;
+  colorGTE?: InputMaybe<Scalars['u32']['input']>;
+  colorIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  colorLIKE?: InputMaybe<Scalars['u32']['input']>;
+  colorLT?: InputMaybe<Scalars['u32']['input']>;
+  colorLTE?: InputMaybe<Scalars['u32']['input']>;
+  colorNEQ?: InputMaybe<Scalars['u32']['input']>;
+  colorNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  colorNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  direction?: InputMaybe<Scalars['Enum']['input']>;
+  first_segment_id?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idEQ?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idGT?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idGTE?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  first_segment_idLIKE?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idLT?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idLTE?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  first_segment_idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  first_segment_idNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  is_dying?: InputMaybe<Scalars['bool']['input']>;
+  last_segment_id?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idEQ?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idGT?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idGTE?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  last_segment_idLIKE?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idLT?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idLTE?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idNEQ?: InputMaybe<Scalars['u32']['input']>;
+  last_segment_idNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u32']['input']>>>;
+  last_segment_idNOTLIKE?: InputMaybe<Scalars['u32']['input']>;
+  length?: InputMaybe<Scalars['u8']['input']>;
+  lengthEQ?: InputMaybe<Scalars['u8']['input']>;
+  lengthGT?: InputMaybe<Scalars['u8']['input']>;
+  lengthGTE?: InputMaybe<Scalars['u8']['input']>;
+  lengthIN?: InputMaybe<Array<InputMaybe<Scalars['u8']['input']>>>;
+  lengthLIKE?: InputMaybe<Scalars['u8']['input']>;
+  lengthLT?: InputMaybe<Scalars['u8']['input']>;
+  lengthLTE?: InputMaybe<Scalars['u8']['input']>;
+  lengthNEQ?: InputMaybe<Scalars['u8']['input']>;
+  lengthNOTIN?: InputMaybe<Array<InputMaybe<Scalars['u8']['input']>>>;
+  lengthNOTLIKE?: InputMaybe<Scalars['u8']['input']>;
+  owner?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerGT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerGTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  ownerLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerLT?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerLTE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerNEQ?: InputMaybe<Scalars['ContractAddress']['input']>;
+  ownerNOTIN?: InputMaybe<Array<InputMaybe<Scalars['ContractAddress']['input']>>>;
+  ownerNOTLIKE?: InputMaybe<Scalars['ContractAddress']['input']>;
+  text?: InputMaybe<Scalars['felt252']['input']>;
+  textEQ?: InputMaybe<Scalars['felt252']['input']>;
+  textGT?: InputMaybe<Scalars['felt252']['input']>;
+  textGTE?: InputMaybe<Scalars['felt252']['input']>;
+  textIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  textLIKE?: InputMaybe<Scalars['felt252']['input']>;
+  textLT?: InputMaybe<Scalars['felt252']['input']>;
+  textLTE?: InputMaybe<Scalars['felt252']['input']>;
+  textNEQ?: InputMaybe<Scalars['felt252']['input']>;
+  textNOTIN?: InputMaybe<Array<InputMaybe<Scalars['felt252']['input']>>>;
+  textNOTLIKE?: InputMaybe<Scalars['felt252']['input']>;
+};
+
+export type GetAllAppsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAppsQuery = { __typename?: 'World__Query', pixelawAppModels?: { __typename?: 'pixelaw_AppConnection', totalCount: number, edges?: Array<{ __typename?: 'pixelaw_AppEdge', node?: { __typename?: 'pixelaw_App', system?: any | null, name?: any | null, manifest?: any | null, icon?: any | null, action?: any | null, entity?: { __typename?: 'World__Entity', id?: string | null } | null } | null } | null> | null, pageInfo: { __typename?: 'World__PageInfo', hasNextPage?: boolean | null, endCursor?: any | null } } | null };
+
+export type GetPixelsQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Pixelaw_PixelWhereInput>;
 }>;
 
 
-export type AlertsQuery = { __typename?: 'World__Query', events?: { __typename?: 'World__EventConnection', edges?: Array<{ __typename?: 'World__EventEdge', node?: { __typename?: 'World__Event', id?: string | null, keys?: Array<string | null> | null, data?: Array<string | null> | null, createdAt?: any | null, transactionHash?: string | null } | null } | null> | null } | null };
-
-export type MetadatasQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetPixelsQuery = { __typename?: 'World__Query', pixelawPixelModels?: { __typename?: 'pixelaw_PixelConnection', totalCount: number, edges?: Array<{ __typename?: 'pixelaw_PixelEdge', node?: { __typename?: 'pixelaw_Pixel', x?: any | null, y?: any | null, color?: any | null, owner?: any | null, text?: any | null, timestamp?: any | null, action?: any | null } | null } | null> | null } | null };
 
 
-export type MetadatasQuery = { __typename?: 'World__Query', metadatas?: { __typename?: 'World__MetadataConnection', edges?: Array<{ __typename?: 'World__MetadataEdge', node?: { __typename?: 'World__Metadata', id?: string | null, uri?: string | null, worldAddress: string } | null } | null> | null } | null };
-
-
-export const AlertsDocument = gql`
-    query alerts($first: Int) {
-  events(
-    first: $first
-    keys: ["0x4f01980329bc5de8cd181e4fb67fefefe583bd41f04365fa472ba112e7e5ef"]
-  ) {
+export const GetAllAppsDocument = gql`
+    query GetAllApps {
+  pixelawAppModels(first: 1000) {
+    totalCount
     edges {
       node {
-        id
-        keys
-        data
-        createdAt
-        transactionHash
+        system
+        name
+        manifest
+        icon
+        action
+        entity {
+          id
+        }
       }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }
     `;
-export const MetadatasDocument = gql`
-    query metadatas {
-  metadatas {
+export const GetPixelsDocument = gql`
+    query GetPixels($first: Int, $where: pixelaw_PixelWhereInput) {
+  pixelawPixelModels(first: $first, where: $where) {
     edges {
       node {
-        id
-        uri
-        worldAddress
+        x
+        y
+        color
+        owner
+        text
+        timestamp
+        action
       }
     }
+    totalCount
   }
 }
     `;
@@ -1211,20 +1388,15 @@ export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, str
 
 
 const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationType, _variables) => action();
-const AlertsDocumentString = print(AlertsDocument);
-const MetadatasDocumentString = print(MetadatasDocument);
+const GetAllAppsDocumentString = print(GetAllAppsDocument);
+const GetPixelsDocumentString = print(GetPixelsDocument);
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-    alerts(variables?: AlertsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: AlertsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<AlertsQuery>(AlertsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'alerts', 'query', variables);
+    GetAllApps(variables?: GetAllAppsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetAllAppsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetAllAppsQuery>(GetAllAppsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetAllApps', 'query', variables);
     },
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-    metadatas(variables?: MetadatasQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: MetadatasQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
-      console.log("a")
-        return withWrapper((wrappedRequestHeaders) => client.rawRequest<MetadatasQuery>(MetadatasDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'metadatas', 'query', variables);
+    GetPixels(variables?: GetPixelsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders): Promise<{ data: GetPixelsQuery; errors?: GraphQLError[]; extensions?: any; headers: Headers; status: number; }> {
+        return withWrapper((wrappedRequestHeaders) => client.rawRequest<GetPixelsQuery>(GetPixelsDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'GetPixels', 'query', variables);
     }
   };
 }
