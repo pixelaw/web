@@ -8,10 +8,12 @@ import { Account, RpcProvider } from "starknet"
 import { getSdk } from "../generated/graphql.ts"
 import type { Manifest } from "../global/types.ts"
 import { felt252ToString } from "../global/utils.ts"
-import { defineContractComponents } from "./contractComponents.ts"
-import { createClientComponents } from "./createClientComponents.ts"
+// import { defineContractComponents } from "./contractComponents.ts"
+// import { createClientComponents } from "./createClientComponents.ts"
 import { createSystemCalls } from "./createSystemCalls.ts"
-import { setupWorld } from "./generated.ts"
+
+import { setupWorld } from "@/generated/contracts.gen.js"
+import { defineContractComponents } from "@/generated/models.gen.js"
 import { world } from "./world.ts"
 
 export type TPixelLawError = Error & {
@@ -70,10 +72,11 @@ export async function setupPixelaw({ ...config }: DojoConfig): Promise<IPixelawG
         worldAddress: config.manifest.world.address || "",
         relayUrl: "",
     })
+
     const contractComponents = defineContractComponents(world)
     // const clientComponents = createClientComponents({contractComponents});
 
-    await getSyncEntities(toriiClient, contractComponents as any, [])
+    const _sync = await getSyncEntities(toriiClient, contractComponents as any, [])
 
     // Get apps from the world
     const entities = getComponentEntities(contractComponents.App)
