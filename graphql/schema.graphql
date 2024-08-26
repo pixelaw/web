@@ -365,6 +365,7 @@ type pixelaw_App {
     icon: felt252
     action: felt252
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_AppConnection {
@@ -382,6 +383,7 @@ type pixelaw_AppName {
     name: felt252
     system: ContractAddress
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_AppNameConnection {
@@ -448,6 +450,7 @@ type pixelaw_AppUser {
     player: ContractAddress
     action: felt252
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_AppUserConnection {
@@ -570,6 +573,7 @@ type pixelaw_CoreActionsAddress {
     key: felt252
     value: ContractAddress
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_CoreActionsAddressConnection {
@@ -623,6 +627,7 @@ type pixelaw_Instruction {
     selector: felt252
     instruction: felt252
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_InstructionConnection {
@@ -688,6 +693,7 @@ type pixelaw_Permissions {
     allowed_app: ContractAddress
     permission: pixelaw_Permissions_Permission
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_PermissionsConnection {
@@ -758,6 +764,7 @@ type pixelaw_Pixel {
     text: felt252
     action: felt252
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_PixelConnection {
@@ -906,6 +913,7 @@ type pixelaw_QueueItem {
     id: felt252
     valid: bool
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_QueueItemConnection {
@@ -954,6 +962,7 @@ type pixelaw_Snake {
     text: felt252
     is_dying: bool
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_SnakeConnection {
@@ -993,6 +1002,7 @@ type pixelaw_SnakeSegment {
     pixel_original_text: felt252
     pixel_original_app: ContractAddress
     entity: World__Entity
+    eventMessage: World__EventMessage
 }
 
 type pixelaw_SnakeSegmentConnection {
