@@ -1,32 +1,55 @@
-import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
+import GET_APPS_QUERY from "@/../graphql/GetApps.graphql"
 import type { App, AppStore } from "@/webtools/types.ts"
 import { felt252ToUnicode } from "@/webtools/utils.ts"
-import type { ComponentValue, Schema, getComponentValue } from "@dojoengine/recs"
+import type { DocumentNode } from "graphql"
+import { GraphQLClient } from "graphql-request"
 import { useEffect, useState } from "react"
 import { shortString } from "starknet"
 
-export function useDojoAppStore(): AppStore {
-    const { gameData } = usePixelawProvider()
+type GetAppsResponse = {
+    pixelawAppModels: {
+        edges: Array<{
+            node: {
+                system: string
+                name: string
+                manifest: string
+                icon: string
+                action: string
+                entity: {
+                    id: string
+                }
+            }
+        }>
+    }
+}
+
+export async function fetchApps(baseUrl: string): Promise<App[]> {
+    const gqlClient = new GraphQLClient(`${baseUrl}/graphql`)
+    try {
+        const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
+        return data.pixelawAppModels.edges.map(({ node }) => ({
+            name: shortString.decodeShortString(node.name),
+            icon: felt252ToUnicode(node.icon),
+            action: shortString.decodeShortString(node.action),
+            system: node.system,
+            manifest: node.manifest,
+            entity: {
+                id: node.entity.id,
+            },
+        }))
+    } catch (error) {
+        console.error("Error fetching apps:", error)
+        return []
+    }
+}
+
+export function useDojoAppStore(baseUrl?: string): AppStore {
     const [preparedApps, setPreparedApps] = useState<App[]>([])
 
     useEffect(() => {
-        if (!gameData) return
-
-        const apps = gameData.setup.apps.reduce(
-            (acc: App[], appComponent: ComponentValue<Schema, unknown> | undefined) => {
-                const app = fromComponent(appComponent)
-                if (app) acc.push(app)
-                return acc
-            },
-            [],
-        )
-
-        setPreparedApps(apps)
-    }, [gameData])
-
-    const prepare = (): void => {
-        // Not implemented for Dojo
-    }
+        if (!baseUrl) return
+        fetchApps(baseUrl).then(setPreparedApps)
+    }, [baseUrl])
 
     const getByName = (name: string): App | undefined => {
         return preparedApps.find((app) => app.name === name)
@@ -36,19 +59,5 @@ export function useDojoAppStore(): AppStore {
         return preparedApps
     }
 
-    return { getByName, getAll, prepare }
-}
-
-function fromComponent(appComponent: ReturnType<typeof getComponentValue>): App | undefined {
-    if (!appComponent) return undefined
-    return {
-        name: shortString.decodeShortString(appComponent.name),
-        icon: felt252ToUnicode(appComponent.icon),
-        action: shortString.decodeShortString(appComponent.action),
-        system: appComponent.system,
-        manifest: appComponent.manifest,
-        entity: {
-            id: "", // For now there's no reason
-        },
-    }
+    return { getByName, getAll, prepare: () => {} }
 }

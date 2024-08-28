@@ -1,19 +1,17 @@
 import { type DojoConfig, DojoProvider } from "@dojoengine/core"
 import { BurnerManager, type useBurnerManager } from "@dojoengine/create-burner"
-import { getComponentEntities, getComponentValue } from "@dojoengine/recs"
-import { getSyncEntities } from "@dojoengine/state"
+import { getComponentEntities, type getComponentValue } from "@dojoengine/recs"
 import * as torii from "@dojoengine/torii-client"
 import { GraphQLClient } from "graphql-request"
 import { Account, RpcProvider } from "starknet"
 import { getSdk } from "../generated/graphql.ts"
 import type { Manifest } from "../global/types.ts"
 import { felt252ToString } from "../global/utils.ts"
-// import { defineContractComponents } from "./contractComponents.ts"
-// import { createClientComponents } from "./createClientComponents.ts"
 import { createSystemCalls } from "./createSystemCalls.ts"
 
 import { setupWorld } from "@/generated/contracts.gen.js"
 import { defineContractComponents } from "@/generated/models.gen.js"
+import { fetchApps } from "@/stores/DojoAppStore.js"
 import { world } from "./world.ts"
 
 export type TPixelLawError = Error & {
@@ -72,18 +70,11 @@ export async function setupPixelaw({ ...config }: DojoConfig): Promise<IPixelawG
         worldAddress: config.manifest.world.address || "",
         relayUrl: "",
     })
+    console.log("1")
 
     const contractComponents = defineContractComponents(world)
-    // const clientComponents = createClientComponents({contractComponents});
 
-    const _sync = await getSyncEntities(toriiClient, contractComponents as any, [])
-
-    // Get apps from the world
-    const entities = getComponentEntities(contractComponents.App)
-
-    const apps: ReturnType<typeof getComponentValue>[] = [...entities].map((entityId) =>
-        getComponentValue(contractComponents.App, entityId),
-    )
+    const apps = await fetchApps(config.toriiUrl)
 
     const contracts = await Promise.all(
         apps.map((address) => getAbi(new RpcProvider({ nodeUrl: config?.rpcUrl }), address)),

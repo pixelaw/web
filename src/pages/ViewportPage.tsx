@@ -28,10 +28,11 @@ const ViewportPage: React.FC = () => {
     const { clientState, error, gameData } = usePixelawProvider()
     const settings = useSettingsStore()
     const updateService = useUpdateService(settings.config?.serverUrl!)
+    const appStore = useDojoAppStore(settings.config?.toriiUrl!)
     const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!)
     const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
-    const appStore = useDojoAppStore()
+
     useSyncedViewStateStore()
 
     const handleParamsRequired = (params: any) => {
