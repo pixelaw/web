@@ -21,7 +21,7 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
     const [state, setState] = useState<State>({})
     const [bounds, setBounds] = useState<Bounds>([
         [0, 0],
-        [MAX_VIEW_SIZE, MAX_VIEW_SIZE],
+        [1, 1], // TODO need better defaults?
     ])
     const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now())
 
