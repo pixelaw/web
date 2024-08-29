@@ -41,12 +41,12 @@ const ViewportPage: React.FC = () => {
     }
 
     const handleParamSubmit = (submittedParams: any) => {
-        submitParamsCallback(submittedParams) // Use the stored callback to submit parameters
+        submitParamsCallback(submittedParams)
         setParamDialogVisible(false)
     }
 
     useDojoInteractHandler(pixelStore, gameData, handleParamsRequired, (submit) => {
-        setSubmitParamsCallback(() => submit) // Store the submitParams function provided by the hook
+        setSubmitParamsCallback(() => submit)
     })
 
     const closeParamDialog = () => {
@@ -65,8 +65,11 @@ const ViewportPage: React.FC = () => {
 
     const onWorldviewChange = (newWorldview: Bounds) => {
         updateService.setBounds(newWorldview)
-        pixelStore.prepare(newWorldview)
         tileStore.prepare(newWorldview)
+
+        if (zoom > 3000) {
+            pixelStore.prepare(newWorldview)
+        }
     }
 
     const onCellHover = (coordinate: Coordinate | undefined) => {
