@@ -17,7 +17,7 @@ type GetPixelsResponse = {
 
 type State = { [key: string]: Pixel | undefined }
 
-export function useDojoPixelStore(baseUrl?: string): PixelStore {
+export function useDojoGraphqlPixelStore(baseUrl?: string): PixelStore {
     const [state, setState] = useState<State>({})
     const [bounds, setBounds] = useState<Bounds>([
         [0, 0],

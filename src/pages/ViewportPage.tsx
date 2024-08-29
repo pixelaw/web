@@ -4,7 +4,7 @@ import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
-import { useDojoPixelStore } from "@/stores/DojoPixelStore.ts"
+import { useDojoGraphqlPixelStore } from "@/stores/DojoGraphqlPixelStore.ts"
 import { useSettingsStore } from "@/stores/SettingsStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
@@ -29,7 +29,7 @@ const ViewportPage: React.FC = () => {
     const settings = useSettingsStore()
     const updateService = useUpdateService(settings.config?.serverUrl!)
     const appStore = useDojoAppStore(settings.config?.toriiUrl!)
-    const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!)
+    const pixelStore = useDojoGraphqlPixelStore(settings.config?.toriiUrl!)
     const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
 
