@@ -740,42 +740,42 @@
   resolved "https://registry.yarnpkg.com/@biomejs/cli-win32-x64/-/cli-win32-x64-1.8.3.tgz#6a9dc5a4e13357277da43c015cd5cdc374035448"
   integrity sha512-/PJ59vA1pnQeKahemaQf4Nyj7IKUvGQSc3Ze1uIGi+Wvr1xF7rGobSrAAG01T/gUDG21vkDsZYM03NAmPiVkqg==
 
-"@dojoengine/core@1.0.0-alpha.8", "@dojoengine/core@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/core/-/core-1.0.0-alpha.8.tgz#0c324af702a93e6774ebb70d2fe2f92d7148ca6d"
-  integrity sha512-xbHiHMTNExGkvLXewfhdwyDaiFbvefnEIjXb1LQoZRtIp102LKrOaoM9UENzldMPR/Qm9zBC44ouNEZUmGFtcA==
+"@dojoengine/core@1.0.0-alpha.22", "@dojoengine/core@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/core/-/core-1.0.0-alpha.22.tgz#d901b978f56c87d93c6c77f797f83bda506316af"
+  integrity sha512-o3aJlUTeL8p3gTYdgCKGjI2EOxE4oWBYoaUboJ77bsvcNuWiL6X8RXEA7vGUY+F0zrp0UTlcixpIMEEOgDbgDA==
   dependencies:
     "@dojoengine/recs" "2.0.13"
-    zod "^3.22.4"
+    zod "^3.23.8"
 
-"@dojoengine/create-burner@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/create-burner/-/create-burner-1.0.0-alpha.8.tgz#7931a8539d3ecc9ea3bf305e8182dc695efac15e"
-  integrity sha512-8jutMRiIR7ODDdsQNW/11uxPNP4P+ov6rr1MmlXDdpglrATwudA2JCTN96tGj87JtZu/Z9KLLcgT5VRqFeHRNg==
+"@dojoengine/create-burner@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/create-burner/-/create-burner-1.0.0-alpha.22.tgz#80815dc42f3875ef5e790500072c7374868f812c"
+  integrity sha512-R1kOb4Gbi0aT8oYhRL1pEXHgG4nA8YPqYFPHD+i4XKMGz4nxucsIL//IynJVW7oeAibElufNyKcCiuhq91Q3rg==
   dependencies:
-    "@dojoengine/core" "1.0.0-alpha.8"
-    "@scure/bip32" "^1.4.0"
+    "@dojoengine/core" "1.0.0-alpha.22"
+    "@scure/bip32" "^1.5.0"
     "@starknet-react/core" "2.3.0"
     encoding "^0.1.13"
-    get-starknet-core "^3.2.0"
+    get-starknet-core "^3.3.3"
     js-cookie "^3.0.5"
 
-"@dojoengine/react@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/react/-/react-1.0.0-alpha.8.tgz#e90e29e0c4c9fd7fc51738a847db06ecdea7092e"
-  integrity sha512-S8yWXFTDkN9Mi8AZoD6IhZnL3YSbC3eDqVcn0AG5HXjQM40lyNw/i6ZdhVjGyNOMneDGRUh4o5ETkZUMCZ0oNg==
+"@dojoengine/react@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/react/-/react-1.0.0-alpha.22.tgz#7b32bc75164a119fdbeccd2f3f6c2e8462eb9a76"
+  integrity sha512-pGx3zwr7YC7yhLVi7qJbNkDXflUB3KdbL5d8ydMvyt137Fq0A8ev2l74WY5d01iF4NwYhAaaHwu77ztcGrlcSw==
   dependencies:
     "@dojoengine/recs" "2.0.13"
-    "@dojoengine/state" "1.0.0-alpha.8"
-    "@dojoengine/torii-client" "1.0.0-alpha.8"
-    "@dojoengine/utils" "1.0.0-alpha.8"
-    "@latticexyz/utils" "^2.0.0-next.11"
+    "@dojoengine/state" "1.0.0-alpha.22"
+    "@dojoengine/torii-client" "1.0.0-alpha.22"
+    "@dojoengine/utils" "1.0.0-alpha.22"
+    "@latticexyz/utils" "^2.2.8"
     encoding "^0.1.13"
     fast-deep-equal "^3.1.3"
-    get-starknet-core "^3.2.0"
+    get-starknet-core "^3.3.3"
     js-cookie "^3.0.5"
     rxjs "7.5.5"
-    zustand "^4.5.2"
+    zustand "^4.5.5"
 
 "@dojoengine/recs@2.0.13", "@dojoengine/recs@^2.0.13":
   version "2.0.13"
@@ -787,38 +787,35 @@
     mobx "^6.7.0"
     rxjs "7.5.5"
 
-"@dojoengine/state@1.0.0-alpha.8", "@dojoengine/state@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/state/-/state-1.0.0-alpha.8.tgz#f39618fb843f65b6b14ccbe0bbcbc3e4da43b63e"
-  integrity sha512-22NDEGFI9MHLCN5fPbMvOWOEN6mAWqMc0p7snFHqrAzXUTuL7oilOotyOwqhpDIZZFdJ48RvCd7CVkOVbF1vuA==
+"@dojoengine/state@1.0.0-alpha.22", "@dojoengine/state@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/state/-/state-1.0.0-alpha.22.tgz#51f3473ba2906a1b6e3ae15ce7e851ef77e333b7"
+  integrity sha512-iA/ShshfHlq220R2zgYK+RPjrYWO+p//lmamo97AaPXt2LV7YmscnR7B6A/TOXAwKNkF7UawGR5lk/+L5wv/0A==
   dependencies:
     "@dojoengine/recs" "2.0.13"
-    "@dojoengine/torii-client" "1.0.0-alpha.8"
-    "@latticexyz/utils" "^2.0.0-next.11"
+    "@dojoengine/torii-client" "1.0.0-alpha.22"
     vitest "^1.6.0"
-    zustand "^4.5.2"
 
-"@dojoengine/torii-client@1.0.0-alpha.8", "@dojoengine/torii-client@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/torii-client/-/torii-client-1.0.0-alpha.8.tgz#541654227588218b91f7bd72a6b0cf858eb462e4"
-  integrity sha512-a08KDrrobQr055st9dTQWrKruIZzqenTXElTybK7/qi2brcGdFlutyTN+JuZZtATYAISzBlJWuoYFkC1vAZ7Zg==
+"@dojoengine/torii-client@1.0.0-alpha.22", "@dojoengine/torii-client@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/torii-client/-/torii-client-1.0.0-alpha.22.tgz#c8b87cd8af0d81bc6e56c9a3aab577bed0c2f5a2"
+  integrity sha512-0oungBQ5lZ8o2SAGQ5hoTpipRcGf0ehxiGpN6YsQvGvFHenQesW1hbqjxe/x5sfNslKgxjSPl+nN6PR0HXfefQ==
   dependencies:
-    "@dojoengine/torii-wasm" "1.0.0-alpha.8"
-    typescript "^5.5.4"
+    "@dojoengine/torii-wasm" "1.0.0-alpha.22"
 
-"@dojoengine/torii-wasm@1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/torii-wasm/-/torii-wasm-1.0.0-alpha.8.tgz#72884d6710bc1aae29e0490ab7f29fa5e1b9fad7"
-  integrity sha512-xB5fKqJ9ss+DwPdm9f3fEDgrH2UHbt5SozuEDalCvE57BDsH1B+NdjkFVi7coKXadAqrVQ23thFzwG9nT5b2nQ==
+"@dojoengine/torii-wasm@1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/torii-wasm/-/torii-wasm-1.0.0-alpha.22.tgz#fe909fed1335c62abaeb6fce58d0e70a94b4ba23"
+  integrity sha512-YfOMnLshZXhIlKfIkfch9aLN9IMrN/+iZHFGmmEDYWcleD67IQ614AcmWXeu3Fji58BfFWWteP+e8jlTqzzLQw==
 
-"@dojoengine/utils@1.0.0-alpha.8", "@dojoengine/utils@^1.0.0-alpha.8":
-  version "1.0.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@dojoengine/utils/-/utils-1.0.0-alpha.8.tgz#9bc28b3c13a633a901f99c2cf1dbca048e343fc9"
-  integrity sha512-7uMkZMS4wrflqCyPm0/u805n69QysN9u6TvsGl+6fumbUihhpfjJV/2+YJdM00RAlTQAy4sLrnjKH1t7WX0Udg==
+"@dojoengine/utils@1.0.0-alpha.22", "@dojoengine/utils@^1.0.0-alpha.22":
+  version "1.0.0-alpha.22"
+  resolved "https://registry.yarnpkg.com/@dojoengine/utils/-/utils-1.0.0-alpha.22.tgz#667a2e8b5256bdc669c752ed09c3826da2c8146c"
+  integrity sha512-MLDVKO8lblGAAzveUMRUuDeBlOF2ieXXarhtYbsKoN4WN6mH3W/VvDK+/hac6/vTCgln5DafvpZHafGdAkfVnw==
   dependencies:
     "@dojoengine/recs" "2.0.13"
-    "@latticexyz/utils" "^2.0.0-next.11"
-    mathjs "^12.0.0"
+    "@latticexyz/utils" "^2.2.8"
+    mathjs "^12.4.3"
     micro-starknet "^0.2.3"
 
 "@dprint/darwin-arm64@0.45.1":
@@ -1572,10 +1569,19 @@
     abitype "1.0.0"
     viem "2.9.20"
 
-"@latticexyz/utils@2.0.12", "@latticexyz/utils@^2.0.0-next.11":
+"@latticexyz/utils@2.0.12":
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/@latticexyz/utils/-/utils-2.0.12.tgz#75b01c8d2f25a4a31d7998c4f137586c5407fa28"
   integrity sha512-AwniovUlWY7YL92Mjz/3R0V9g8c5wYg5t3agRmMZ9wgktUB6BYZC65n+sKp88wUuN3DrMLb51UFZOycGh0JD2w==
+  dependencies:
+    mobx "^6.7.0"
+    proxy-deep "^3.1.1"
+    rxjs "7.5.5"
+
+"@latticexyz/utils@^2.2.8":
+  version "2.2.12"
+  resolved "https://registry.yarnpkg.com/@latticexyz/utils/-/utils-2.2.12.tgz#1d0f2caacabfb122f9862a560b5d8412d8c71dc6"
+  integrity sha512-NOEvz90dUqjFJPemIMRIjb++9kkYccNsVRdA1B3pEhltZ9AGsr3k8NF28RAzYqYrQpRIQ/YkEiGkfNFG9SBS9g==
   dependencies:
     mobx "^6.7.0"
     proxy-deep "^3.1.1"
@@ -1645,6 +1651,13 @@
   dependencies:
     "@noble/hashes" "1.4.0"
 
+"@noble/curves@~1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.6.0.tgz#be5296ebcd5a1730fccea4786d420f87abfeb40b"
+  integrity sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==
+  dependencies:
+    "@noble/hashes" "1.5.0"
+
 "@noble/hashes@1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.0.tgz#085fd70f6d7d9d109671090ccae1d3bec62554a1"
@@ -1660,10 +1673,15 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.3.tgz#39908da56a4adc270147bb07968bf3b16cfe1699"
   integrity sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==
 
-"@noble/hashes@1.4.0", "@noble/hashes@^1.4.0", "@noble/hashes@~1.4.0":
+"@noble/hashes@1.4.0", "@noble/hashes@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.4.0.tgz#45814aa329f30e4fe0ba49426f49dfccdd066426"
   integrity sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==
+
+"@noble/hashes@1.5.0", "@noble/hashes@~1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.5.0.tgz#abadc5ca20332db2b1b2aa3e496e9af1213570b0"
+  integrity sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1832,10 +1850,15 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.18.0.tgz#5d694d345ce36b6ecf657349e03eb87297e68da4"
   integrity sha512-UOo5FdvOL0+eIVTgS4tIdbW+TtnBLWg1YBCcU2KWM7nuNwRz9bksDX1bekJJCpu25N1DVWaCwnT39dVQxzqS8g==
 
-"@scure/base@~1.1.0", "@scure/base@~1.1.2", "@scure/base@~1.1.3", "@scure/base@~1.1.6":
+"@scure/base@~1.1.0", "@scure/base@~1.1.2", "@scure/base@~1.1.3":
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.7.tgz#fe973311a5c6267846aa131bc72e96c5d40d2b30"
   integrity sha512-PPNYBslrLNNUQ/Yad37MHYsNQtK67EhWb6WtSvNLLPo7SdVZgkUjD6Dg+5On7zNwmskf8OX7I7Nx5oN+MIWE0g==
+
+"@scure/base@~1.1.7":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.9.tgz#e5e142fbbfe251091f9c5f1dd4c834ac04c3dbd1"
+  integrity sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg==
 
 "@scure/bip32@1.3.2":
   version "1.3.2"
@@ -1846,14 +1869,14 @@
     "@noble/hashes" "~1.3.2"
     "@scure/base" "~1.1.2"
 
-"@scure/bip32@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.4.0.tgz#4e1f1e196abedcef395b33b9674a042524e20d67"
-  integrity sha512-sVUpc0Vq3tXCkDGYVWGIZTRfnvu8LoTDaev7vbwh0omSvVORONr960MQWdKqJDCReIEmTj3PAr73O3aoxz7OPg==
+"@scure/bip32@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.5.0.tgz#dd4a2e1b8a9da60e012e776d954c4186db6328e6"
+  integrity sha512-8EnFYkqEQdnkuGBVpCzKxyIwDCBLDVj3oiX0EKUFre/tOjL/Hqba1D6n/8RcmaQy4f95qQFrO2A8Sr6ybh4NRw==
   dependencies:
-    "@noble/curves" "~1.4.0"
-    "@noble/hashes" "~1.4.0"
-    "@scure/base" "~1.1.6"
+    "@noble/curves" "~1.6.0"
+    "@noble/hashes" "~1.5.0"
+    "@scure/base" "~1.1.7"
 
 "@scure/bip39@1.2.1":
   version "1.2.1"
@@ -3342,10 +3365,10 @@ get-func-name@^2.0.1, get-func-name@^2.0.2:
   resolved "https://registry.yarnpkg.com/get-func-name/-/get-func-name-2.0.2.tgz#0d7cf20cd13fda808669ffa88f4ffc7a3943fc41"
   integrity sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==
 
-get-starknet-core@^3.2.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/get-starknet-core/-/get-starknet-core-3.3.0.tgz#d21e6c13c6f63b23245128c738583a1023bb1ba6"
-  integrity sha512-TG17zIBdjHIyO0CTjkB7lkuvo24OHLrkB/rZSEdspEAcwcysMpZOVgwrNPIzD89kU8gZ3m1UANarFNPVLULS5Q==
+get-starknet-core@^3.3.3:
+  version "3.3.4"
+  resolved "https://registry.yarnpkg.com/get-starknet-core/-/get-starknet-core-3.3.4.tgz#9ef9a7940156844d769dc8323ca4e2e9137568bf"
+  integrity sha512-KEnzAMr4f7z7dMh4g5lWDZ+eXtOEl++VPN5Flmmj8HiPmRrPOINEIwwNL/dN+Ey1kBxQOtOMQwCxJ9qlkRIgFw==
   dependencies:
     "@module-federation/runtime" "^0.1.2"
 
@@ -4042,7 +4065,7 @@ map-cache@^0.2.0:
   resolved "https://registry.yarnpkg.com/map-cache/-/map-cache-0.2.2.tgz#c32abd0bd6525d9b051645bb4f26ac5dc98a0dbf"
   integrity sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==
 
-mathjs@^12.0.0:
+mathjs@^12.4.3:
   version "12.4.3"
   resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-12.4.3.tgz#eef86baf8ee4c2467fc8c4619107bf4a650b9954"
   integrity sha512-oHdGPDbp7gO873xxG90RLq36IuicuKvbpr/bBG5g9c8Obm/VsKVrK9uoRZZHUodohzlnmCEqfDzbR3LH6m+aAQ==
@@ -5302,11 +5325,6 @@ typescript@^5.5.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.3.tgz#e1b0a3c394190838a0b168e771b0ad56a0af0faa"
   integrity sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==
 
-typescript@^5.5.4:
-  version "5.5.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.4.tgz#d9852d6c82bad2d2eda4fd74a5762a8f5909e9ba"
-  integrity sha512-Mtq29sKDAEYP7aljRgtPOpTvOfbwRWlS6dPRzwjdE+C0R4brX/GUyhHSecbHMFLNBLcJIPt9nl9yG5TZ1weH+Q==
-
 ua-parser-js@^1.0.35:
   version "1.0.38"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.38.tgz#66bb0c4c0e322fe48edfe6d446df6042e62f25e2"
@@ -5408,6 +5426,11 @@ use-sync-external-store@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
+
+use-sync-external-store@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.2.tgz#c3b6390f3a30eba13200d2302dcdf1e7b57b2ef9"
+  integrity sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==
 
 util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"
@@ -5725,7 +5748,7 @@ yocto-queue@^1.0.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-1.0.0.tgz#7f816433fb2cbc511ec8bf7d263c3b58a1a3c251"
   integrity sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==
 
-zod@^3.17.3, zod@^3.22.2, zod@^3.22.4, zod@^3.23.5:
+zod@^3.17.3, zod@^3.22.2, zod@^3.23.5, zod@^3.23.8:
   version "3.23.8"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
   integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==
@@ -5736,3 +5759,10 @@ zustand@^4.5.2:
   integrity sha512-2cN1tPkDVkwCy5ickKrI7vijSjPksFRfqS6237NzT0vqSsztTNnQdHw9mmN7uBdk3gceVXU0a+21jFzFzAc9+g==
   dependencies:
     use-sync-external-store "1.2.0"
+
+zustand@^4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.5.5.tgz#f8c713041543715ec81a2adda0610e1dc82d4ad1"
+  integrity sha512-+0PALYNJNgK6hldkgDq2vLrw5f6g/jCInz52n9RTpropGgeAf/ioFUCdtsjCqu4gNhW9D01rUQBROoRjdzyn2Q==
+  dependencies:
+    use-sync-external-store "1.2.2"
