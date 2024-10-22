@@ -5,7 +5,6 @@ query GetAllApps {
             node {
                 system
                 name
-                manifest
                 icon
                 action
                 entity {

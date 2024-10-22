@@ -12,7 +12,6 @@ type GetAppsResponse = {
             node: {
                 system: string
                 name: string
-                manifest: string
                 icon: string
                 action: string
                 entity: {
@@ -32,7 +31,6 @@ export async function fetchApps(baseUrl: string): Promise<App[]> {
             icon: felt252ToUnicode(node.icon),
             action: shortString.decodeShortString(node.action),
             system: node.system,
-            manifest: node.manifest,
             entity: {
                 id: node.entity.id,
             },
