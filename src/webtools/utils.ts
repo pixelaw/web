@@ -1,7 +1,7 @@
 import { shortString } from "starknet"
 import UPNG from "upng-js"
 import { ZOOM_FACTOR } from "./components/Viewport/constants.ts"
-import { type Bounds, type Coordinate, DEFAULT_SCALEFACTOR, MAX_UINT32, Pixel, TILESIZE } from "./types.ts"
+import { type Bounds, type Coordinate, DEFAULT_SCALEFACTOR, MAX_DIMENSION, Pixel, TILESIZE } from "./types.ts"
 
 export const MAX_VIEW_SIZE = 1_000_000
 
@@ -67,7 +67,7 @@ export function handlePixelChanges(
 //
 // export function wrapOffsetChange(offset: number, change: number): number {
 //     let result = offset + change
-//     if (result > MAX_UINT32) result = result % (MAX_UINT32 + 1)
+//     if (result > MAX_DIMENSION) result = result % (MAX_DIMENSION + 1)
 //     return result
 // }
 export const felt252ToString = (felt252: string | number | bigint) => {
@@ -104,7 +104,7 @@ export function getInitialOffset(tileCoord: number, worldCoord: number, offset: 
 
 export function nextTileCoord(tileCoord: number, tileSize: number) {
     let result = tileCoord + tileSize
-    if (result >= MAX_UINT32) result = 0
+    if (result >= MAX_DIMENSION) result = 0
     return result
 }
 
@@ -190,15 +190,15 @@ export function getCellSize(zoom: number) {
 }
 
 export function uint2relative(nr: number): number {
-    if (nr > MAX_UINT32 || nr / MAX_UINT32 > 0.5) {
-        return nr - MAX_UINT32 - 1
+    if (nr > MAX_DIMENSION || nr / MAX_DIMENSION > 0.5) {
+        return nr - MAX_DIMENSION - 1
     }
     return nr
 }
 
 export function relative2uint(nr: number): number {
     if (nr < 0) {
-        return MAX_UINT32 + nr + 1
+        return MAX_DIMENSION + nr + 1
     }
     return nr
 }
@@ -258,34 +258,34 @@ export function applyWorldOffset(worldOffset: Coordinate, viewportCoord: Coordin
     // maxuint - 4294967295 -1
 
     // TODO properly handle input 4294967295
-    /// 1 - raw - MAX_UINT32
+    /// 1 - raw - MAX_DIMENSION
     return [fn(viewportCoord[0], worldOffset[0]), fn(viewportCoord[1], worldOffset[1])]
 }
 
 export function worldToView(worldOffset: number, worldCoord: number, scaleFactor: number, tileSize: number): number {
     const tileRenderSize = tileSize * scaleFactor
 
-    const tileWrapDiff = MAX_UINT32 % tileSize
+    const tileWrapDiff = MAX_DIMENSION % tileSize
 
-    const startOfBorderTile = MAX_UINT32 - tileWrapDiff
+    const startOfBorderTile = MAX_DIMENSION - tileWrapDiff
 
     const isBorder = worldCoord >= startOfBorderTile
 
     const raw = worldCoord + uint2relative(worldOffset)
 
-    const didCrossBorder = raw > MAX_UINT32
+    const didCrossBorder = raw > MAX_DIMENSION
 
     // So MAX_UINT +1 (4294967296) needs to become 0
-    const unwrapped = didCrossBorder ? 1 - raw - MAX_UINT32 : raw
+    const unwrapped = didCrossBorder ? 1 - raw - MAX_DIMENSION : raw
 
     let relative = unwrapped
 
     if (unwrapped > MAX_VIEW_SIZE && isBorder) {
         // example: 4294967294 (is -1)
-        relative = unwrapped - MAX_UINT32
+        relative = unwrapped - MAX_DIMENSION
     } else if (unwrapped > MAX_VIEW_SIZE && !isBorder) {
         // example: 4294967205 (is -95)
-        relative = unwrapped - MAX_UINT32 - (tileSize - tileWrapDiff)
+        relative = unwrapped - MAX_DIMENSION - (tileSize - tileWrapDiff)
     }
 
     // Scale
@@ -337,16 +337,16 @@ if (import.meta.vitest) {
             expect(updateWorldTranslation([0, 0], [0, 0])).toEqual([0, 0]))
 
         it("should handle negative translation correctly", () =>
-            expect(updateWorldTranslation([-1, -1], [-1, -1])).toEqual([MAX_UINT32 - 1, MAX_UINT32 - 1]))
+            expect(updateWorldTranslation([-1, -1], [-1, -1])).toEqual([MAX_DIMENSION - 1, MAX_DIMENSION - 1]))
 
         it("should handle mixed positive and negative translation", () =>
-            expect(updateWorldTranslation([1, 1], [-2, -2])).toEqual([MAX_UINT32, MAX_UINT32]))
+            expect(updateWorldTranslation([1, 1], [-2, -2])).toEqual([MAX_DIMENSION, MAX_DIMENSION]))
 
         it("should wrap around correctly", () =>
-            expect(updateWorldTranslation([MAX_UINT32 - 1, MAX_UINT32 - 1], [2, 2])).toEqual([0, 0]))
+            expect(updateWorldTranslation([MAX_DIMENSION - 1, MAX_DIMENSION - 1], [2, 2])).toEqual([0, 0]))
 
         it("should wrap around correctly", () =>
-            expect(updateWorldTranslation([0, 0], [-1, -1])).toEqual([MAX_UINT32, MAX_UINT32]))
+            expect(updateWorldTranslation([0, 0], [-1, -1])).toEqual([MAX_DIMENSION, MAX_DIMENSION]))
     })
 
     describe("applyWorldOffset should return correct cell coordinates", () => {

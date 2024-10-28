@@ -1,4 +1,4 @@
-import { type Coordinate, type Dimension, MAX_UINT32, type Tileset } from "../../types.ts"
+import { type Coordinate, type Dimension, MAX_DIMENSION, type Tileset } from "../../types.ts"
 import { applyWorldOffset, cellForPosition, getInitialOffset, nextTileCoord } from "../../utils.ts"
 import { ZOOM_FACTOR } from "./constants.ts"
 
@@ -44,8 +44,8 @@ export function drawTiles(
     const tileCoords = [...tileTopLeft]
 
     const tileSizes = [
-        tileTopLeft[0] + tileSize > MAX_UINT32 ? MAX_UINT32 % tileSize : tileSize,
-        tileTopLeft[1] + tileSize > MAX_UINT32 ? MAX_UINT32 % tileSize : tileSize,
+        tileTopLeft[0] + tileSize > MAX_DIMENSION ? MAX_DIMENSION % tileSize : tileSize,
+        tileTopLeft[1] + tileSize > MAX_DIMENSION ? MAX_DIMENSION % tileSize : tileSize,
     ]
 
     const initialOffsets: Coordinate = [
@@ -59,7 +59,7 @@ export function drawTiles(
         let destX = 0 - initialOffsets[0] * scaleFactor - cellOffsetX
 
         tileCoords[0] = tileTopLeft[0]
-        tileSizes[0] = tileTopLeft[0] + tileSize > MAX_UINT32 ? MAX_UINT32 % tileSize : tileSize
+        tileSizes[0] = tileTopLeft[0] + tileSize > MAX_DIMENSION ? MAX_DIMENSION % tileSize : tileSize
 
         for (let x = 0; x < tileRows.length; x++) {
             const tile = tileRows[x][y]
@@ -87,14 +87,14 @@ export function drawTiles(
 
             tileCoords[0] = nextTileCoord(tileCoords[0], tileSizes[0])
 
-            tileSizes[0] = tileCoords[0] + tileSize >= MAX_UINT32 ? MAX_UINT32 % tileSize : tileSize
+            tileSizes[0] = tileCoords[0] + tileSize >= MAX_DIMENSION ? MAX_DIMENSION % tileSize : tileSize
         }
 
         tileCoords[1] = nextTileCoord(tileCoords[1], tileSizes[1])
 
         destY += tileSizes[1] * scaleFactor
 
-        tileSizes[1] = tileCoords[1] + tileSize >= MAX_UINT32 ? MAX_UINT32 % tileSize : tileSize
+        tileSizes[1] = tileCoords[1] + tileSize >= MAX_DIMENSION ? MAX_DIMENSION % tileSize : tileSize
     }
     console.groupEnd()
 }

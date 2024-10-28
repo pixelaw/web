@@ -1,5 +1,5 @@
 import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql"
-import { type Bounds, type Coordinate, MAX_UINT32, type Pixel, type PixelStore, makeString } from "@/webtools/types.ts"
+import { type Bounds, type Coordinate, MAX_DIMENSION, type Pixel, type PixelStore, makeString } from "@/webtools/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
 import { GraphQLClient } from "graphql-request"
 import { produce } from "immer"
@@ -32,8 +32,8 @@ export function useDojoPixelStore(baseUrl?: string): PixelStore {
 
         let [[left, top], [right, bottom]] = bounds
 
-        if (left > MAX_VIEW_SIZE && left > right) right = MAX_UINT32
-        if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_UINT32
+        if (left > MAX_VIEW_SIZE && left > right) right = MAX_DIMENSION
+        if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_DIMENSION
 
         gqlClient
             .request<GetPixelsResponse>(GET_PIXELS_QUERY, {
