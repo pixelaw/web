@@ -26,6 +26,7 @@ export async function fetchApps(baseUrl: string): Promise<App[]> {
     const gqlClient = new GraphQLClient(`${baseUrl}/graphql`)
     try {
         const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
+
         return data.pixelawAppModels.edges.map(({ node }) => ({
             name: shortString.decodeShortString(node.name),
             icon: felt252ToUnicode(node.icon),
@@ -34,6 +35,7 @@ export async function fetchApps(baseUrl: string): Promise<App[]> {
             entity: {
                 id: node.entity.id,
             },
+            manifest: ""    // FIXME this is a placeholder
         }))
     } catch (error) {
         console.error("Error fetching apps:", error)

@@ -6,6 +6,7 @@
   "packageManager": "yarn@1.22.19",
   "license": "MIT",
   "scripts": {
+    "experiments": "tsx  src/scripts/experiments.ts",
     "dev": "vite",
     "build-prod": "tsc && vite build",
     "build": "vite build",
@@ -16,14 +17,14 @@
     "upgrade_dojo": "yarn add @dojoengine/core @dojoengine/create-burner @dojoengine/react @dojoengine/recs @dojoengine/state @dojoengine/torii-client @dojoengine/utils"
   },
   "dependencies": {
-    "@dojoengine/core": "^1.0.0-alpha.24",
-    "@dojoengine/create-burner": "^1.0.0-alpha.24",
-    "@dojoengine/react": "^1.0.0-alpha.24",
-    "@dojoengine/sdk": "^1.0.0-alpha.24",
+    "@dojoengine/core": "^1.0.2",
+    "@dojoengine/create-burner": "^1.0.2",
+    "@dojoengine/react": "^1.0.2",
     "@dojoengine/recs": "^2.0.13",
-    "@dojoengine/state": "^1.0.0-alpha.24",
-    "@dojoengine/torii-client": "^1.0.0-alpha.24",
-    "@dojoengine/utils": "^1.0.0-alpha.24",
+    "@dojoengine/sdk": "^1.0.2",
+    "@dojoengine/state": "^1.0.2",
+    "@dojoengine/torii-client": "^1.0.2",
+    "@dojoengine/utils": "^1.0.2",
     "@react-hook/resize-observer": "^2.0.1",
     "@types/upng-js": "^2.1.5",
     "autoprefixer": "^10.4.19",
@@ -38,27 +39,27 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
-    "starknet": "^6.9.0",
-    "tailwindcss": "^3.4.4",
+    "starknet": "^6.11.0",
+    "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
     "upng-js": "^2.1.0",
-    "zustand": "^4.5.2"
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^2.1.8",
     "globals": "^15.8.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.5.3",
-    "vite": "^5.2.0",
-    "vite-envs": "^4.3.2",
-    "vite-plugin-graphql-loader": "^3.0.1",
-    "vite-plugin-top-level-await": "^1.4.1",
+    "vite": "^6.0.2",
+    "vite-envs": "^4.4.6",
+    "vite-plugin-graphql-loader": "^4.0.4",
+    "vite-plugin-top-level-await": "^1.4.4",
     "vite-plugin-wasm": "^3.3.0",
-    "vitest": "^1.6.0"
+    "vitest": "^2.1.8"
   }
 }
