@@ -13,7 +13,7 @@ function App() {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    const { clientState, error, gameData } = usePixelawProvider()
+    const { clientState, clientError } = usePixelawProvider()
 
     //</editor-fold>
 
@@ -33,7 +33,7 @@ function App() {
 
     if (clientState === "error") {
         document.title = "PixeLAW: Error"
-        const errorMessage = `${error}`
+        const errorMessage = `${clientError}`
         return (
             <div className={styles.errorContainer}>
                 <div className={styles.errorMessage}>

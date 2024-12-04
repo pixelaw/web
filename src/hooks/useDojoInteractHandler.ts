@@ -63,7 +63,8 @@ export const useDojoInteractHandler = (
         )
 
         // Execute the call
-        dojoStuff.dojoProvider.execute(dojoStuff.userAccount!, dojoCall, NAMESPACE, {}).then((res) => {
+        dojoStuff.dojoProvider.execute(dojoStuff.userAccount!, dojoCall, NAMESPACE, {})
+            .then((res) => {
             console.log("dojocall", res)
 
             pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
@@ -72,6 +73,11 @@ export const useDojoInteractHandler = (
             // Reset paramData after execution
             setParamData(null)
         })
+            .catch((error) => {
+                console.error("Error executing DojoCall:", error)
+                // Handle the error appropriately here
+            })
+        // Immediately restore state, without waiting for the txn to complete
         setClickedCell(undefined)
     }, [setClickedCell, clickedCell, paramData])
 }

@@ -98,8 +98,8 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }
 
-                const { create, list, get, select, clear, account: userAccount, isDeploying } = burnerManager
-
+                const { create, list, get, select, clear, account, isDeploying } = burnerManager
+                userAccount = account!
             }
 
             // Create Graph SDK
