@@ -5,7 +5,7 @@ import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useDojoPixelStore } from "@/stores/DojoPixelStore.ts"
-import { useSettingsStore } from "@/stores/SettingsStore.ts"
+
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
@@ -25,12 +25,13 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    const { clientState, error, gameData } = usePixelawProvider()
-    const settings = useSettingsStore()
-    const updateService = useUpdateService(settings.config?.serverUrl!)
-    const appStore = useDojoAppStore(settings.config?.toriiUrl!)
-    const pixelStore = useDojoPixelStore(settings.config?.toriiUrl!)
-    const tileStore = useSimpleTileStore(`${settings.config?.serverUrl}/tiles`)
+    const { clientState, clientError, dojoStuff, deploymentStuff } = usePixelawProvider()
+    if(clientError) return
+
+    const updateService = useUpdateService(deploymentStuff.serverUrl!)
+    const appStore = useDojoAppStore(deploymentStuff.toriiUrl!)
+    const pixelStore = useDojoPixelStore(deploymentStuff.toriiUrl!)
+    const tileStore = useSimpleTileStore(`${deploymentStuff.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
 
     useSyncedViewStateStore()
@@ -45,7 +46,7 @@ const ViewportPage: React.FC = () => {
         setParamDialogVisible(false)
     }
 
-    useDojoInteractHandler(pixelStore, gameData, handleParamsRequired, (submit) => {
+    useDojoInteractHandler(pixelStore, dojoStuff!, handleParamsRequired, (submit) => {
         setSubmitParamsCallback(() => submit)
     })
 

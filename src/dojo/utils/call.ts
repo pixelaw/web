@@ -13,7 +13,8 @@ export function generateDojoCall(
     position: Position,
     color: number,
 ): DojoCall {
-    const calldata = [ZERO_ADDRESS, ZERO_ADDRESS, position.x, position.y, color]
+    // TODO add area_hint
+    const calldata = ["0x1", "0x1", "0x1", position.x, position.y, color]
 
     // Add the params, if any, to the CallData
     if (paramData) {

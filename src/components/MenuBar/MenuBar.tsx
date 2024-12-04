@@ -33,6 +33,7 @@ const MenuBar: React.FC = () => {
             </div>
             <div className={styles.rightSection}>
                 <div className={styles.addressContainer}>{formatWalletAddress(walletAddress)}</div>
+                <div className={styles.addressContainer}>World: dev(0x4adbe4)</div>
                 <button
                     type={"button"}
                     className={styles.menuButton}

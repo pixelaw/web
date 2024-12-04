@@ -1,4 +1,3 @@
-import type { IPixelawGameData } from "@/dojo/setupPixelaw.ts"
 import { generateDojoCall } from "@/dojo/utils/call.ts"
 import getParamsDef from "@/dojo/utils/paramsDef.ts"
 import { NAMESPACE } from "@/global/constants.js"
@@ -8,10 +7,11 @@ import { useViewStateStore } from "@/stores/ViewStateStore.ts"
 import type { PixelStore } from "@/webtools/types.ts"
 import type { DojoCall } from "@dojoengine/core"
 import { useCallback, useEffect, useState } from "react"
+import {DojoStuff} from "@/providers/PixelawProvider.tsx";
 
 export const useDojoInteractHandler = (
     pixelStore: PixelStore,
-    gameData: IPixelawGameData,
+    dojoStuff: DojoStuff,
     onParamsRequired: (params: any) => void,
     onSubmitParams: (submitParams: (params: any) => void) => void,
 ) => {
@@ -43,7 +43,7 @@ export const useDojoInteractHandler = (
         const contractName = `${selectedApp}_actions`
         const position = coordinateToPosition(clickedCell)
 
-        const params = getParamsDef(gameData.setup.manifest, contractName, action, position, false)
+        const params = getParamsDef(dojoStuff.manifest, contractName, action, position, false)
 
         if (params.length && !paramData) {
             onParamsRequired(params) // Use the callback to pass parameters where needed
@@ -63,7 +63,8 @@ export const useDojoInteractHandler = (
         )
 
         // Execute the call
-        gameData.dojoProvider.execute(gameData.account.account!, dojoCall, NAMESPACE, {}).then((res) => {
+        dojoStuff.dojoProvider.execute(dojoStuff.userAccount!, dojoCall, NAMESPACE, {})
+            .then((res) => {
             console.log("dojocall", res)
 
             pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
@@ -72,6 +73,11 @@ export const useDojoInteractHandler = (
             // Reset paramData after execution
             setParamData(null)
         })
+            .catch((error) => {
+                console.error("Error executing DojoCall:", error)
+                // Handle the error appropriately here
+            })
+        // Immediately restore state, without waiting for the txn to complete
         setClickedCell(undefined)
     }, [setClickedCell, clickedCell, paramData])
 }

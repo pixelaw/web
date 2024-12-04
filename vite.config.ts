@@ -21,9 +21,14 @@ export default defineConfig({
     resolve: {
         alias: {
             "@": fileURLToPath(new URL('./src', import.meta.url)),
+            "@@": fileURLToPath(new URL('./config', import.meta.url)),
         },
     },
     build: {
-        sourcemap: true
+        sourcemap: true,
+        rollupOptions: {
+            input: './src/main.tsx', // Adjust this line if your entry file is different
+            external: ['src/scripts/**']
+        }
     }
 });

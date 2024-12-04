@@ -1,0 +1,24 @@
+{
+    "deployments": {
+        "local": {
+            "serverUrl": "http://127.0.0.1:3000",
+            "rpcUrl": "http://127.0.0.1:5050",
+            "toriiUrl": "http://127.0.0.1:8080",
+            "relayUrl": "http://127.0.0.1:8080",
+            "world": "0x2bf4d3aa0dced89d37d8c3b4ff6a05895c0af32ff3baf9b02abf8504e53eaad",
+            "burner": {
+                "masterAddress": "0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec",
+                "masterPrivateKey": "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912",
+                "accountClassHash": "0x07dc7899aa655b0aae51eadff6d801a58e97dd99cf4666ee59e704249e51adf2",
+                "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
+            }
+        },
+        "sepolia": {
+            "serverUrl": "http://sepolia.pixelaw.xyz",
+            "rpcUrl": "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+            "toriiUrl": "http://torii.sepolia.pixelaw.xyz",
+            "relayUrl": "http://127.0.0.1:8080",
+            "world": "0x6f130c8e150882e39cbe878c650c8f35c86579180dbc77d0c1cbe169449b5f6"
+        }
+    }
+}

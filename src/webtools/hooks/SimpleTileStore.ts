@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import {
     type Bounds,
     DEFAULT_SCALEFACTOR,
-    MAX_UINT32,
+    MAX_DIMENSION,
     TILESIZE,
     type Tile,
     type TileStore,
@@ -102,7 +102,7 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
         function distance(begin: number, end: number): number {
             return end >= begin
                 ? end - begin // not wrapping
-                : MAX_UINT32 - begin + end // wrapping
+                : MAX_DIMENSION - begin + end // wrapping
         }
 
         const width = distance(leftTileCoord, rightTileCoord)
