@@ -3,7 +3,6 @@ import MenuBar from "@/components/MenuBar/MenuBar.tsx"
 import SettingsPage from "@/pages/SettingsPage.tsx"
 import ViewportPage from "@/pages/ViewportPage.tsx"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
-import React, {} from "react"
 import { Route, Routes } from "react-router-dom"
 import styles from "./App.module.css"
 

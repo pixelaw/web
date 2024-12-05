@@ -3,9 +3,8 @@ import react from '@vitejs/plugin-react';
 import graphqlLoader from "vite-plugin-graphql-loader";
 import wasm from "vite-plugin-wasm";
 import topLevelAwait from "vite-plugin-top-level-await";
-import {fileURLToPath, URL} from 'url';
 import {viteEnvs} from 'vite-envs'
-
+import path from 'path';
 
 export default defineConfig({
     plugins: [
@@ -20,14 +19,15 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            "@": fileURLToPath(new URL('./src', import.meta.url)),
-            "@@": fileURLToPath(new URL('./config', import.meta.url)),
+            '@': path.resolve(__dirname, './src'),
         },
     },
     build: {
         sourcemap: true,
         rollupOptions: {
-            input: './src/main.tsx', // Adjust this line if your entry file is different
+            input: {
+                main: path.resolve(__dirname, 'index.html'), // Ensure index.html is included
+            },
             external: ['src/scripts/**']
         }
     }

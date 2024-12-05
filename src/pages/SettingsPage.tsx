@@ -1,5 +1,4 @@
 import { clearIdb } from "@/webtools/utils.ts"
-import React from "react"
 import styles from "./SettingsPage.module.css"
 
 const SettingsPage = () => {

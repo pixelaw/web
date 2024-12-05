@@ -1,9 +1,6 @@
-// import { type PixelawGameData, type TPixelLawError, setupPixelaw } from "@/dojo/setupPixelaw.ts"
-// import { useSettingsStore } from "@/stores/SettingsStore.ts"
-
-import useSettingStore, {BurnerConfig, DeploymentConfig} from "@/stores/SettingStore.ts"
-import {createDojoConfig, DojoProvider} from "@dojoengine/core"
-import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
+import useSettingStore, { DeploymentConfig} from "@/stores/SettingStore.ts"
+import { DojoProvider} from "@dojoengine/core"
+import { type ReactNode, createContext, useCallback, useContext, useEffect,  useState } from "react"
 import {Account, RpcProvider} from "starknet";
 import type {Manifest} from "@/global/types.js";
 import {fetchApps} from "@/stores/DojoAppStore.js";
@@ -98,12 +95,12 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }
 
-                const { create, list, get, select, clear, account, isDeploying } = burnerManager
+                const { account, /*create, list, get, select, clear,  isDeploying */} = burnerManager
                 userAccount = account!
             }
 
-            // Create Graph SDK
-            const createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
+            // Create Graph SDK TODO
+            const _createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
 
             setContextValues((prev) => ({
                 ...prev,

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import deploymentsConfig from '@@/deployments.json';
+import deploymentsConfig from '@/config/deployments.json';
 
-const DEPLOYMENTS_CONFIG_URL = 'https://raw.githubusercontent.com/pixelaw/config/refs/heads/main/web.config.json';
+// const DEPLOYMENTS_CONFIG_URL = 'https://raw.githubusercontent.com/pixelaw/config/refs/heads/main/web.config.json';
 
 export interface BurnerConfig {
     masterAddress: string;
