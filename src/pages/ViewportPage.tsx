@@ -13,6 +13,7 @@ import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
 import type { Bounds, Coordinate } from "@/webtools/types.ts"
 import { useEffect, useMemo, useState } from "react"
 import styles from "./ViewportPage.module.css"
+import {useDojoSdkPixelStore} from "@/stores/DojoSdkPixelStore.ts";
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
@@ -25,12 +26,12 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    const { clientState, clientError, dojoStuff, deploymentStuff } = usePixelawProvider()
+    const {  clientError, dojoStuff, deploymentStuff } = usePixelawProvider()
     if(clientError) return
 
     const updateService = useUpdateService(deploymentStuff.serverUrl!)
     const appStore = useDojoAppStore(deploymentStuff.toriiUrl!)
-    const pixelStore = useDojoPixelStore(deploymentStuff.toriiUrl!)
+    const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
     const tileStore = useSimpleTileStore(`${deploymentStuff.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
 

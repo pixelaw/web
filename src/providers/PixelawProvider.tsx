@@ -7,10 +7,11 @@ import {fetchApps} from "@/stores/DojoAppStore.js";
 import {getAbi} from "@/dojo/utils.js";
 import baseManifest  from "@/dojo/manifest.js";
 import {BurnerManager} from "@dojoengine/create-burner";
-import {getSdk} from "@/generated/graphql.js";
-import {GraphQLClient} from "graphql-request";
+import {init, SDK} from "@dojoengine/sdk";
+import {schema, SchemaType} from "@/generated/models.gen.ts";
 
 export type DojoStuff = {
+    sdk:  SDK<SchemaType>
     dojoProvider: DojoProvider
     manifest: Manifest
     burnerManager: BurnerManager | null
@@ -74,7 +75,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
             const dojoProvider = new DojoProvider(manifest, deployment.rpcUrl)
 
 
-
+            console.log("here")
             if(contextValues.walletType == "burner"){
                 if(!deployment.burner) throw Error("Burner config not defined")
 
@@ -100,13 +101,32 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
             }
 
             // Create Graph SDK TODO
-            const _createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
+            // const _createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
+            console.log(deployment)
+            const sdk = await init<SchemaType>(
+                {
+                    client: {
+                        rpcUrl: deployment.rpcUrl,
+                        toriiUrl: deployment.toriiUrl,
+                        relayUrl: "", //deployment.relayUrl,
+                        worldAddress: deployment.world,
+                    },
+                    domain: {
+                        name: "pixelaw",
+                        version: "1.0",
+                        chainId: "KATANA",
+                        revision: "1",
+                    },
+                },
+                schema
+            );
 
             setContextValues((prev) => ({
                 ...prev,
                 clientState: "gameActive",
                 clientError: null,
             dojoStuff: {
+                sdk,
                 dojoProvider,
                 manifest,
                 burnerManager,

@@ -67,8 +67,8 @@ export const useDojoInteractHandler = (
             .then((res) => {
             console.log("dojocall", res)
 
-            pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
-            pixelStore.setCacheUpdated(Date.now())
+            // pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
+            // pixelStore.setCacheUpdated(Date.now())
 
             // Reset paramData after execution
             setParamData(null)
