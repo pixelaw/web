@@ -37,6 +37,7 @@ const ViewportPage: React.FC = () => {
 
     useSyncedViewStateStore()
 
+
     const handleParamsRequired = (params: any) => {
         setParamDialogParams(params)
         setParamDialogVisible(true)
@@ -66,6 +67,7 @@ const ViewportPage: React.FC = () => {
     }, [updateService.tileChanged, pixelStore.refresh, tileStore.fetchTile])
 
     const onWorldviewChange = (newWorldview: Bounds) => {
+        console.log("wvc")
         updateService.setBounds(newWorldview)
         tileStore.prepare(newWorldview)
 

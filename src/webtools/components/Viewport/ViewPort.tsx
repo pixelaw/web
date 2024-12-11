@@ -72,7 +72,7 @@ const Viewport: React.FC<ViewportProps> = ({
             bufferCanvasRef.current = document.createElement("canvas")
             bufferContextRef.current = bufferCanvasRef.current.getContext("2d")
         }
-
+        // onWorldviewChange(getWorldViewBounds())
         isLoaded.current = true
     }, [])
 

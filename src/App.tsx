@@ -19,12 +19,13 @@ function App() {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    const useDojoStore = createDojoStore<SchemaType>();
-    const state = useDojoStore((state) => state);
-    const entities = useDojoStore((state) => state.entities);
+    // const useDojoStore = createDojoStore<SchemaType>();
+    // const state = useDojoStore((state) => state);
+    // const entities = useDojoStore((state) => state.entities);
 
     const { clientState, clientError, dojoStuff } = usePixelawProvider()
 
+/*
 
     console.log({entities})
     useEffect(() => {
@@ -90,6 +91,7 @@ q();
             }
         };
     }, [dojoStuff?.sdk, dojoStuff?.userAccount?.address]);
+*/
 
 
     //</editor-fold>
