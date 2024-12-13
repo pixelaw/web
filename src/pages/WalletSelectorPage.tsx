@@ -1,8 +1,5 @@
 import styles from "./SettingsPage.module.css"
 import {
-    useInjectedConnectors,
-    argent,
-    braavos,
     Connector,
     InjectedConnector,
     useAccount,
@@ -10,7 +7,7 @@ import {
     useDisconnect
 } from "@starknet-react/core";
 import { ControllerConnector } from "@cartridge/connector";
-import React, {useCallback} from "react";
+import  {useCallback} from "react";
 import {ArgentMobileConnector, isInArgentMobileAppBrowser} from "starknetkit/argentMobile";
 import {constants} from "starknet";
 import {WebWalletConnector} from "starknetkit/webwallet";
@@ -44,7 +41,7 @@ const WalletSelectorPage = () => {
             ArgentMobileConnector.init({
                 options: {
                     url: typeof window !== "undefined" ? window.location.href : "",
-                    dappName: "Example dapp",
+                    dappName: "PixeLAW",
                     chainId: constants.NetworkName.SN_MAIN,
                 },
             }),

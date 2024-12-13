@@ -1,13 +1,15 @@
-import { formatWalletAddress } from "@/global/utils.js"
+import {formatAddress, formatWalletAddress} from "@/global/utils.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import type React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import styles from "./MenuBar.module.css"
+import {useAccount} from "@starknet-react/core";
 
 const MenuBar: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const { dojoStuff } = usePixelawProvider()
+    const { dojoStuff, deployment } = usePixelawProvider()
+    const { address, connector, account,status } = useAccount();
 
     if (!dojoStuff) return
     const walletAddress = dojoStuff.userAccount?.address
@@ -20,14 +22,14 @@ const MenuBar: React.FC = () => {
 
     const toggleSettings = () => {
         if (showSettings) {
-            navigate(-1) // Go back if we're currently showing settings
+            navigate("/")
         } else {
             navigate("/settings") // Navigate to settings if not currently showing
         }
     }
     const toggleWalletSelector = () => {
         if (showWalletSelector) {
-            navigate(-1) // Go back if we're currently showing settings
+            navigate("/")
         } else {
             navigate("/wallet")
         }
@@ -35,7 +37,7 @@ const MenuBar: React.FC = () => {
 
     const toggleWorldSelector = () => {
         if (showWorldSelector) {
-            navigate(-1) // Go back if we're currently showing settings
+            navigate("/")
         } else {
             navigate("/world") // Navigate to settings if not currently showing
         }
@@ -49,21 +51,20 @@ const MenuBar: React.FC = () => {
                 />
             </div>
             <div className={styles.rightSection}>
-                <div className={styles.addressContainer}>{formatWalletAddress(walletAddress)}</div>
-                <div className={styles.addressContainer}>World: dev(0x4adbe4)</div>
+
                 <button
                     type={"button"}
                     className={styles.menuButton}
                     onClick={toggleWalletSelector}
                 >
-                    Wallet
+                    Wallet {address?formatAddress(address):"not connected"}
                 </button>
                 <button
                     type={"button"}
                     className={styles.menuButton}
                     onClick={toggleWorldSelector}
                 >
-                    World
+                    World ({deployment})
                 </button>
                 <button
                     type={"button"}

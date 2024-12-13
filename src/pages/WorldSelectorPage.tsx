@@ -8,9 +8,8 @@ const WorldSelectorPage = () => {
 
     const handleWorldChange = (deploymentKey: string) => {
         setDeployment(deploymentKey);
-        // Add additional logic here if needed, e.g., saving selection to storage
     };
-
+    console.log(deployment)
     return (
         <div className={styles.inner}>
             <h1>World Selector</h1>
@@ -19,14 +18,19 @@ const WorldSelectorPage = () => {
                     <li
                         key={deploymentKey}
                         className={`${styles.listItem} ${deployment === deploymentKey ? styles.selected : ""}`}
-                        onClick={() => handleWorldChange(deploymentKey)}
                     >
-                        {deploymentConfig.description}
+                        <button
+                            type={"button"}
+                            className={`${styles.menuButton} ${deployment === deploymentKey ? styles.selectedButton : styles.unselectedButton}`}
+                            onClick={() => handleWorldChange(deploymentKey)}
+                        >
+                            {deploymentConfig.description}
+                        </button>
                     </li>
-                ))}
+                    ))}
             </ul>
         </div>
-    );
+);
 };
 
 export default WorldSelectorPage;
