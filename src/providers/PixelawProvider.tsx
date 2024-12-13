@@ -25,6 +25,7 @@ export type IPixelawContext = {
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
     deploymentStuff: DeploymentConfig
+    setDeployment: (deployment: string) => void;
 
 }
 
@@ -44,7 +45,8 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         clientState: "loading",
         clientError: null,
         dojoStuff: undefined,
-        deploymentStuff: getDeploymentByKey("local")
+        deploymentStuff: getDeploymentByKey("local"),
+        setDeployment: () => {},
     });
 
 

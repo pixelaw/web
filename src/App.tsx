@@ -5,11 +5,8 @@ import ViewportPage from "@/pages/ViewportPage.tsx"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { Route, Routes } from "react-router-dom"
 import styles from "./App.module.css"
-import {QueryBuilder, SDK, createDojoStore, init} from "@dojoengine/sdk";
-
-import { SchemaType} from "@/generated/models.gen.ts";
-import {useEffect} from "react";
-import {addAddressPadding} from "starknet";
+import WorldSelectorPage from "@/pages/WorldSelectorPage.tsx";
+import WalletSelectorPage from "@/pages/WalletSelectorPage.tsx";
 
 function App() {
 
@@ -24,74 +21,6 @@ function App() {
     // const entities = useDojoStore((state) => state.entities);
 
     const { clientState, clientError, dojoStuff } = usePixelawProvider()
-
-/*
-
-    console.log({entities})
-    useEffect(() => {
-        if(!dojoStuff || !dojoStuff.sdk) return
-        let unsubscribe: (() => void) | undefined;
-        const appQuery = new QueryBuilder<SchemaType>()
-            .namespace("pixelaw", (n) =>
-                n.entity("App", e => e.neq("name", ""))
-            )
-            .build()
-
-        const pixelQuery = new QueryBuilder<SchemaType>()
-            .namespace("pixelaw", (n) =>
-                n.entity("Pixel", e => {
-                    e
-                        .gte("x", 0)
-                        .lte("x", 10)
-                }
-                )
-            )
-            .build()
-
-
-        const q = async () => {
-            dojoStuff.sdk.getEntities({query: pixelQuery, callback: r => {
-                    console.log("q result", r)
-                }})
-        }
-        const subscribe = async () => {
-            console.log("ja")
-
-
-            console.log(query)
-
-            const subscription = await dojoStuff!.sdk.subscribeEntityQuery({
-                query,
-                callback: (response) => {
-                    if (response.error) {
-                        console.error(
-                            "Error setting up entity sync:",
-                            response.error
-                        );
-                    } else if (
-                        response.data &&
-                        response.data[0].entityId !== "0x0"
-                    ) {
-                        console.log("subscribed", response.data[0]);
-                        state.updateEntity(response.data[0]);
-                    }
-                },
-            });
-
-            unsubscribe = () => subscription.cancel();
-        };
-
-        // subscribe();
-q();
-        console.log("a")
-        return () => {
-            if (unsubscribe) {
-                unsubscribe();
-                console.log("d")
-            }
-        };
-    }, [dojoStuff?.sdk, dojoStuff?.userAccount?.address]);
-*/
 
 
     //</editor-fold>
@@ -137,6 +66,14 @@ q();
                     <Route
                         path="/settings"
                         element={<SettingsPage />}
+                    />
+                    <Route
+                        path="/world"
+                        element={<WorldSelectorPage />}
+                    />
+                    <Route
+                        path="/wallet"
+                        element={<WalletSelectorPage />}
                     />
                     <Route
                         path="/"

@@ -15,12 +15,29 @@ const MenuBar: React.FC = () => {
 
     // Determine if the settings page is shown based on the current path
     const showSettings = location.pathname === "/settings"
+    const showWorldSelector = location.pathname === "/world"
+    const showWalletSelector = location.pathname === "/wallet"
 
     const toggleSettings = () => {
         if (showSettings) {
             navigate(-1) // Go back if we're currently showing settings
         } else {
             navigate("/settings") // Navigate to settings if not currently showing
+        }
+    }
+    const toggleWalletSelector = () => {
+        if (showWalletSelector) {
+            navigate(-1) // Go back if we're currently showing settings
+        } else {
+            navigate("/wallet")
+        }
+    }
+
+    const toggleWorldSelector = () => {
+        if (showWorldSelector) {
+            navigate(-1) // Go back if we're currently showing settings
+        } else {
+            navigate("/world") // Navigate to settings if not currently showing
         }
     }
     return (
@@ -34,6 +51,20 @@ const MenuBar: React.FC = () => {
             <div className={styles.rightSection}>
                 <div className={styles.addressContainer}>{formatWalletAddress(walletAddress)}</div>
                 <div className={styles.addressContainer}>World: dev(0x4adbe4)</div>
+                <button
+                    type={"button"}
+                    className={styles.menuButton}
+                    onClick={toggleWalletSelector}
+                >
+                    Wallet
+                </button>
+                <button
+                    type={"button"}
+                    className={styles.menuButton}
+                    onClick={toggleWorldSelector}
+                >
+                    World
+                </button>
                 <button
                     type={"button"}
                     className={styles.menuButton}

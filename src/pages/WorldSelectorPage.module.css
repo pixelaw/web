@@ -1,0 +1,27 @@
+/* SettingsPage.module.css */
+.inner {
+    padding: 20px;
+}
+
+.list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.listItem {
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.listItem:hover {
+    background-color: #f0f0f0;
+}
+
+.selected {
+    background-color: #d0eaff;
+    border-color: #a0cfff;
+}

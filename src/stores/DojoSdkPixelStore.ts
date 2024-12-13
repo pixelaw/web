@@ -3,16 +3,15 @@ import {
     type Coordinate,
     MAX_DIMENSION,
     type PixelStore,
-    makeString,
-    QUERY_BUFFER
+    makeString
 } from "@/webtools/types.ts";
-import {MAX_VIEW_SIZE, areBoundsEqual, dimensionFromBounds} from "@/webtools/utils.ts";
+import {MAX_VIEW_SIZE, areBoundsEqual} from "@/webtools/utils.ts";
 import { produce } from "immer";
 import {useEffect, useRef, useState} from "react";
-import { shortString } from "starknet";
+
 import { Pixel, SchemaType } from "@/generated/models.gen.ts";
 import { QueryBuilder, SDK } from "@dojoengine/sdk";
-import {buildPixelQuery, getQueryBounds, SUBSCRIPTION_QUERY} from "@/dojo/querybuilder.ts";
+import { getQueryBounds, SUBSCRIPTION_QUERY} from "@/dojo/querybuilder.ts";
 
 type State = { [key: string]: Pixel | undefined };
 
