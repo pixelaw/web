@@ -7,10 +7,10 @@ import styles from "./MenuBar.module.css"
 const MenuBar: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const { gameData } = usePixelawProvider()
+    const { dojoStuff } = usePixelawProvider()
 
-    if (!gameData) return
-    const walletAddress = gameData.account.account?.address
+    if (!dojoStuff) return
+    const walletAddress = dojoStuff.userAccount?.address
     if (!walletAddress) return
 
     // Determine if the settings page is shown based on the current path
