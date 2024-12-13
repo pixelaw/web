@@ -17,6 +17,7 @@
     "upgrade_dojo": "yarn add @dojoengine/core @dojoengine/create-burner @dojoengine/react @dojoengine/recs @dojoengine/state @dojoengine/torii-client @dojoengine/utils"
   },
   "dependencies": {
+    "@cartridge/connector": "^0.5.5",
     "@dojoengine/core": "^1.0.3-alpha.1",
     "@dojoengine/create-burner": "^1.0.3-alpha.1",
     "@dojoengine/react": "^1.0.3-alpha.1",
@@ -26,6 +27,8 @@
     "@dojoengine/torii-client": "^1.0.3-alpha.1",
     "@dojoengine/utils": "^1.0.3-alpha.1",
     "@react-hook/resize-observer": "^2.0.1",
+    "@starknet-react/chains": "^3.1.0",
+    "@starknet-react/core": "^3.6.2",
     "@types/upng-js": "^2.1.5",
     "autoprefixer": "^10.4.19",
     "browserify-zlib": "^0.2.0",
@@ -40,6 +43,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
     "starknet": "^6.11.0",
+    "starknetkit": "^2.6.1",
     "tailwindcss": "^3.4.15",
     "tailwindcss-animate": "^1.0.7",
     "upng-js": "^2.1.0",

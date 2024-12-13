@@ -16,9 +16,6 @@ function App() {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-    // const useDojoStore = createDojoStore<SchemaType>();
-    // const state = useDojoStore((state) => state);
-    // const entities = useDojoStore((state) => state.entities);
 
     const { clientState, clientError, dojoStuff } = usePixelawProvider()
 
