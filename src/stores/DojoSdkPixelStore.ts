@@ -97,7 +97,6 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
 
         sdk.getEntities({
             query: pixelQuery, callback: r => {
-                console.log("q result", r)
 
                 r.data?.map(entity => {
                         // console.log(entity.models.pixelaw.Pixel)
@@ -117,7 +116,7 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
                         )
                     }
                 )
-                console.log("updated")
+                // console.log("updated")
                 setCacheUpdated(Date.now())
             }
         })
