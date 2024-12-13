@@ -1,7 +1,6 @@
 import { shortString } from "starknet"
-import UPNG from "upng-js"
 import { ZOOM_FACTOR } from "./components/Viewport/constants.ts"
-import { type Bounds, type Coordinate, DEFAULT_SCALEFACTOR, MAX_DIMENSION, Pixel, TILESIZE } from "./types.ts"
+import {type Bounds, type Coordinate, DEFAULT_SCALEFACTOR, Dimension, MAX_DIMENSION, Pixel, TILESIZE} from "./types.ts"
 
 export const MAX_VIEW_SIZE = 1_000_000
 
@@ -58,18 +57,36 @@ export function handlePixelChanges(
     ]
 }
 
-// export function changePixelOffset(offset: number, change: number, cellWidth: number): number {
-//     // (pixelOffset[0] + e.clientX - lastDragPoint[0] + cellWidth) % cellWidth
-//     console.log("offset", offset, "change", change)
-//     let result = (offset + change + cellWidth) % cellWidth
-//     return result
-// }
-//
-// export function wrapOffsetChange(offset: number, change: number): number {
-//     let result = offset + change
-//     if (result > MAX_DIMENSION) result = result % (MAX_DIMENSION + 1)
-//     return result
-// }
+export function dimensionFromBounds(bounds: Bounds): Dimension {
+    let width = 0
+    let height = 0
+
+    let [[left, top], [right, bottom]] = bounds;
+
+    const xWraps = right - left < 0;
+    const yWraps = bottom - top < 0;
+
+    width = xWraps?(MAX_DIMENSION - left) + right: right - left
+    height = yWraps?(MAX_DIMENSION - top) + bottom: bottom - top
+
+    return [width, height]
+}
+
+/*
+export function changePixelOffset(offset: number, change: number, cellWidth: number): number {
+    // (pixelOffset[0] + e.clientX - lastDragPoint[0] + cellWidth) % cellWidth
+    console.log("offset", offset, "change", change)
+    let result = (offset + change + cellWidth) % cellWidth
+    return result
+}
+*/
+export function wrapOffsetChange(offset: number, change: number): number {
+    let result = offset + change
+    if (result > MAX_DIMENSION) result = result % (MAX_DIMENSION + 1)
+    return result
+}
+
+
 export const felt252ToString = (felt252: string | number | bigint) => {
     if (typeof felt252 === "bigint" || typeof felt252 === "object") {
         felt252 = `0x${felt252.toString(16)}`
@@ -275,7 +292,7 @@ export function worldToView(worldOffset: number, worldCoord: number, scaleFactor
 
     const didCrossBorder = raw > MAX_DIMENSION
 
-    // So MAX_UINT +1 (4294967296) needs to become 0
+    // So MAX_DIMENSION +1 needs to become 0
     const unwrapped = didCrossBorder ? 1 - raw - MAX_DIMENSION : raw
 
     let relative = unwrapped

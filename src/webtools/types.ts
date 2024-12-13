@@ -73,6 +73,10 @@ export type Bounds = [topLeft: Coordinate, bottomRight: Coordinate]
 // export const MAX_DIMENSION: number = 4_294_967_295
 export const MAX_DIMENSION: number = 32_767 // 2**15 -1
 
+// Don't query everytime bounds change, but only when the buffer resolution changes
+// So when bounds change from 5 to 6, but Buffer is 10, no requery happens
+export const QUERY_BUFFER: number = 10
+
 export const TILESIZE = 100
 
 // TODO handle scalefactor 10 later
