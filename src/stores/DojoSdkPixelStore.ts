@@ -98,7 +98,7 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
 
         sdk.getEntities({
             query: pixelQuery, callback: r => {
-                // console.log("q result", r)
+                console.log("q result", r)
 
                 r.data?.map(entity => {
                         // console.log(entity.models.pixelaw.Pixel)
@@ -180,7 +180,6 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
         if ( !queryBounds || !areBoundsEqual(queryBounds, newQueryBounds)) {
             console.log("prep/setB", newQueryBounds)
             setQueryBounds(newQueryBounds);
-            refresh();
         }
     };
 
