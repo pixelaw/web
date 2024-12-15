@@ -1,36 +1,41 @@
-import styles from "./SettingsPage.module.css";
-import deploymentsConfig from '@/config/deployments.json';
+import styles from "./WorldSelectorPage.module.css";
+import worldsConfig from '@/config/worlds.json';
 import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
 
 const WorldSelectorPage = () => {
 
-    const { deployment, setDeployment} = usePixelawProvider();
+    const { world, setWorld} = usePixelawProvider();
 
-    const handleWorldChange = (deploymentKey: string) => {
-        setDeployment(deploymentKey);
+    const handleWorldChange = (worldKey: string) => {
+        setWorld(worldKey);
     };
-    console.log(deployment)
+
+
     return (
         <div className={styles.inner}>
             <h1>World Selector</h1>
             <ul className={styles.list}>
-                {Object.entries(deploymentsConfig.deployments).map(([deploymentKey, deploymentConfig]) => (
-                    <li
-                        key={deploymentKey}
-                        className={`${styles.listItem} ${deployment === deploymentKey ? styles.selected : ""}`}
-                    >
-                        <button
-                            type={"button"}
-                            className={`${styles.menuButton} ${deployment === deploymentKey ? styles.selectedButton : styles.unselectedButton}`}
-                            onClick={() => handleWorldChange(deploymentKey)}
+                {Object.entries(worldsConfig).map(([worldKey, worldConfig]) => {
+                    console.log('Comparing:', world, worldKey, world === worldKey);
+                    return (
+                        <li
+                            key={worldKey}
+                            // className={`${styles.listItem} ${deployment === worldKey ? styles.selected : ""}`}
                         >
-                            {deploymentConfig.description}
-                        </button>
-                    </li>
-                    ))}
+                            <p>a: {world === worldKey ? 'true' : 'false'}</p>
+                            <button
+                                type="button"
+                                className={`${styles.menuButton} ${world === worldKey ? styles.selectedButton : styles.unselectedButton}`}
+                                onClick={() => handleWorldChange(worldKey)}
+                            >
+                                {worldConfig.description} - {worldKey}
+                            </button>
+                        </li>
+                    );
+                })}
             </ul>
         </div>
-);
+    );
 };
 
 export default WorldSelectorPage;

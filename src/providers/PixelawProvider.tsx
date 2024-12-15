@@ -1,4 +1,4 @@
-import useSettingStore, { DeploymentConfig} from "@/stores/SettingStore.ts"
+import useSettingStore, { WorldConfig} from "@/stores/SettingStore.ts"
 import { DojoProvider} from "@dojoengine/core"
 import { type ReactNode, createContext, useCallback, useContext, useEffect,  useState } from "react"
 import {Account, RpcProvider} from "starknet";
@@ -9,6 +9,7 @@ import baseManifest  from "@/dojo/manifest.js";
 import {BurnerManager} from "@dojoengine/create-burner";
 import {init, SDK} from "@dojoengine/sdk";
 import {schema, SchemaType} from "@/generated/models.gen.ts";
+import {DEFAULT_WORLD} from "@/global/constants.ts";
 
 export type DojoStuff = {
     sdk:  SDK<SchemaType>
@@ -19,13 +20,13 @@ export type DojoStuff = {
 }
 
 export type IPixelawContext = {
-    deployment: string
+    world: string
     walletType: "argent" | "braavos" | "burner" | "controller" | undefined
     clientState: "worldSelect" | "loading" | "error" | "gameActive"
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
-    deploymentStuff: DeploymentConfig
-    setDeployment: (deployment: string) => void;
+    worldStuff: WorldConfig
+    setWorld: (world: string) => void;
 
 }
 
@@ -37,16 +38,16 @@ let activeLoad = false
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
 
-    const { deploymentsConfig, getDeploymentByKey } = useSettingStore();
+    const { worldsConfig, getWorldByKey } = useSettingStore();
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
-        deployment: "local",
+        world: DEFAULT_WORLD,
         walletType: "burner",
         clientState: "loading",
         clientError: null,
         dojoStuff: undefined,
-        deploymentStuff: getDeploymentByKey("local"),
-        setDeployment: () => {},
+        worldStuff: getWorldByKey(DEFAULT_WORLD),
+        setWorld: () => {},
     });
 
 
@@ -58,7 +59,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
             let burnerManager: BurnerManager
             let userAccount: Account
 
-            const deployment = getDeploymentByKey(contextValues.deployment)
+            const deployment = getWorldByKey(contextValues.world)
 
             const apps = await fetchApps(deployment.toriiUrl)
 
@@ -145,13 +146,13 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             activeLoad = false;
         }
-    }, [deploymentsConfig]);
+    }, [worldsConfig]);
 
     useEffect(() => {
-        if (deploymentsConfig && contextValues.deployment) {
+        if (worldsConfig && contextValues.world) {
             setupDojo();
         }
-    }, [deploymentsConfig]);
+    }, [worldsConfig]);
 
 
     return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>

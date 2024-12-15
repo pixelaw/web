@@ -1,4 +1,4 @@
-import {formatAddress, formatWalletAddress} from "@/global/utils.js"
+import {formatAddress} from "@/global/utils.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import type React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -8,8 +8,8 @@ import {useAccount} from "@starknet-react/core";
 const MenuBar: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const { dojoStuff, deployment } = usePixelawProvider()
-    const { address, connector, account,status } = useAccount();
+    const { dojoStuff, world } = usePixelawProvider()
+    const { address } = useAccount();
 
     if (!dojoStuff) return
     const walletAddress = dojoStuff.userAccount?.address
@@ -42,6 +42,7 @@ const MenuBar: React.FC = () => {
             navigate("/world") // Navigate to settings if not currently showing
         }
     }
+
     return (
         <div className={styles.inner}>
             <div className={styles.logoContainer}>
@@ -57,14 +58,14 @@ const MenuBar: React.FC = () => {
                     className={styles.menuButton}
                     onClick={toggleWalletSelector}
                 >
-                    Wallet {address?formatAddress(address):"not connected"}
+                    Wallet {address?`: ${formatAddress(address)}`:"not connected"}
                 </button>
                 <button
                     type={"button"}
                     className={styles.menuButton}
                     onClick={toggleWorldSelector}
                 >
-                    World ({deployment})
+                    World ({world})
                 </button>
                 <button
                     type={"button"}

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import deploymentsConfig from '@/config/deployments.json';
+import worldsConfig from '@/config/worlds.json';
+import {DEFAULT_WORLD} from "@/global/constants.ts";
 
 // const DEPLOYMENTS_CONFIG_URL = 'https://raw.githubusercontent.com/pixelaw/config/refs/heads/main/web.config.json';
 
@@ -10,7 +11,7 @@ export interface BurnerConfig {
     feeTokenAddress: string;
 }
 
-export interface DeploymentConfig {
+export interface WorldConfig {
     serverUrl: string;
     rpcUrl: string;
     toriiUrl: string;
@@ -19,40 +20,36 @@ export interface DeploymentConfig {
     burner?: BurnerConfig ;
 }
 
-export interface Deployments {
-    [key: string]: DeploymentConfig; // Index signature for dynamic keys
+export interface WorldsConfig {
+    [key: string]: WorldConfig; // Index signature for dynamic keys
 }
 
-export interface DeploymentsConfig {
-    deployments: Deployments;
-}
 
 export interface StoreState {
     currentDeployment: string;
-    deploymentsConfig: DeploymentsConfig ;
-    addDeployment: (key: string, deployment: DeploymentConfig) => void;
-    getDeploymentByKey: (key: string) => DeploymentConfig;
+    worldsConfig: WorldsConfig ;
+    addWorld: (key: string, deployment: WorldConfig) => void;
+    getWorldByKey: (key: string) => WorldConfig;
 }
 
 const useSettingStore = create<StoreState>((set) => ({
-    currentDeployment: "local",
-    deploymentsConfig: deploymentsConfig,
-    addDeployment: (key, deployment) => {
+    currentDeployment: DEFAULT_WORLD,
+    worldsConfig: worldsConfig,
+    addWorld: (key, deployment) => {
         set((state) => {
-            if (!state.deploymentsConfig) return state;
+            if (!state.worldsConfig) return state;
             return {
-                deploymentsConfig: {
-                    deployments: {
-                        ...state.deploymentsConfig.deployments,
+                    worldsConfig: {
+                        ...state.worldsConfig,
                         [key]: deployment,
                     },
-                },
+
             };
         });
     },
-    getDeploymentByKey: (key:string):DeploymentConfig => {
+    getWorldByKey: (key:string):WorldConfig => {
         const state = useSettingStore.getState();
-        return state.deploymentsConfig.deployments[key];
+        return state.worldsConfig[key];
     }
 }));
 

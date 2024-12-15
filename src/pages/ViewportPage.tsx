@@ -4,8 +4,6 @@ import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
-import { useDojoPixelStore } from "@/stores/DojoPixelStore.ts"
-
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
@@ -26,13 +24,13 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    const {  clientError, dojoStuff, deploymentStuff } = usePixelawProvider()
+    const {  clientError, dojoStuff, worldStuff } = usePixelawProvider()
     if(clientError) return
 
-    const updateService = useUpdateService(deploymentStuff.serverUrl!)
-    const appStore = useDojoAppStore(deploymentStuff.toriiUrl!)
+    const updateService = useUpdateService(worldStuff.serverUrl!)
+    const appStore = useDojoAppStore(worldStuff.toriiUrl!)
     const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
-    const tileStore = useSimpleTileStore(`${deploymentStuff.serverUrl}/tiles`)
+    const tileStore = useSimpleTileStore(`${worldStuff.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
 
     useSyncedViewStateStore()

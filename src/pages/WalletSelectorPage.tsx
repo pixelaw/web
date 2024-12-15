@@ -1,4 +1,4 @@
-import styles from "./SettingsPage.module.css"
+import styles from "./WalletSelectorPage.module.css"
 import {
     Connector,
     InjectedConnector,
@@ -58,10 +58,8 @@ const WalletSelectorPage = () => {
         }else{
             try {
                 await connectAsync({ connector });
-                // Handle successful connection
             } catch (error) {
                 console.error("Connection failed:", error)
-                // Handle connection error
             }
         }
 
