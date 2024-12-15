@@ -11,6 +11,7 @@ import  {useCallback} from "react";
 import {ArgentMobileConnector, isInArgentMobileAppBrowser} from "starknetkit/argentMobile";
 import {constants} from "starknet";
 import {WebWalletConnector} from "starknetkit/webwallet";
+import {getConnector} from "@/dojo/controller.ts";
 
 
 const WalletSelectorPage = () => {
@@ -21,9 +22,11 @@ const WalletSelectorPage = () => {
         return { nodeUrl: 'https://api.cartridge.gg/x/starknet/mainnet' };
     }, []);
 
-    const controllerConnector = new ControllerConnector({
-        rpc: rpc().nodeUrl,
-    }) as never as Connector
+    // const controllerConnector2 = new ControllerConnector({
+    //     rpc: rpc().nodeUrl,
+    // }) as never as Connector
+    //
+    // const controllerConnector =getConnector({})
 
     const availableConnectors = isInArgentMobileAppBrowser()
         ? [
@@ -46,7 +49,7 @@ const WalletSelectorPage = () => {
                 },
             }),
             new WebWalletConnector({ url: "https://web.argent.xyz" }),
-            controllerConnector,
+            // controllerConnector,
         ];
 
     const { address: currentAddress, connector: currentConnector, account: currentAccount,status } = useAccount();
@@ -65,14 +68,11 @@ const WalletSelectorPage = () => {
 
     }
 
-    console.log("c", currentConnector)
-    console.log("a", currentAccount)
     return (
         <div className={styles.inner}>
             <h1>Current Wallet</h1>
             <p>account: {currentAccount?currentAccount.address:"no account"}</p>
             <p>connector: {currentConnector?currentConnector.id:"none"}</p>
-            <p>address: {currentAddress}</p>
             <p>status: {status}</p>
 
             <h1>Wallet Selector</h1>

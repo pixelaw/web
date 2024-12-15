@@ -63,8 +63,6 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
 
             const apps = await fetchApps(deployment.toriiUrl)
 
-
-
             const contracts = await Promise.all(
                 apps.map((address) => getAbi(new RpcProvider({ nodeUrl: deployment.rpcUrl }), address)),
             )
