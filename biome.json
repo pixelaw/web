@@ -14,8 +14,8 @@
         "noExplicitAny": "error"
       },
       "style": {
-        "noNonNullAssertion": "error",
-        "useBlockStatements": "error",
+        "noNonNullAssertion": "off",
+        "useBlockStatements": "off",
         "useShorthandArrayType": "error"
       }
     }
