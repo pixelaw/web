@@ -15,7 +15,7 @@ function App() {
 
     //<editor-fold desc="Hooks">
 
-    const { clientState, clientError, dojoStuff } = usePixelawProvider()
+    const { clientState, clientError } = usePixelawProvider()
 
     //</editor-fold>
 

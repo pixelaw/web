@@ -1,12 +1,12 @@
 import ControllerConnector from "@cartridge/connector/controller"
-import { getContractByName } from "@dojoengine/core"
+import { type Manifest, getContractByName } from "@dojoengine/core"
 
 interface ConnectorParams {
     rpcUrl: string
     feeTokenAddress: string
     url: string
     profileUrl: string
-    manifest: any
+    manifest: Manifest
 }
 
 export const getControllerConnector = ({
@@ -16,12 +16,6 @@ export const getControllerConnector = ({
     url,
     profileUrl,
 }: ConnectorParams): ControllerConnector => {
-    const contract = getContractByName(manifest, "pixelaw", "paint_actions")
-    if (!contract?.address) {
-        throw new Error("pixelaw paint_actions contract not found")
-    }
-    const paintActionContractAddress = contract.address
-
     const policies = [
         {
             target: feeTokenAddress,
@@ -48,12 +42,15 @@ export const getControllerConnector = ({
             target: feeTokenAddress,
             method: "allowance",
         },
-        {
-            target: paintActionContractAddress,
-            method: "interact",
-            description: "Interact with the paint_actions contract",
-        },
     ]
+
+    for (const contract of manifest.contracts) {
+        policies.push({
+            target: contract.address,
+            method: "interact",
+            description: `Interact with ${contract.name}`,
+        })
+    }
 
     const rpc = rpcUrl
 

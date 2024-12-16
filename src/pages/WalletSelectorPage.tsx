@@ -1,4 +1,5 @@
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
+import { BurnerConnector } from "@dojoengine/create-burner"
 import { type Connector, InjectedConnector, useAccount, useConnect, useDisconnect } from "@starknet-react/core"
 import { constants } from "starknet"
 import { ArgentMobileConnector, isInArgentMobileAppBrowser } from "starknetkit/argentMobile"
@@ -37,6 +38,10 @@ const WalletSelectorPage = () => {
     if (dojoStuff?.controllerConnector) {
         availableConnectors.push(dojoStuff?.controllerConnector)
     }
+
+    // if (dojoStuff?.burnerManager) {
+    //     availableConnectors.push(BurnerConnector)
+    // }
 
     const { connector: currentConnector, account: currentAccount, status } = useAccount()
 
