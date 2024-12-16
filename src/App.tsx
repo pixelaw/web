@@ -2,15 +2,13 @@ import Loading from "@/components/Loading/Loading.tsx"
 import MenuBar from "@/components/MenuBar/MenuBar.tsx"
 import SettingsPage from "@/pages/SettingsPage.tsx"
 import ViewportPage from "@/pages/ViewportPage.tsx"
+import WalletSelectorPage from "@/pages/WalletSelectorPage.tsx"
+import WorldSelectorPage from "@/pages/WorldSelectorPage.tsx"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { Route, Routes } from "react-router-dom"
 import styles from "./App.module.css"
-import WorldSelectorPage from "@/pages/WorldSelectorPage.tsx";
-import WalletSelectorPage from "@/pages/WalletSelectorPage.tsx";
 
 function App() {
-
-
     //<editor-fold desc="State">
 
     //</editor-fold>
@@ -18,7 +16,6 @@ function App() {
     //<editor-fold desc="Hooks">
 
     const { clientState, clientError, dojoStuff } = usePixelawProvider()
-
 
     //</editor-fold>
 
@@ -60,22 +57,10 @@ function App() {
 
             <div className={styles.main}>
                 <Routes>
-                    <Route
-                        path="/settings"
-                        element={<SettingsPage />}
-                    />
-                    <Route
-                        path="/world"
-                        element={<WorldSelectorPage />}
-                    />
-                    <Route
-                        path="/wallet"
-                        element={<WalletSelectorPage />}
-                    />
-                    <Route
-                        path="/"
-                        element={<ViewportPage />}
-                    />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/world" element={<WorldSelectorPage />} />
+                    <Route path="/wallet" element={<WalletSelectorPage />} />
+                    <Route path="/" element={<ViewportPage />} />
                 </Routes>
             </div>
         </div>

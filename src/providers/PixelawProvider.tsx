@@ -1,22 +1,25 @@
-import useSettingStore, { WorldConfig} from "@/stores/SettingStore.ts"
-import { DojoProvider} from "@dojoengine/core"
-import { type ReactNode, createContext, useCallback, useContext, useEffect,  useState } from "react"
-import {Account, RpcProvider} from "starknet";
-import type {Manifest} from "@/global/types.js";
-import {fetchApps} from "@/stores/DojoAppStore.js";
-import {getAbi} from "@/dojo/utils.js";
-import baseManifest  from "@/dojo/manifest.js";
-import {BurnerManager} from "@dojoengine/create-burner";
-import {init, SDK} from "@dojoengine/sdk";
-import {schema, SchemaType} from "@/generated/models.gen.ts";
-import {DEFAULT_WORLD} from "@/global/constants.ts";
+import { getControllerConnector } from "@/dojo/controller.ts"
+import baseManifest from "@/dojo/manifest.js"
+import { getAbi } from "@/dojo/utils.js"
+import { type SchemaType, schema } from "@/generated/models.gen.ts"
+import { DEFAULT_WORLD } from "@/global/constants.ts"
+import type { Manifest } from "@/global/types.js"
+import { fetchApps } from "@/stores/DojoAppStore.js"
+import useSettingStore, { type WorldConfig } from "@/stores/SettingStore.ts"
+import type ControllerConnector from "@cartridge/connector/controller"
+import { DojoProvider } from "@dojoengine/core"
+import { BurnerManager } from "@dojoengine/create-burner"
+import { type SDK, init } from "@dojoengine/sdk"
+import { type ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react"
+import { Account, RpcProvider } from "starknet"
 
 export type DojoStuff = {
-    sdk:  SDK<SchemaType>
+    sdk: SDK<SchemaType>
     dojoProvider: DojoProvider
     manifest: Manifest
     burnerManager: BurnerManager | null
     userAccount: Account | undefined
+    controllerConnector: ControllerConnector | undefined
 }
 
 export type IPixelawContext = {
@@ -26,19 +29,16 @@ export type IPixelawContext = {
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
     worldStuff: WorldConfig
-    setWorld: (world: string) => void;
-
+    setWorld: (world: string) => void
 }
 
-export const PixelawContext = createContext<IPixelawContext | undefined>(undefined);
-
+export const PixelawContext = createContext<IPixelawContext | undefined>(undefined)
 
 // @dev createDojoConfig can only be called once, or we get a full hangup
 let activeLoad = false
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
-
-    const { worldsConfig, getWorldByKey } = useSettingStore();
+    const { worldsConfig, getWorldByKey } = useSettingStore()
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
         world: DEFAULT_WORLD,
@@ -48,43 +48,55 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         dojoStuff: undefined,
         worldStuff: getWorldByKey(DEFAULT_WORLD),
         setWorld: () => {},
-    });
-
+    })
 
     const setupDojo = useCallback(async () => {
-        if (activeLoad) return;
-        activeLoad = true;
+        if (activeLoad) return
+        activeLoad = true
 
         try {
             let burnerManager: BurnerManager
             let userAccount: Account
+            let controllerConnector: ControllerConnector
+            const worldConfig = getWorldByKey(contextValues.world)
 
-            const deployment = getWorldByKey(contextValues.world)
-
-            const apps = await fetchApps(deployment.toriiUrl)
+            const apps = await fetchApps(worldConfig.toriiUrl)
 
             const contracts = await Promise.all(
-                apps.map((address) => getAbi(new RpcProvider({ nodeUrl: deployment.rpcUrl }), address)),
+                apps.map((address) => getAbi(new RpcProvider({ nodeUrl: worldConfig.rpcUrl }), address)),
             )
 
             // Manifest with updated contract ABIs
             const manifest = {
-                ...baseManifest(deployment.world),
+                ...baseManifest(worldConfig.world),
                 contracts,
             } as unknown as Manifest
 
-            const dojoProvider = new DojoProvider(manifest, deployment.rpcUrl)
+            const dojoProvider = new DojoProvider(manifest, worldConfig.rpcUrl)
 
-
-            console.log("here")
-            if(contextValues.walletType == "burner"){
-                if(!deployment.burner) throw Error("Burner config not defined")
+            if (worldConfig.wallets.controller) {
+                controllerConnector = getControllerConnector({
+                    feeTokenAddress: worldConfig.feeTokenAddress,
+                    manifest,
+                    profileUrl: worldConfig.wallets.controller.profileUrl,
+                    rpcUrl: worldConfig.wallets.controller.rpcUrl,
+                    url: worldConfig.wallets.controller.url,
+                })
+            }
+            if (contextValues.walletType === "burner") {
+                const burnerConfig = worldConfig.wallets?.burner
+                if (!burnerConfig) throw new Error("Burner config not defined")
 
                 // Create burner manager
                 burnerManager = new BurnerManager({
-                    ...deployment.burner,
+                    ...burnerConfig,
+                    feeTokenAddress: worldConfig.feeTokenAddress,
                     rpcProvider: dojoProvider.provider,
-                    masterAccount: new Account(dojoProvider.provider, deployment.burner.masterAddress, deployment.burner.masterPrivateKey)
+                    masterAccount: new Account(
+                        dojoProvider.provider,
+                        burnerConfig.masterAddress,
+                        burnerConfig.masterPrivateKey,
+                    ),
                 })
 
                 await burnerManager.init()
@@ -97,20 +109,20 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                     }
                 }
 
-                const { account, /*create, list, get, select, clear,  isDeploying */} = burnerManager
+                const { account /*create, list, get, select, clear,  isDeploying */ } = burnerManager
                 userAccount = account!
             }
 
             // Create Graph SDK TODO
             // const _createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
-            console.log(deployment)
+            console.log(worldConfig)
             const sdk = await init<SchemaType>(
                 {
                     client: {
-                        rpcUrl: deployment.rpcUrl,
-                        toriiUrl: deployment.toriiUrl,
+                        rpcUrl: worldConfig.rpcUrl,
+                        toriiUrl: worldConfig.toriiUrl,
                         relayUrl: "", //deployment.relayUrl,
-                        worldAddress: deployment.world,
+                        worldAddress: worldConfig.world,
                     },
                     domain: {
                         name: "pixelaw",
@@ -119,39 +131,38 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                         revision: "1",
                     },
                 },
-                schema
-            );
+                schema,
+            )
 
             setContextValues((prev) => ({
                 ...prev,
                 clientState: "gameActive",
                 clientError: null,
-            dojoStuff: {
-                sdk,
-                dojoProvider,
-                manifest,
-                burnerManager,
-                userAccount
-            }
-            }));
-
+                dojoStuff: {
+                    sdk,
+                    dojoProvider,
+                    manifest,
+                    burnerManager,
+                    userAccount,
+                    controllerConnector,
+                },
+            }))
         } catch (e) {
             setContextValues((prev) => ({
                 ...prev,
                 clientState: "error",
                 clientError: e as Error,
-            }));
+            }))
         } finally {
-            activeLoad = false;
+            activeLoad = false
         }
-    }, [worldsConfig]);
+    }, [worldsConfig])
 
     useEffect(() => {
         if (worldsConfig && contextValues.world) {
-            setupDojo();
+            setupDojo()
         }
-    }, [worldsConfig]);
-
+    }, [worldsConfig, contextValues.world, setupDojo])
 
     return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>
 }

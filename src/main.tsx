@@ -2,22 +2,22 @@ import App from "@/App.tsx"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "@/index.css"
-import {PixelawProvider} from "@/providers/PixelawProvider.tsx"
-import {BrowserRouter} from "react-router-dom"
-import {StarknetProvider} from "@/components/starknet-provider";
+import { StarknetProvider } from "@/components/starknet-provider"
+import { PixelawProvider } from "@/providers/PixelawProvider.tsx"
+import { BrowserRouter } from "react-router-dom"
 
 const rootElement = document.getElementById("root")
 
 if (rootElement) {
     ReactDOM.createRoot(rootElement).render(
         <React.StrictMode>
-                <PixelawProvider>
-                    <StarknetProvider>
+            <PixelawProvider>
+                <StarknetProvider>
                     <BrowserRouter>
-                        <App/>
+                        <App />
                     </BrowserRouter>
-                    </StarknetProvider>
-                </PixelawProvider>
+                </StarknetProvider>
+            </PixelawProvider>
         </React.StrictMode>,
     )
 } else {
