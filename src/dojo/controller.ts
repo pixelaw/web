@@ -1,5 +1,5 @@
 import ControllerConnector from "@cartridge/connector/controller"
-import { type Manifest, getContractByName } from "@dojoengine/core"
+import type { Manifest } from "@dojoengine/core"
 
 interface ConnectorParams {
     rpcUrl: string

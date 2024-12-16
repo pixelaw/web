@@ -38,7 +38,7 @@ export const PixelawContext = createContext<IPixelawContext | undefined>(undefin
 let activeLoad = false
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
-    const { worldsConfig, getWorldByKey } = useSettingStore()
+    const { worldsConfig, getWorldByKey, currentWallet } = useSettingStore()
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
         world: DEFAULT_WORLD,
@@ -74,6 +74,10 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
 
             const dojoProvider = new DojoProvider(manifest, worldConfig.rpcUrl)
 
+            // If a wallet is already connected:
+            if (currentWallet.length > 0) {
+            }
+
             if (worldConfig.wallets.controller) {
                 controllerConnector = getControllerConnector({
                     feeTokenAddress: worldConfig.feeTokenAddress,
@@ -83,9 +87,10 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                     url: worldConfig.wallets.controller.url,
                 })
             }
-            if (contextValues.walletType === "burner") {
-                const burnerConfig = worldConfig.wallets?.burner
-                if (!burnerConfig) throw new Error("Burner config not defined")
+
+            if (worldConfig.wallets?.burner) {
+                console.log("init burnerMgr")
+                const burnerConfig = worldConfig.wallets.burner
 
                 // Create burner manager
                 burnerManager = new BurnerManager({
@@ -100,6 +105,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                 })
 
                 await burnerManager.init()
+                // Immediately create a burner wallet, even if it was not connected yet
                 if (burnerManager.list().length === 0) {
                     try {
                         await burnerManager.create()
@@ -108,13 +114,8 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                         console.error(e)
                     }
                 }
-
-                const { account /*create, list, get, select, clear,  isDeploying */ } = burnerManager
-                userAccount = account!
             }
 
-            // Create Graph SDK TODO
-            // const _createGraphSdk = () => getSdk(new GraphQLClient(`${deployment.toriiUrl}/graphql`))
             console.log(worldConfig)
             const sdk = await init<SchemaType>(
                 {
@@ -156,7 +157,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         } finally {
             activeLoad = false
         }
-    }, [worldsConfig])
+    }, [contextValues.world, getWorldByKey])
 
     useEffect(() => {
         if (worldsConfig && contextValues.world) {

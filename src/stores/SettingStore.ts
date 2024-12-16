@@ -38,30 +38,73 @@ export interface WorldsConfig {
 }
 
 export interface StoreState {
-    currentDeployment: string
+    currentWallet: string
+    currentWorld: string
     worldsConfig: WorldsConfig
     addWorld: (key: string, deployment: WorldConfig) => void
     getWorldByKey: (key: string) => WorldConfig
+    setCurrentWallet: (wallet: string) => void
+}
+
+const loadState = (): Partial<StoreState> => {
+    try {
+        const serializedState = localStorage.getItem("storeState")
+        if (serializedState === null) return {}
+        return JSON.parse(serializedState)
+    } catch (err) {
+        console.error("Could not load state", err)
+        return {}
+    }
+}
+
+const saveState = (state: StoreState) => {
+    try {
+        const serializedState = JSON.stringify(state)
+        localStorage.setItem("storeState", serializedState)
+    } catch (err) {
+        console.error("Could not save state", err)
+    }
 }
 
 const useSettingStore = create<StoreState>((set) => ({
-    currentDeployment: DEFAULT_WORLD,
-    worldsConfig: worldsConfig,
+    ...{
+        currentWallet: "",
+        currentWorld: DEFAULT_WORLD,
+        worldsConfig: worldsConfig,
+    },
+    ...loadState(),
     addWorld: (key, deployment) => {
         set((state) => {
-            if (!state.worldsConfig) return state
-            return {
+            const newState = {
+                ...state,
                 worldsConfig: {
                     ...state.worldsConfig,
                     [key]: deployment,
                 },
             }
+            saveState(newState)
+            return newState
         })
     },
     getWorldByKey: (key: string): WorldConfig => {
         const state = useSettingStore.getState()
         return state.worldsConfig[key]
     },
+    setCurrentWallet: (wallet: string) => {
+        set((state) => {
+            const newState = {
+                ...state,
+                currentWallet: wallet,
+            }
+            saveState(newState)
+            return newState
+        })
+    },
 }))
+
+// Subscribe to store changes and save to localStorage
+useSettingStore.subscribe((state) => {
+    saveState(state)
+})
 
 export default useSettingStore

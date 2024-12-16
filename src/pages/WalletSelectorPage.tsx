@@ -1,4 +1,6 @@
+import { formatAddress } from "@/global/utils.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
+import useSettingStore from "@/stores/SettingStore.ts"
 import { BurnerConnector } from "@dojoengine/create-burner"
 import { type Connector, InjectedConnector, useAccount, useConnect, useDisconnect } from "@starknet-react/core"
 import { constants } from "starknet"
@@ -7,6 +9,7 @@ import { WebWalletConnector } from "starknetkit/webwallet"
 import styles from "./WalletSelectorPage.module.css"
 
 const WalletSelectorPage = () => {
+    const { setCurrentWallet } = useSettingStore()
     const { connectAsync } = useConnect()
     const { disconnectAsync } = useDisconnect()
 
@@ -39,18 +42,36 @@ const WalletSelectorPage = () => {
         availableConnectors.push(dojoStuff?.controllerConnector)
     }
 
-    // if (dojoStuff?.burnerManager) {
-    //     availableConnectors.push(BurnerConnector)
-    // }
+    if (dojoStuff?.burnerManager) {
+        const burnerManager = dojoStuff.burnerManager
+
+        const connector = new BurnerConnector(
+            {
+                id: "burner",
+                name: `burner_${formatAddress(burnerManager.account!.address)}`,
+            },
+            burnerManager.account!,
+        )
+
+        // FIXME somehow property request is missing?
+        availableConnectors.push(connector)
+    }
 
     const { connector: currentConnector, account: currentAccount, status } = useAccount()
 
-    const toggleConnector = async (connector: Connector) => {
-        if (currentConnector && currentConnector.id === connector.id) {
+    const toggleConnector = async (connector: Connector | null) => {
+        if (!connector) {
+            // Select "None"
+            await disconnectAsync()
+            setCurrentWallet("")
+        } else if (currentConnector && currentConnector.id === connector.id) {
+            // Toggle Off
             await disconnectAsync()
         } else {
+            // Select a connector
             try {
                 await connectAsync({ connector })
+                setCurrentWallet(connector.id)
             } catch (error) {
                 console.error("Connection failed:", error)
             }
@@ -66,6 +87,11 @@ const WalletSelectorPage = () => {
 
             <h1>Wallet Selector</h1>
             <ul className={styles.settingsList}>
+                <li key="">
+                    <button type={"button"} className={styles.menuButton} onClick={() => toggleConnector(null)}>
+                        None
+                    </button>
+                </li>
                 {Object.entries(availableConnectors).map(([, availConnector]) => (
                     <li key={availConnector.id}>
                         <button
