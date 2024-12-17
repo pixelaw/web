@@ -6,9 +6,9 @@ import WalletSelectorPage from "@/pages/WalletSelectorPage.tsx"
 import WorldSelectorPage from "@/pages/WorldSelectorPage.tsx"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { Route, Routes } from "react-router-dom"
-import styles from "./App.module.css"
+import styles from "./Main.module.css"
 
-function App() {
+function Main() {
     //<editor-fold desc="State">
 
     //</editor-fold>
@@ -68,4 +68,4 @@ function App() {
     //</editor-fold>
 }
 
-export default App
+export default Main

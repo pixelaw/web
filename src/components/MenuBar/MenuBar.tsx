@@ -12,7 +12,7 @@ const MenuBar: React.FC = () => {
     const { address } = useAccount()
 
     if (!dojoStuff) return
-    console.log(address)
+
     // Determine if the settings page is shown based on the current path
     const showSettings = location.pathname === "/settings"
     const showWorldSelector = location.pathname === "/world"

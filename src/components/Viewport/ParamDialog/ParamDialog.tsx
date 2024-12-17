@@ -12,6 +12,7 @@ interface ParamDialogProps {
 const ParamDialog: React.FC<ParamDialogProps> = ({ params, onSubmit, onClose }) => {
     const [values, setValues] = useState<any>({}) // Initialize state to hold parameter values
 
+    if (!params) return
     const handleChange = (paramName: string, value: any) => {
         setValues((prev) => ({ ...prev, [paramName]: value }))
     }
@@ -20,7 +21,6 @@ const ParamDialog: React.FC<ParamDialogProps> = ({ params, onSubmit, onClose }) 
         onSubmit(values)
         onClose() // Close dialog after submission
     }
-    console.log("p", params)
 
     return (
         <>
@@ -31,10 +31,7 @@ const ParamDialog: React.FC<ParamDialogProps> = ({ params, onSubmit, onClose }) 
                     switch (param.type) {
                         case "enum":
                             return (
-                                <div
-                                    key={param.name}
-                                    className={styles.paramRow}
-                                >
+                                <div key={param.name} className={styles.paramRow}>
                                     <label className={styles.paramLabel}>{param.name}</label>
                                     <div className={styles.toggleButtonGroup}>
                                         {param.variants.map((variant) => (
@@ -52,10 +49,7 @@ const ParamDialog: React.FC<ParamDialogProps> = ({ params, onSubmit, onClose }) 
                             )
                         default:
                             return (
-                                <div
-                                    key={param.name}
-                                    className={styles.paramRow}
-                                >
+                                <div key={param.name} className={styles.paramRow}>
                                     <label className={styles.paramLabel}>{param.name}</label>
                                     <input
                                         className={styles.paramInput}
@@ -75,11 +69,7 @@ const ParamDialog: React.FC<ParamDialogProps> = ({ params, onSubmit, onClose }) 
                     >
                         Submit
                     </button>
-                    <button
-                        type={"button"}
-                        className={`${styles.button} ${styles.closeButton}`}
-                        onClick={onClose}
-                    >
+                    <button type={"button"} className={`${styles.button} ${styles.closeButton}`} onClick={onClose}>
                         Close
                     </button>
                 </div>

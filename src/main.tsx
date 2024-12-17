@@ -1,4 +1,4 @@
-import App from "@/App.tsx"
+import Main from "@/Main.tsx"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "@/index.css"
@@ -11,13 +11,13 @@ const rootElement = document.getElementById("root")
 if (rootElement) {
     ReactDOM.createRoot(rootElement).render(
         <React.StrictMode>
-            <PixelawProvider>
-                <StarknetProvider>
+            <StarknetProvider>
+                <PixelawProvider>
                     <BrowserRouter>
-                        <App />
+                        <Main />
                     </BrowserRouter>
-                </StarknetProvider>
-            </PixelawProvider>
+                </PixelawProvider>
+            </StarknetProvider>
         </React.StrictMode>,
     )
 } else {

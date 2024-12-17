@@ -2,22 +2,25 @@ import { generateDojoCall } from "@/dojo/utils/call.ts"
 import getParamsDef from "@/dojo/utils/paramsDef.ts"
 import { NAMESPACE } from "@/global/constants.js"
 import { coordinateToPosition, hexRGBtoNumber } from "@/global/utils.ts"
+import useWalletConnection from "@/hooks/useWalletConnection.ts"
+import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
 import type { PixelStore } from "@/webtools/types.ts"
 import type { DojoCall } from "@dojoengine/core"
 import { useCallback, useEffect, useState } from "react"
-import {DojoStuff} from "@/providers/PixelawProvider.tsx";
 
 export const useDojoInteractHandler = (
     pixelStore: PixelStore,
-    dojoStuff: DojoStuff,
     onParamsRequired: (params: any) => void,
     onSubmitParams: (submitParams: (params: any) => void) => void,
 ) => {
+    const { dojoStuff } = usePixelawProvider()
     const { setClickedCell, clickedCell, selectedApp, color } = useViewStateStore()
     const { getByName } = useDojoAppStore()
     const [paramData, setParamData] = useState(null)
+
+    const { currentAccount } = useWalletConnection()
 
     // Callback to be called with submitted parameters
     const submitParams = useCallback((params: any) => {
@@ -31,6 +34,7 @@ export const useDojoInteractHandler = (
 
     useEffect(() => {
         if (!clickedCell || !selectedApp) return
+        if (!dojoStuff) return
 
         console.log(`Clicked cell ${clickedCell} with app: ${selectedApp}`)
 
@@ -63,16 +67,17 @@ export const useDojoInteractHandler = (
         )
 
         // Execute the call
-        dojoStuff.dojoProvider.execute(dojoStuff.userAccount!, dojoCall, NAMESPACE, {})
+        dojoStuff.provider
+            .execute(currentAccount!, dojoCall, NAMESPACE, {})
             .then((res) => {
-            console.log("dojocall", res)
+                console.log("dojocall", res)
 
-            // pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
-            // pixelStore.setCacheUpdated(Date.now())
+                // pixelStore.setPixelColor(clickedCell, hexRGBtoNumber(color))
+                // pixelStore.setCacheUpdated(Date.now())
 
-            // Reset paramData after execution
-            setParamData(null)
-        })
+                // Reset paramData after execution
+                setParamData(null)
+            })
             .catch((error) => {
                 console.error("Error executing DojoCall:", error)
                 // Handle the error appropriately here

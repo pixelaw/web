@@ -34,16 +34,18 @@ export interface WorldConfig {
 }
 
 export interface WorldsConfig {
-    [key: string]: WorldConfig // Index signature for dynamic keys
+    [id: string]: WorldConfig
 }
 
 export interface StoreState {
-    currentWallet: string
-    currentWorld: string
+    walletId: string
+    worldId: string
     worldsConfig: WorldsConfig
-    addWorld: (key: string, deployment: WorldConfig) => void
-    getWorldByKey: (key: string) => WorldConfig
-    setCurrentWallet: (wallet: string) => void
+    worldConfig: WorldConfig | undefined
+    addWorld: (id: string, worldConfig: WorldConfig) => void
+    getWorld: (id: string) => WorldConfig | undefined
+    setCurrentWallet: (id: string) => void
+    setWorld: (id: string) => void
 }
 
 const loadState = (): Partial<StoreState> => {
@@ -68,33 +70,46 @@ const saveState = (state: StoreState) => {
 
 const useSettingStore = create<StoreState>((set) => ({
     ...{
-        currentWallet: "",
-        currentWorld: DEFAULT_WORLD,
+        walletId: "",
+        worldId: DEFAULT_WORLD,
+        worldConfig: worldsConfig[DEFAULT_WORLD],
         worldsConfig: worldsConfig,
     },
     ...loadState(),
-    addWorld: (key, deployment) => {
+    addWorld: (id, worldConfig) => {
         set((state) => {
             const newState = {
                 ...state,
                 worldsConfig: {
                     ...state.worldsConfig,
-                    [key]: deployment,
+                    [id]: worldConfig,
                 },
             }
             saveState(newState)
             return newState
         })
     },
-    getWorldByKey: (key: string): WorldConfig => {
-        const state = useSettingStore.getState()
-        return state.worldsConfig[key]
+    setWorld: (id: string) => {
+        set((state) => {
+            const worldConfig = state.worldsConfig[id]
+            if (!worldConfig) {
+                console.error(`World with key ${id} does not exist.`)
+                return state
+            }
+            const newState = {
+                ...state,
+                currentWorld: id,
+                worldConfig: worldConfig,
+            }
+            saveState(newState)
+            return newState
+        })
     },
-    setCurrentWallet: (wallet: string) => {
+    setCurrentWallet: (id: string) => {
         set((state) => {
             const newState = {
                 ...state,
-                currentWallet: wallet,
+                currentWallet: id,
             }
             saveState(newState)
             return newState

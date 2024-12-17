@@ -1,3 +1,5 @@
+import type { Manifest } from "@dojoengine/core"
+
 export type Pixel = {
     action: string
     color: number | string
@@ -11,7 +13,7 @@ export type Pixel = {
 export type App = {
     system: string
     name: string
-    manifest: string
+    // manifest: string
     icon: string
     action: string
     entity: {
@@ -34,7 +36,6 @@ export interface UpdateService {
 export interface AppStore {
     getByName: (name: string) => App | undefined
     getAll: () => App[]
-    prepare: () => void
 }
 
 export interface PixelStore {

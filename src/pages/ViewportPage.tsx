@@ -4,6 +4,7 @@ import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
+import { useDojoSdkPixelStore } from "@/stores/DojoSdkPixelStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
@@ -11,7 +12,6 @@ import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
 import type { Bounds, Coordinate } from "@/webtools/types.ts"
 import { useEffect, useMemo, useState } from "react"
 import styles from "./ViewportPage.module.css"
-import {useDojoSdkPixelStore} from "@/stores/DojoSdkPixelStore.ts";
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
@@ -24,17 +24,17 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    const {  clientError, dojoStuff, worldStuff } = usePixelawProvider()
-    if(clientError) return
+    const { clientError, dojoStuff, worldConfig } = usePixelawProvider()
+    if (clientError) return
+    if (!worldConfig) return
 
-    const updateService = useUpdateService(worldStuff.serverUrl!)
-    const appStore = useDojoAppStore(worldStuff.toriiUrl!)
+    const updateService = useUpdateService(worldConfig.serverUrl!)
+    const appStore = useDojoAppStore()
     const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
-    const tileStore = useSimpleTileStore(`${worldStuff.serverUrl}/tiles`)
+    const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
 
     useSyncedViewStateStore()
-
 
     const handleParamsRequired = (params: any) => {
         setParamDialogParams(params)
@@ -65,7 +65,6 @@ const ViewportPage: React.FC = () => {
     }, [updateService.tileChanged, pixelStore.refresh, tileStore.fetchTile])
 
     const onWorldviewChange = (newWorldview: Bounds) => {
-
         updateService.setBounds(newWorldview)
         tileStore.prepare(newWorldview)
 
@@ -111,27 +110,14 @@ const ViewportPage: React.FC = () => {
                 onCellClick={onCellClick}
                 onCellHover={onCellHover}
             />
-            <div
-                className={styles.colorpicker}
-                style={{ bottom: zoombasedAdjustment }}
-            >
-                <SimpleColorPicker
-                    color={color}
-                    onColorSelect={onColorSelect}
-                />
+            <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
+                <SimpleColorPicker color={color} onColorSelect={onColorSelect} />
             </div>
-            <div
-                className={styles.apps}
-                style={{ left: zoombasedAdjustment }}
-            >
+            <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
                 <Apps appStore={appStore} />
             </div>
             {paramDialogVisible && (
-                <ParamDialog
-                    params={paramDialogParams}
-                    onSubmit={handleParamSubmit}
-                    onClose={closeParamDialog}
-                />
+                <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />
             )}
         </>
     )

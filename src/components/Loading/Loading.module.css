@@ -1,5 +1,6 @@
 .loadingContainer {
     @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-25;
+    @apply text-lg font-semibold text-white;
 }
 
 .loadingContainer div {
