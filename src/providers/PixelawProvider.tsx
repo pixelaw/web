@@ -6,27 +6,27 @@ import { type ReactNode, createContext, useContext, useEffect, useState } from "
 
 export type IPixelawContext = {
     world: string
+    worldConfig: WorldConfig | undefined
     walletType: "" | "argent" | "braavos" | "burner" | "controller" | undefined
     clientState: Status
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
-    worldConfig: WorldConfig | undefined
 }
 
 export const PixelawContext = createContext<IPixelawContext | undefined>(undefined)
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
-    const { worldConfig } = useSettingStore()
+    const { worldConfig, world } = useSettingStore()
 
     const { dojoStuff, status } = useDojo(worldConfig)
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
-        world: DEFAULT_WORLD,
+        world,
+        worldConfig,
         walletType: "burner",
         clientState: "loading",
         clientError: null,
         dojoStuff: undefined,
-        worldConfig,
     })
 
     useEffect(() => {
@@ -36,9 +36,10 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                 ...prev,
                 clientState: status,
                 dojoStuff,
+                world: world,
             }))
         }
-    }, [dojoStuff, status, contextValues.clientState])
+    }, [dojoStuff, status, contextValues.clientState, world])
 
     return <PixelawContext.Provider value={contextValues}>{children}</PixelawContext.Provider>
 }

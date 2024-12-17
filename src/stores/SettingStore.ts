@@ -38,12 +38,12 @@ export interface WorldsConfig {
 }
 
 export interface StoreState {
-    walletId: string
-    worldId: string
+    wallet: string
+    world: string
     worldsConfig: WorldsConfig
     worldConfig: WorldConfig | undefined
     addWorld: (id: string, worldConfig: WorldConfig) => void
-    setCurrentWallet: (id: string) => void
+    setWallet: (id: string) => void
     setWorld: (id: string) => void
 }
 
@@ -69,8 +69,8 @@ const saveState = (state: StoreState) => {
 
 const useSettingStore = create<StoreState>((set) => ({
     ...{
-        walletId: "",
-        worldId: DEFAULT_WORLD,
+        wallet: "",
+        world: DEFAULT_WORLD,
         worldConfig: worldsConfig[DEFAULT_WORLD],
         worldsConfig: worldsConfig,
     },
@@ -97,18 +97,18 @@ const useSettingStore = create<StoreState>((set) => ({
             }
             const newState = {
                 ...state,
-                currentWorld: id,
+                world: id,
                 worldConfig: worldConfig,
             }
             saveState(newState)
             return newState
         })
     },
-    setCurrentWallet: (id: string) => {
+    setWallet: (id: string) => {
         set((state) => {
             const newState = {
                 ...state,
-                currentWallet: id,
+                wallet: id,
             }
             saveState(newState)
             return newState

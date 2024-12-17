@@ -1,19 +1,17 @@
-import styles from "./WorldSelectorPage.module.css";
-import worldsConfig from '@/config/worlds.json';
-import {usePixelawProvider} from "@/providers/PixelawProvider.tsx";
+import worldsConfig from "@/config/worlds.json"
+import useSettingStore from "@/stores/SettingStore.ts"
+import styles from "./WorldSelectorPage.module.css"
 
 const WorldSelectorPage = () => {
-
-    const { world, setWorld} = usePixelawProvider();
+    const { setWorld, worldConfig, world } = useSettingStore()
 
     const handleWorldChange = (worldKey: string) => {
-        setWorld(worldKey);
-    };
-
+        setWorld(worldKey)
+    }
 
     return (
         <div className={styles.inner}>
-            <h1>World Selector</h1>
+            <h1>World Selector: {world}</h1>
             <ul className={styles.list}>
                 {Object.entries(worldsConfig).map(([worldKey, worldConfig]) => {
                     return (
@@ -29,11 +27,11 @@ const WorldSelectorPage = () => {
                                 {worldConfig.description}
                             </button>
                         </li>
-                    );
+                    )
                 })}
             </ul>
         </div>
-    );
-};
+    )
+}
 
-export default WorldSelectorPage;
+export default WorldSelectorPage

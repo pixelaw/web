@@ -8,7 +8,7 @@ import { ArgentMobileConnector, isInArgentMobileAppBrowser } from "starknetkit/a
 import { WebWalletConnector } from "starknetkit/webwallet"
 
 const useWalletConnection = () => {
-    const { setCurrentWallet } = useSettingStore()
+    const { setWallet } = useSettingStore()
     const { connectAsync } = useConnect()
     const { disconnectAsync } = useDisconnect()
     const { connector: currentConnector, account: currentAccount, status } = useAccount()
@@ -57,13 +57,13 @@ const useWalletConnection = () => {
     const toggleConnector = async (connector: Connector | null) => {
         if (!connector) {
             await disconnectAsync()
-            setCurrentWallet("")
+            setWallet("")
         } else if (currentConnector && currentConnector.id === connector.id) {
             await disconnectAsync()
         } else {
             try {
                 await connectAsync({ connector })
-                setCurrentWallet(connector.id)
+                setWallet(connector.id)
             } catch (error) {
                 console.error("Connection failed:", error)
             }
@@ -72,9 +72,9 @@ const useWalletConnection = () => {
 
     useEffect(() => {
         if (currentConnector) {
-            setCurrentWallet(currentConnector.id)
+            setWallet(currentConnector.id)
         }
-    }, [currentConnector, setCurrentWallet])
+    }, [currentConnector, setWallet])
 
     return { availableConnectors, currentConnector, currentAccount, status, toggleConnector }
 }
