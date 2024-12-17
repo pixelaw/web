@@ -43,7 +43,6 @@ export interface StoreState {
     worldsConfig: WorldsConfig
     worldConfig: WorldConfig | undefined
     addWorld: (id: string, worldConfig: WorldConfig) => void
-    getWorld: (id: string) => WorldConfig | undefined
     setCurrentWallet: (id: string) => void
     setWorld: (id: string) => void
 }

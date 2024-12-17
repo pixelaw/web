@@ -5,6 +5,7 @@ import { coordinateToPosition, hexRGBtoNumber } from "@/global/utils.ts"
 import useWalletConnection from "@/hooks/useWalletConnection.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
+import type { DojoStuff } from "@/stores/DojoStore"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
 import type { PixelStore } from "@/webtools/types.ts"
 import type { DojoCall } from "@dojoengine/core"
@@ -12,6 +13,7 @@ import { useCallback, useEffect, useState } from "react"
 
 export const useDojoInteractHandler = (
     pixelStore: PixelStore,
+    p0: DojoStuff,
     onParamsRequired: (params: any) => void,
     onSubmitParams: (submitParams: (params: any) => void) => void,
 ) => {
