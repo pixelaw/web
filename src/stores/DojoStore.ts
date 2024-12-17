@@ -34,7 +34,6 @@ type GetAppsResponse = {
 }
 
 export type DojoStuff = {
-    // getAppByName: (name: string) => App | undefined
     apps: App[]
     manifest: Manifest | null
     controllerConnector: ControllerConnector | null
