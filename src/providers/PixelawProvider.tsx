@@ -1,4 +1,3 @@
-import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { type DojoStuff, type Status, useDojo } from "@/stores/DojoStore.js"
 import useSettingStore, { type WorldConfig } from "@/stores/SettingStore.ts"
 

@@ -46,7 +46,7 @@ const ViewportPage: React.FC = () => {
         setParamDialogVisible(false)
     }
 
-    useDojoInteractHandler(pixelStore, dojoStuff!, handleParamsRequired, (submit) => {
+    useDojoInteractHandler(pixelStore, handleParamsRequired, (submit) => {
         setSubmitParamsCallback(() => submit)
     })
 
