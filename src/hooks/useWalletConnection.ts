@@ -54,6 +54,25 @@ const useWalletConnection = () => {
         setAvailableConnectors(connectors)
     }, [controllerConnector, burnerConnector])
 
+    const activateConnector = async (newConnector: Connector | null) => {
+        try {
+            // Disconnect the current connector if it exists
+            if (currentConnector) {
+                await disconnectAsync()
+            }
+
+            // Connect to the new connector if provided
+            if (newConnector) {
+                await connectAsync({ connector: newConnector })
+                setWallet(newConnector.id)
+            } else {
+                setWallet("")
+            }
+        } catch (error) {
+            console.error("Activation failed:", error)
+        }
+    }
+
     const toggleConnector = async (connector: Connector | null) => {
         if (!connector) {
             await disconnectAsync()
@@ -76,7 +95,7 @@ const useWalletConnection = () => {
         }
     }, [currentConnector, setWallet])
 
-    return { availableConnectors, currentConnector, currentAccount, status, toggleConnector }
+    return { availableConnectors, currentConnector, currentAccount, status, toggleConnector, activateConnector }
 }
 
 export default useWalletConnection

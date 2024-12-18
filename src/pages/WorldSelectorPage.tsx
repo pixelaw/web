@@ -1,12 +1,15 @@
 import worldsConfig from "@/config/worlds.json"
 import useSettingStore from "@/stores/SettingStore.ts"
+import { useNavigate } from "react-router-dom"
 import styles from "./WorldSelectorPage.module.css"
 
 const WorldSelectorPage = () => {
-    const { setWorld, worldConfig, world } = useSettingStore()
+    const { setWorld, world } = useSettingStore()
+    const navigate = useNavigate()
 
     const handleWorldChange = (worldKey: string) => {
         setWorld(worldKey)
+        navigate("/")
     }
 
     return (
