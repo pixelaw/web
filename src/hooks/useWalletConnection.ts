@@ -4,6 +4,7 @@ import useSettingStore from "@/stores/SettingStore.ts"
 import { type Connector, InjectedConnector, useAccount, useConnect, useDisconnect } from "@starknet-react/core"
 import { useEffect, useState } from "react"
 import { constants } from "starknet"
+
 import { ArgentMobileConnector, isInArgentMobileAppBrowser } from "starknetkit/argentMobile"
 import { WebWalletConnector } from "starknetkit/webwallet"
 
@@ -73,29 +74,13 @@ const useWalletConnection = () => {
         }
     }
 
-    const toggleConnector = async (connector: Connector | null) => {
-        if (!connector) {
-            await disconnectAsync()
-            setWallet("")
-        } else if (currentConnector && currentConnector.id === connector.id) {
-            await disconnectAsync()
-        } else {
-            try {
-                await connectAsync({ connector })
-                setWallet(connector.id)
-            } catch (error) {
-                console.error("Connection failed:", error)
-            }
-        }
-    }
-
     useEffect(() => {
         if (currentConnector) {
             setWallet(currentConnector.id)
         }
     }, [currentConnector, setWallet])
 
-    return { availableConnectors, currentConnector, currentAccount, status, toggleConnector, activateConnector }
+    return { availableConnectors, currentConnector, currentAccount, status, activateConnector }
 }
 
 export default useWalletConnection

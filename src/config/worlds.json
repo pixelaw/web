@@ -1,6 +1,6 @@
 {
   "local-empty": {
-    "description": "For development: Locally deployed world",
+    "description": "Locally deployed world",
     "serverUrl": "http://127.0.0.1:3001",
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
@@ -21,7 +21,7 @@
     }
   },
   "sepolia": {
-    "description": "PixeLAW deployment on the Starknet Sepolia testnet",
+    "description": "Sepolia: https://sepolia.pixelaw.xyz",
     "serverUrl": "https://sepolia.pixelaw.xyz",
     "rpcUrl": "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
     "toriiUrl": "https://torii.sepolia.pixelaw.xyz",
@@ -37,7 +37,7 @@
     }
   },
   "dev": {
-    "description": "PixeLAW deployment on Dev server",
+    "description": "Dev server: https://dev.pixelaw.xyz",
     "serverUrl": "https://dev.pixelaw.xyz",
     "rpcUrl": "https://katana.dev.pixelaw.xyz",
     "toriiUrl": "https://torii.dev.pixelaw.xyz",

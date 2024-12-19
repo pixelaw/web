@@ -1,6 +1,8 @@
 import { felt252ToString } from "@/global/utils.ts"
 import type { RpcProvider } from "starknet"
-
+export function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
 export async function getAbi(provider: RpcProvider, app: any): Promise<any> {
     let name = felt252ToString(app.name).toLowerCase()
 

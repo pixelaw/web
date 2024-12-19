@@ -1,7 +1,7 @@
 import GET_APPS_QUERY from "@/../graphql/GetApps.graphql"
 import { getControllerConnector } from "@/dojo/controller.ts"
 import baseManifest from "@/dojo/manifest.js"
-import { getAbi } from "@/dojo/utils.ts"
+import { getAbi, sleep } from "@/dojo/utils.ts"
 import { type SchemaType, schema } from "@/generated/models.gen.ts"
 import { formatAddress } from "@/global/utils.ts"
 import type { WorldConfig } from "@/stores/SettingStore.ts"
@@ -73,10 +73,7 @@ async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: A
     }
 }
 
-async function setupControllerConnector(
-    manifest: Manifest,
-    worldConfig: WorldConfig,
-): Promise<ControllerConnector | null> {
+function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig): ControllerConnector | null {
     if (worldConfig.wallets.controller) {
         return getControllerConnector({
             feeTokenAddress: worldConfig.feeTokenAddress,
@@ -154,7 +151,8 @@ export function useDojo(worldConfig?: WorldConfig): { dojoStuff: DojoStuff | nul
 
                 const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
                 const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
-                const controllerConnector = await setupControllerConnector(manifest, worldConfig)
+                const controllerConnector = setupControllerConnector(manifest, worldConfig)
+                await sleep(5000)
                 const burnerConnector = await setupBurnerConnector(provider, worldConfig)
 
                 setDojoStuff({

@@ -8,10 +8,15 @@ const WalletSelectorPage = () => {
 
     const navigate = useNavigate()
 
-    const handleConnectorSelection = (connector: Connector | null) => {
-        activateConnector(connector)
-        navigate("/")
+    const handleConnectorSelection = async (connector: Connector | null) => {
+        try {
+            await activateConnector(connector)
+            navigate("/")
+        } catch (error) {
+            console.error("Error activating connector:", error)
+        }
     }
+
     return (
         <div className={styles.inner}>
             <h1>Current Wallet</h1>
