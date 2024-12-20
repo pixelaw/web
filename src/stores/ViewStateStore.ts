@@ -43,6 +43,13 @@ export const useViewStateStore = create<AppState>((set) => ({
     setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
 }))
 
+export const ViewStateStore = () => {
+    return {
+        ...useViewStateStore.getState(),
+        set: useViewStateStore.setState,
+    }
+}
+
 export function useSyncedViewStateStore() {
     const location = useLocation()
     const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } = useViewStateStore()

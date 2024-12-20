@@ -52,9 +52,9 @@ const MenuBar: React.FC = () => {
                 <button type={"button"} className={styles.menuButton} onClick={toggleWorldSelector}>
                     World ({world})
                 </button>
-                {/*<button type={"button"} className={styles.menuButton} onClick={toggleSettings}>*/}
-                {/*    Settings*/}
-                {/*</button>*/}
+                <button type={"button"} className={styles.menuButton} onClick={toggleSettings}>
+                    Settings
+                </button>
             </div>
         </div>
     )

@@ -32,7 +32,7 @@ const ViewportPage: React.FC = () => {
     const appStore = useDojoAppStore()
     const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
-    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
+    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell } = useViewStateStore()
 
     useSyncedViewStateStore()
 
@@ -78,7 +78,7 @@ const ViewportPage: React.FC = () => {
     }
 
     const onCellClick = (coordinate: Coordinate) => {
-        setClickedCell(coordinate)
+        useViewStateStore.getState().setClickedCell(coordinate)
     }
 
     const onColorSelect = (color: string) => {

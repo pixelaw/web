@@ -16,21 +16,42 @@ const ControllerDetails: React.FC<ControllerDetailsProps> = ({ connector }) => {
         connector.username().then((username) => {
             setUsername(username)
         })
+
+        console.log(connector.controller.account)
     }, [connector])
 
     const openProfile = async () => {
         if (!connector) return
         await connector.controller.openProfile()
     }
+    const openSettings = async () => {
+        if (!connector) return
+        await connector.controller.openSettings()
+    }
+    const disconnect = async () => {
+        if (!connector) return
+        await connector.controller.disconnect()
+    }
+    const connect = async () => {
+        if (!connector) return
+        await connector.controller.connect()
+    }
 
-    // openSettings
     return (
         <div>
             <p>Username: {connector ? username : "No controller"}</p>
             <p>
-                Profile:{" "}
                 <button type={"button"} onClick={openProfile}>
                     Open Profile
+                </button>
+                <button type={"button"} onClick={openSettings}>
+                    Open Settings
+                </button>
+                <button type={"button"} onClick={connect}>
+                    Connect
+                </button>
+                <button type={"button"} onClick={disconnect}>
+                    Disconnect
                 </button>
             </p>
         </div>

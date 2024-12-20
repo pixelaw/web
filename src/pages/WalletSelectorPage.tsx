@@ -1,5 +1,6 @@
 import ControllerDetails from "@/components/Wallet/ControllerDetails.tsx"
 import useWalletConnection from "@/hooks/useWalletConnection.ts"
+import type ControllerConnector from "@cartridge/connector/controller"
 import type { Connector } from "@starknet-react/core"
 import { useNavigate } from "react-router-dom"
 import styles from "./WalletSelectorPage.module.css"
@@ -22,7 +23,7 @@ const WalletSelectorPage = () => {
         <div className={styles.inner}>
             <h1>Current Wallet</h1>
             {currentConnector && currentConnector.id === "controller" ? (
-                <ControllerDetails connector={currentConnector} />
+                <ControllerDetails connector={currentConnector as ControllerConnector} />
             ) : (
                 ""
             )}

@@ -161,6 +161,8 @@ const loadImage = (base64: string): Promise<HTMLImageElement> => {
 }
 
 const fetchImage = async (src: string): Promise<string> => {
+    console.log("ja")
+    debugger
     const response = await fetch(src)
 
     const blob = await response.blob()
