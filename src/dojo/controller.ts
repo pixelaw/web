@@ -4,18 +4,10 @@ import type { Manifest } from "@dojoengine/core"
 interface ConnectorParams {
     rpcUrl: string
     feeTokenAddress: string
-    url: string
-    profileUrl: string
     manifest: Manifest
 }
 
-export const getControllerConnector = ({
-    rpcUrl,
-    feeTokenAddress,
-    manifest,
-    url,
-    profileUrl,
-}: ConnectorParams): ControllerConnector => {
+export const getControllerConnector = ({ rpcUrl, feeTokenAddress, manifest }: ConnectorParams): ControllerConnector => {
     const policies = [
         {
             target: feeTokenAddress,
@@ -53,11 +45,11 @@ export const getControllerConnector = ({
     }
 
     const rpc = rpcUrl
-
+    console.log("0-0000000000000000000000000")
     return new ControllerConnector({
         rpc,
         policies,
-        url,
+
         // profileUrl,
         // slot: "pixelaw-slot",
         // preset: "pixelaw",

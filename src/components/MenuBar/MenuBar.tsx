@@ -5,14 +5,11 @@ import type React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import styles from "./MenuBar.module.css"
 
-import { type Connector, useConnect } from "@starknet-react/core"
-
 const MenuBar: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { dojoStuff, world } = usePixelawProvider()
     const { address } = useAccount()
-    const { connectAsync, connectors } = useConnect()
 
     if (!dojoStuff) return
 
@@ -20,11 +17,6 @@ const MenuBar: React.FC = () => {
     const showSettings = location.pathname === "/settings"
     const showWorldSelector = location.pathname === "/world"
     const showWalletSelector = location.pathname === "/wallet"
-
-    const temp = async () => {
-        console.log(connectors)
-        await connectAsync({ connector: dojoStuff.controllerConnector! })
-    }
 
     const toggleSettings = () => {
         if (showSettings) {
@@ -60,12 +52,9 @@ const MenuBar: React.FC = () => {
                 <button type={"button"} className={styles.menuButton} onClick={toggleWorldSelector}>
                     World ({world})
                 </button>
-                <button type={"button"} className={styles.menuButton} onClick={toggleSettings}>
-                    Settings
-                </button>
-                <button type={"button"} className={styles.menuButton} onClick={temp}>
-                    Temp
-                </button>
+                {/*<button type={"button"} className={styles.menuButton} onClick={toggleSettings}>*/}
+                {/*    Settings*/}
+                {/*</button>*/}
             </div>
         </div>
     )

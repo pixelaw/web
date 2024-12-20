@@ -41,6 +41,8 @@ export type DojoStuff = {
     sdk: SDK<SchemaType> | null
     provider: DojoProvider
 }
+const controllerConnectorCache = new Map<string, ControllerConnector | null>()
+const burnerConnectorCache = new Map<string, Promise<BurnerConnector | null>>()
 
 async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: App[]; manifest: Manifest }> {
     const gqlClient = new GraphQLClient(`${worldConfig.toriiUrl}/graphql`)
@@ -74,49 +76,68 @@ async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: A
 }
 
 function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig): ControllerConnector | null {
-    if (worldConfig.wallets.controller) {
-        return getControllerConnector({
-            feeTokenAddress: worldConfig.feeTokenAddress,
-            manifest,
-            profileUrl: worldConfig.wallets.controller.profileUrl,
-            rpcUrl: worldConfig.wallets.controller.rpcUrl,
-            url: worldConfig.wallets.controller.url,
-        })
+    const cacheKey = JSON.stringify({ manifest, rpcUrl: worldConfig.wallets.controller?.rpcUrl })
+    if (controllerConnectorCache.has(cacheKey)) {
+        return controllerConnectorCache.get(cacheKey) || null
     }
-    return null
+
+    const connector = worldConfig.wallets.controller
+        ? getControllerConnector({
+              feeTokenAddress: worldConfig.feeTokenAddress,
+              manifest,
+              rpcUrl: worldConfig.wallets.controller.rpcUrl,
+          })
+        : null
+
+    controllerConnectorCache.set(cacheKey, connector)
+    return connector
 }
 
 async function setupBurnerConnector(
     rpcProvider: DojoProvider,
     worldConfig: WorldConfig,
 ): Promise<BurnerConnector | null> {
-    if (worldConfig.wallets?.burner) {
-        const burnerConfig = worldConfig.wallets.burner
-        const manager = new BurnerManager({
-            ...burnerConfig,
-            feeTokenAddress: worldConfig.feeTokenAddress,
-            rpcProvider: rpcProvider.provider,
-            masterAccount: new Account(rpcProvider.provider, burnerConfig.masterAddress, burnerConfig.masterPrivateKey),
-        })
-        console.log(burnerConfig)
-        await manager.init()
-        if (manager.list().length === 0) {
-            try {
-                await manager.create()
-            } catch (e) {
-                console.error(e)
-            }
-        }
-
-        return new BurnerConnector(
-            {
-                id: "burner",
-                name: `burner_${formatAddress(manager.account!.address)}`,
-            },
-            manager.account!,
-        )
+    const cacheKey = JSON.stringify({ rpcProvider, burnerConfig: worldConfig.wallets?.burner })
+    if (burnerConnectorCache.has(cacheKey)) {
+        return burnerConnectorCache.get(cacheKey) || null
     }
-    return null
+
+    const promise = (async () => {
+        if (worldConfig.wallets?.burner) {
+            const burnerConfig = worldConfig.wallets.burner
+            const manager = new BurnerManager({
+                ...burnerConfig,
+                feeTokenAddress: worldConfig.feeTokenAddress,
+                rpcProvider: rpcProvider.provider,
+                masterAccount: new Account(
+                    rpcProvider.provider,
+                    burnerConfig.masterAddress,
+                    burnerConfig.masterPrivateKey,
+                ),
+            })
+
+            await manager.init()
+            if (manager.list().length === 0) {
+                try {
+                    await manager.create()
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+
+            return new BurnerConnector(
+                {
+                    id: "burner",
+                    name: `burner_${formatAddress(manager.account!.address)}`,
+                },
+                manager.account!,
+            )
+        }
+        return null
+    })()
+
+    burnerConnectorCache.set(cacheKey, promise)
+    return promise
 }
 
 export function useDojo(worldConfig?: WorldConfig): { dojoStuff: DojoStuff | null; status: Status } {
@@ -124,11 +145,12 @@ export function useDojo(worldConfig?: WorldConfig): { dojoStuff: DojoStuff | nul
     const [dojoStuff, setDojoStuff] = useState<DojoStuff | null>(null)
 
     useEffect(() => {
-        console.log("useEffect triggered!!!", worldConfig)
+        console.log("useEffect triggered!!!")
         if (!worldConfig) return
 
         const initialize = async () => {
             try {
+                console.log("init")
                 setStatus("loading")
 
                 const sdk = await init<SchemaType>(
@@ -152,7 +174,7 @@ export function useDojo(worldConfig?: WorldConfig): { dojoStuff: DojoStuff | nul
                 const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
                 const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
                 const controllerConnector = setupControllerConnector(manifest, worldConfig)
-                await sleep(5000)
+
                 const burnerConnector = await setupBurnerConnector(provider, worldConfig)
 
                 setDojoStuff({

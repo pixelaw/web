@@ -1,3 +1,4 @@
+import ControllerDetails from "@/components/Wallet/ControllerDetails.tsx"
 import useWalletConnection from "@/hooks/useWalletConnection.ts"
 import type { Connector } from "@starknet-react/core"
 import { useNavigate } from "react-router-dom"
@@ -20,6 +21,11 @@ const WalletSelectorPage = () => {
     return (
         <div className={styles.inner}>
             <h1>Current Wallet</h1>
+            {currentConnector && currentConnector.id === "controller" ? (
+                <ControllerDetails connector={currentConnector} />
+            ) : (
+                ""
+            )}
             <p>
                 {currentConnector ? currentConnector.id : "none"} {status}{" "}
                 {currentAccount ? currentAccount.address : "no account"}

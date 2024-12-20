@@ -2,7 +2,6 @@ import Main from "@/Main.tsx"
 import React from "react"
 import ReactDOM from "react-dom/client"
 import "@/index.css"
-import { StarknetProvider } from "@/components/starknet-provider"
 import { mainnet } from "@starknet-react/chains"
 import { StarknetConfig, publicProvider } from "@starknet-react/core"
 
