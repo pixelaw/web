@@ -1,11 +1,32 @@
 {
   "local-empty": {
-    "description": "Locally deployed world",
+    "description": "Local empty world",
     "serverUrl": "http://127.0.0.1:3001",
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
     "relayUrl": "http://127.0.0.1:8080",
     "world": "0x2bf4d3aa0dced89d37d8c3b4ff6a05895c0af32ff3baf9b02abf8504e53eaad",
+    "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    "wallets": {
+      "burner": {
+        "masterAddress": "0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec",
+        "masterPrivateKey": "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912",
+        "accountClassHash": "0x07dc7899aa655b0aae51eadff6d801a58e97dd99cf4666ee59e704249e51adf2"
+      },
+      "controller": {
+        "rpcUrl": "https://api.cartridge.gg/x/starknet/mainnet",
+        "profileUrl": "https://api.cartridge.gg/x/starknet/mainnet",
+        "url": "https://api.cartridge.gg/x/starknet/mainnet"
+      }
+    }
+  },
+  "local-populated": {
+    "description": "Local populated world",
+    "serverUrl": "http://127.0.0.1:3001",
+    "rpcUrl": "http://127.0.0.1:5050",
+    "toriiUrl": "http://127.0.0.1:8080",
+    "relayUrl": "http://127.0.0.1:8080",
+    "world": "0x1869796b1c25976fc5f4b08ca84995945aa68a8850d3739c96e4c9994456ed7",
     "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
     "wallets": {
       "burner": {
