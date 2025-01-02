@@ -1,21 +1,22 @@
 import { type Bounds, type Coordinate, MAX_DIMENSION, type PixelStore, makeString } from "@/webtools/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
-import { produce } from "immer"
 import { useEffect, useRef, useState } from "react"
 
-import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
 import type { Pixel, SchemaType } from "@/generated/models.gen.ts"
 import { QueryBuilder, type SDK } from "@dojoengine/sdk"
+import { getQueryBounds, SUBSCRIPTION_QUERY } from "@/dojo/querybuilder.ts"
+import { EventEmitter } from "@/global/events"
 
 type State = { [key: string]: Pixel | undefined }
 
 export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
-    const [state, setState] = useState<State>({})
+    const state = useRef<State>({}).current
     const [queryBounds, setQueryBounds] = useState<Bounds | null>(null)
     const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now())
     const isSubscribed = useRef(false)
 
     useEffect(() => {
+        console.log("useEffect")
         if (isSubscribed.current) return
 
         let unsubscribe: (() => void) | undefined
@@ -27,18 +28,16 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
                     if (response.error) {
                         console.error("Error setting up entity sync:", response.error)
                     } else if (response.data && response.data[0].entityId !== "0x0") {
+                        console.trace("callback")
                         console.log("callback", response.data[0])
                         const p = response.data[0].models.pixelaw.Pixel
 
-                        const pixel: Pixel = {
+                        const key = `${p?.x}_${p?.y}`
+                        const pixel = {
                             ...p,
-                        }
-
-                        setState(
-                            produce((draftState) => {
-                                draftState[`${p?.x}_${p?.y}`] = pixel
-                            }),
-                        )
+                        } as Pixel
+                        console.log("set pixel", key, pixel)
+                        setPixel(key, pixel)
                     }
 
                     setCacheUpdated(Date.now())
@@ -58,7 +57,7 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
                 isSubscribed.current = false
             }
         }
-    }, [sdk])
+    }, [sdk, state])
 
     useEffect(() => {
         if (queryBounds) {
@@ -87,18 +86,14 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
                     // console.log(entity.models.pixelaw.Pixel)
                     const p = entity.models.pixelaw.Pixel
 
-                    const pixel: Pixel = {
+                    const pixel = {
                         ...p,
                         // text: shortString.decodeShortString(p.text),
                         // action: shortString.decodeShortString(p.action),
                         // timestamp: Number.parseInt(p.timestamp as string, 16),
-                    }
+                    } as Pixel
 
-                    setState(
-                        produce((draftState) => {
-                            draftState[`${p?.x}_${p?.y}`] = pixel
-                        }),
-                    )
+                    state[`${p?.x}_${p?.y}`] = pixel
                 })
                 // console.log("updated")
                 setCacheUpdated(Date.now())
@@ -166,8 +161,13 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
 
     const getPixel = (coord: Coordinate): Pixel | undefined => {
         const key = `${coord[0]}_${coord[1]}`
-
         return state[key]
+    }
+
+    const setPixel = (key: string, pixel: Pixel): void => {
+        // TODO: check for invalid keyss
+        state[key] = pixel;
+        EventEmitter.emit("pixelUpdated", { pixel });
     }
 
     const setPixelColor = (coord: Coordinate, color: number): void => {
@@ -183,7 +183,7 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
                 timestamp: Date.now(),
                 x: coord[0],
                 y: coord[1],
-            }
+            } as Pixel
         } else {
             pixel = {
                 ...pixel,
@@ -191,30 +191,27 @@ export function useDojoSdkPixelStore(sdk: SDK<SchemaType>): PixelStore {
             }
         }
 
-        setState(
-            produce((draft) => {
-                draft[key] = pixel
-            }),
-        )
-    }
-
-    const setPixel = (key: string, pixel: Pixel): void => {
-        setState(
-            produce((draft) => {
-                draft[key] = pixel
-            }),
-        )
+        setPixel(key, pixel)
     }
 
     const setPixels = (pixels: { key: string; pixel: Pixel }[]): void => {
-        setState(
-            produce((draft) => {
-                for (const { key, pixel } of pixels) {
-                    draft[key] = pixel
-                }
-            }),
-        )
+        for (const { key, pixel } of pixels) {
+            setPixel(key, pixel)
+        }
     }
 
     return { getPixel, setPixel, setPixelColor, setPixels, prepare, refresh, setCacheUpdated, cacheUpdated }
 }
+
+
+
+
+
+
+
+// export const DojoSdkPixelStore = () => {
+//     return {
+//         ...useDojoSdkPixelStore.getState(),
+//         set: useDojoSdkPixelStore.setState,
+//     }
+// }

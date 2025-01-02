@@ -40,6 +40,7 @@
     "graphql-request": "^7.1.2",
     "idb-keyval": "^6.2.1",
     "immer": "^10.1.1",
+    "mitt": "^3.0.1",
     "pngjs3": "^6.1.1",
     "postcss": "^8.4.49",
     "react": "^19.0.0",

@@ -1,5 +1,5 @@
 import type React from "react"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import useDimensions from "../../hooks/useDimensions.ts"
 import type { Bounds, Coordinate, PixelStore, Tileset } from "../../types.ts"
 import { applyWorldOffset, areBoundsEqual, cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts"
@@ -8,6 +8,7 @@ import { drawGrid } from "./drawGrid.ts"
 import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
 import { drawTiles } from "./drawTiles.ts"
+import { EventEmitter } from "@/global/events.ts"
 
 interface ViewportProps {
     pixelStore: PixelStore
@@ -76,6 +77,18 @@ const Viewport: React.FC<ViewportProps> = ({
         isLoaded.current = true
     }, [])
 
+    useEffect(() => {
+        const lolwut = () => {
+            console.log("lol")
+        }
+
+        EventEmitter.on("pixelUpdated", lolwut)
+
+        return () => {
+            EventEmitter.off("pixelUpdated", lolwut)
+        }
+    },[])
+
     // When worldview changes
     useEffect(() => {
         const newWorldview = getWorldViewBounds()
@@ -85,8 +98,7 @@ const Viewport: React.FC<ViewportProps> = ({
         }
     }, [dimensions, worldOffset, pixelOffset])
 
-    // Render when in pixel mode
-    useEffect(() => {
+    const updatePixels = useCallback(() => {
         if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
             return
         }
@@ -105,19 +117,31 @@ const Viewport: React.FC<ViewportProps> = ({
                 dimensions,
                 worldOffset,
                 hoveredCell,
-                pixelStore.getPixel,
+                pixelStore.getPixel, // FIXME: this passthrough of the store through props is a bad idea- because now all these stores have to be reactive. The big question is, isn't this really something of a global state or not?
+                // TODO: use global zustand store instead
+                // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
+                // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive
             )
 
             drawOutline(bufferContextRef.current, dimensions)
 
             contextRef.current?.drawImage(bufferCanvasRef.current, 0, 0)
         }
+    }, [dimensions, hoveredCell, pixelOffset, hoveredCell, worldOffset, zoom, pixelStore.getPixel, pixelStore.cacheUpdated])
+
+    useEffect(() => {
+        updatePixels();
+    }, [hoveredCell, pixelOffset, worldOffset, zoom, updatePixels])
+
+    // Render when in pixel mode
+    useEffect(() => {
+        EventEmitter.on("pixelUpdated", updatePixels);
+
+        return () => {
+            EventEmitter.off("pixelUpdated", updatePixels);
+        }
     }, [
-        // dimensions,
-        // zoom,
-        pixelOffset,
-        hoveredCell,
-        pixelStore.cacheUpdated,
+        updatePixels,
     ])
 
     // Render when in Tile mode

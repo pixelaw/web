@@ -94,3 +94,10 @@ export function useSyncedViewStateStore() {
         updateURL()
     }, [selectedApp, center, zoom, color, world])
 }
+
+export const ViewStateStore = () => {
+    return {
+        ...useViewStateStore.getState(),
+        set: useViewStateStore.setState,
+    }
+}
