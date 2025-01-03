@@ -1,7 +1,7 @@
 {
   "name": "pixelaw-web",
   "private": true,
-  "version": "0.5.2",
+  "version": "0.5.3",
   "type": "module",
   "packageManager": "yarn@1.22.19",
   "license": "MIT",
