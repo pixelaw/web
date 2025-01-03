@@ -199,7 +199,7 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
         const newQueryBounds = getQueryBounds(newBounds)
 
         if (!queryBounds || !areBoundsEqual(queryBounds, newQueryBounds)) {
-            console.log("prep/setB", newQueryBounds)
+            // console.log("prep/setB", newQueryBounds)
             setQueryBounds(newQueryBounds)
         }
     }
