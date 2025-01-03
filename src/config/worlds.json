@@ -1,6 +1,6 @@
 {
   "local-empty": {
-    "description": "For development: Locally deployed world",
+    "description": "Local empty world",
     "serverUrl": "http://127.0.0.1:3001",
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
@@ -20,13 +20,13 @@
       }
     }
   },
-  "sepolia": {
-    "description": "PixeLAW deployment on the Starknet Sepolia testnet",
-    "serverUrl": "https://sepolia.pixelaw.xyz",
-    "rpcUrl": "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
-    "toriiUrl": "https://torii.sepolia.pixelaw.xyz",
-    "relayUrl": "https://relay.sepolia.pixelaw.xyz",
-    "world": "0x6f130c8e150882e39cbe878c650c8f35c86579180dbc77d0c1cbe169449b5f6",
+  "local-populated": {
+    "description": "Local populated world",
+    "serverUrl": "http://127.0.0.1:3001",
+    "rpcUrl": "http://127.0.0.1:5050",
+    "toriiUrl": "http://127.0.0.1:8080",
+    "relayUrl": "http://127.0.0.1:8080",
+    "world": "0x1869796b1c25976fc5f4b08ca84995945aa68a8850d3739c96e4c9994456ed7",
     "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
     "wallets": {
       "burner": {
@@ -35,6 +35,22 @@
         "accountClassHash": "0x07dc7899aa655b0aae51eadff6d801a58e97dd99cf4666ee59e704249e51adf2"
       },
       "controller": {
+        "rpcUrl": "https://api.cartridge.gg/x/starknet/mainnet",
+        "profileUrl": "https://api.cartridge.gg/x/starknet/mainnet",
+        "url": "https://api.cartridge.gg/x/starknet/mainnet"
+      }
+    }
+  },
+  "sepolia": {
+    "description": "Sepolia: https://sepolia.pixelaw.xyz",
+    "serverUrl": "https://sepolia.pixelaw.xyz",
+    "rpcUrl": "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
+    "toriiUrl": "https://torii.sepolia.pixelaw.xyz",
+    "relayUrl": "https://relay.sepolia.pixelaw.xyz",
+    "world": "0x6f130c8e150882e39cbe878c650c8f35c86579180dbc77d0c1cbe169449b5f6",
+    "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    "wallets": {
+      "controller": {
         "rpcUrl": "https://api.cartridge.gg/x/starknet/sepolia",
         "profileUrl": "https://api.cartridge.gg/x/starknet/sepolia",
         "url": "https://api.cartridge.gg/x/starknet/sepolia"
@@ -42,7 +58,7 @@
     }
   },
   "dev": {
-    "description": "PixeLAW deployment on Dev server",
+    "description": "Dev server: https://dev.pixelaw.xyz",
     "serverUrl": "https://dev.pixelaw.xyz",
     "rpcUrl": "https://katana.dev.pixelaw.xyz",
     "toriiUrl": "https://torii.dev.pixelaw.xyz",

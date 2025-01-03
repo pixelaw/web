@@ -10,22 +10,33 @@ export type IPixelawContext = {
     clientState: Status
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
+    setWorld: (id: string) => void
 }
 
 export const PixelawContext = createContext<IPixelawContext | undefined>(undefined)
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
-    const { worldConfig, world } = useSettingStore()
+    console.log("PixelawProvider")
+    const { setWallet, setWorld, worldConfig, world } = useSettingStore()
 
     const { dojoStuff, status } = useDojo(worldConfig)
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
         world,
         worldConfig,
-        walletType: "burner",
+        walletType: "",
         clientState: "loading",
         clientError: null,
         dojoStuff: undefined,
+        setWorld: (id: string) => {
+            setWallet("")
+            setWorld(id)
+            setContextValues((prev) => ({
+                ...prev,
+                world: id,
+                walletType: "",
+            }))
+        },
     })
 
     useEffect(() => {

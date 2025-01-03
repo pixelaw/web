@@ -5,6 +5,7 @@ import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useDojoSdkPixelStore } from "@/stores/DojoSdkPixelStore.ts"
+import { useDojoSqlPixelStore } from "@/stores/DojoSqlPixelStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
@@ -30,9 +31,10 @@ const ViewportPage: React.FC = () => {
 
     const updateService = useUpdateService(worldConfig.serverUrl!)
     const appStore = useDojoAppStore()
-    const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
+    // const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
+    const pixelStore = useDojoSqlPixelStore(dojoStuff?.sdk!)
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
-    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell, setClickedCell } = useViewStateStore()
+    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell } = useViewStateStore()
 
     useSyncedViewStateStore()
 
@@ -78,7 +80,7 @@ const ViewportPage: React.FC = () => {
     }
 
     const onCellClick = (coordinate: Coordinate) => {
-        setClickedCell(coordinate)
+        useViewStateStore.getState().setClickedCell(coordinate)
     }
 
     const onColorSelect = (color: string) => {

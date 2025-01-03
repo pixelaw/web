@@ -90,6 +90,7 @@ const useSettingStore = create<StoreState>((set) => ({
     },
     setWorld: (id: string) => {
         set((state) => {
+            console.log(state.worldsConfig)
             const worldConfig = state.worldsConfig[id]
             if (!worldConfig) {
                 console.error(`World with key ${id} does not exist.`)

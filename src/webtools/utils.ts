@@ -1,6 +1,14 @@
 import { shortString } from "starknet"
 import { ZOOM_FACTOR } from "./components/Viewport/constants.ts"
-import {type Bounds, type Coordinate, DEFAULT_SCALEFACTOR, Dimension, MAX_DIMENSION, Pixel, TILESIZE} from "./types.ts"
+import {
+    type Bounds,
+    type Coordinate,
+    DEFAULT_SCALEFACTOR,
+    type Dimension,
+    MAX_DIMENSION,
+    Pixel,
+    TILESIZE,
+} from "./types.ts"
 
 export const MAX_VIEW_SIZE = 1_000_000
 
@@ -16,11 +24,16 @@ export function randomColor(): number {
 
 // TODO check if this works with negative change
 export function getWrappedTileCoordinate(startingWorldCoordinate: number, index: number, tileRenderSize: number) {
-    startingWorldCoordinate >>>= 0
-    let result = ((startingWorldCoordinate >>> 0) + index) >>> 0
+    let result = startingWorldCoordinate + index
+
+    if (result > MAX_DIMENSION) {
+        result %= MAX_DIMENSION + 1
+    }
+
     if (startingWorldCoordinate > result) {
         result -= result % tileRenderSize
     }
+
     return result
 }
 
@@ -61,13 +74,13 @@ export function dimensionFromBounds(bounds: Bounds): Dimension {
     let width = 0
     let height = 0
 
-    let [[left, top], [right, bottom]] = bounds;
+    const [[left, top], [right, bottom]] = bounds
 
-    const xWraps = right - left < 0;
-    const yWraps = bottom - top < 0;
+    const xWraps = right - left < 0
+    const yWraps = bottom - top < 0
 
-    width = xWraps?(MAX_DIMENSION - left) + right: right - left
-    height = yWraps?(MAX_DIMENSION - top) + bottom: bottom - top
+    width = xWraps ? MAX_DIMENSION - left + right : right - left
+    height = yWraps ? MAX_DIMENSION - top + bottom : bottom - top
 
     return [width, height]
 }
@@ -85,7 +98,6 @@ export function wrapOffsetChange(offset: number, change: number): number {
     if (result > MAX_DIMENSION) result = result % (MAX_DIMENSION + 1)
     return result
 }
-
 
 export const felt252ToString = (felt252: string | number | bigint) => {
     if (typeof felt252 === "bigint" || typeof felt252 === "object") {
@@ -179,10 +191,6 @@ export async function clearIdb() {
         const objectStore = transaction.objectStore(DB_STORE_NAME)
         objectStore.clear()
     }
-}
-
-export function updateWorldTranslation([worldX, worldY]: Coordinate, [cellX, cellY]: Coordinate): Coordinate {
-    return [(cellX + worldX) >>> 0, (cellY + worldY) >>> 0]
 }
 
 // Returns viewport cell for the given relative viewport position
@@ -347,23 +355,6 @@ if (import.meta.vitest) {
 
         it("Moving [1,1] by 2 into the topleft", () =>
             expect(applyWorldOffset([2, 2], [1, 1])).toEqual([4_294_967_295, 4_294_967_295]))
-    })
-
-    describe("updateWorldTranslation should correctly update world coordinates", () => {
-        it("should return [0, 0] for input [0, 0], [0, 0]", () =>
-            expect(updateWorldTranslation([0, 0], [0, 0])).toEqual([0, 0]))
-
-        it("should handle negative translation correctly", () =>
-            expect(updateWorldTranslation([-1, -1], [-1, -1])).toEqual([MAX_DIMENSION - 1, MAX_DIMENSION - 1]))
-
-        it("should handle mixed positive and negative translation", () =>
-            expect(updateWorldTranslation([1, 1], [-2, -2])).toEqual([MAX_DIMENSION, MAX_DIMENSION]))
-
-        it("should wrap around correctly", () =>
-            expect(updateWorldTranslation([MAX_DIMENSION - 1, MAX_DIMENSION - 1], [2, 2])).toEqual([0, 0]))
-
-        it("should wrap around correctly", () =>
-            expect(updateWorldTranslation([0, 0], [-1, -1])).toEqual([MAX_DIMENSION, MAX_DIMENSION]))
     })
 
     describe("applyWorldOffset should return correct cell coordinates", () => {
