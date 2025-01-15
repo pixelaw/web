@@ -75,18 +75,6 @@ const Viewport: React.FC<ViewportProps> = ({
         isLoaded.current = true
     }, [])
 
-    useEffect(() => {
-        const lolwut = () => {
-            // console.log("lol")
-        }
-
-        EventEmitter.on("pixelUpdated", lolwut)
-
-        return () => {
-            EventEmitter.off("pixelUpdated", lolwut)
-        }
-    },[])
-
     // When worldview changes
     useEffect(() => {
         const newWorldview = getWorldViewBounds()

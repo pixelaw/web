@@ -8,8 +8,8 @@ import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateSt
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
 import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
-import type { Bounds, Coordinate } from "@/webtools/types.ts"
-import { useEffect, useMemo, useState } from "react"
+import type { Bounds } from "@/webtools/types.ts"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import styles from "./ViewportPage.module.css"
 import { PixelStore } from "@/stores/PixelStore"
 
@@ -64,14 +64,14 @@ const ViewportPage: React.FC = () => {
         PixelStore().refresh()
     }, [updateService.tileChanged, tileStore.fetchTile])
 
-    const onWorldviewChange = (newWorldview: Bounds) => {
+    const onWorldviewChange = useCallback((newWorldview: Bounds) => {
         updateService.setBounds(newWorldview)
         tileStore.prepare(newWorldview)
 
         if (zoom > 3000) {
             PixelStore().prepare(newWorldview)
         }
-    }
+    }, [updateService.setBounds, tileStore.prepare, zoom])
 
     const zoombasedAdjustment = useMemo(() => {
         if (zoom > 3000) {
@@ -93,11 +93,11 @@ const ViewportPage: React.FC = () => {
                 center={center}
                 setCenter={setCenter}
                 onWorldviewChange={onWorldviewChange}
-                onCellClick={coordinate => useViewStateStore.getState().setClickedCell(coordinate)}
-                onCellHover={coordinate => useViewStateStore.getState().setHoveredCell(coordinate)}
+                onCellClick={useViewStateStore.getState().setClickedCell}
+                onCellHover={useViewStateStore.getState().setHoveredCell}
             />
             <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
-                <SimpleColorPicker color={color} onColorSelect={color => useViewStateStore.getState().setColor(color)} />
+                <SimpleColorPicker color={color} onColorSelect={useViewStateStore.getState().setColor} />
             </div>
             <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
                 <Apps appStore={appStore} />
