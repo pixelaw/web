@@ -1,3 +1,4 @@
+import type { Pixel } from "@/generated/models.gen"
 import type React from "react"
 
 export enum Active_Page {
@@ -32,6 +33,14 @@ export type NotificationDataType = {
     y: number
     pixelType?: string | number
 }
+
+export type TPackedSQLPixel = {
+    t: string,
+    v: number
+    c: string,
+}
+
+export type TPixel = Omit<Pixel, "created_at" | "updated_at" | "timestamp">
 
 /// Manifest types
 type ImplType = {

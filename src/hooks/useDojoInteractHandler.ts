@@ -4,14 +4,13 @@ import { NAMESPACE } from "@/global/constants.js"
 import { coordinateToPosition, hexRGBtoNumber } from "@/global/utils.ts"
 import useWalletConnection from "@/hooks/useWalletConnection.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
+import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
-import type { PixelStore } from "@/webtools/types.ts"
 import type { DojoCall } from "@dojoengine/core"
 import { useCallback, useEffect, useState } from "react"
 
 export const useDojoInteractHandler = (
-    pixelStore: PixelStore,
     onParamsRequired: (params: any) => void,
     onSubmitParams: (submitParams: (params: any) => void) => void,
 ) => {
@@ -39,13 +38,16 @@ export const useDojoInteractHandler = (
         console.log(`Clicked cell ${clickedCell} with app: ${selectedApp}`)
 
         // Retrieve info of the pixel
-        const pixel = pixelStore.getPixel(clickedCell)
+        const pixel = DojoSQLPixelStore.getPixel(clickedCell) //FIXME: DOOJO PIXEL HANNDLES FROM SUZSTAND
+        console.log(pixel, dojoStuff)
 
         // If the pixel is not set, or the action is not overridden, use the default "interact"
         const action = pixel && pixel.action !== "0" ? pixel.action : "interact"
 
         const contractName = `${selectedApp}_actions`
         const position = coordinateToPosition(clickedCell)
+
+        console.log(action);
 
         const params = getParamsDef(dojoStuff.manifest, contractName, action, position, false)
         console.log("params", params)
@@ -84,5 +86,5 @@ export const useDojoInteractHandler = (
             })
         // Immediately restore state, without waiting for the txn to complete
         setClickedCell(undefined)
-    }, [setClickedCell, clickedCell, paramData])
+    }, [setClickedCell, clickedCell, paramData, color, dojoStuff, currentAccount, onParamsRequired, selectedApp])
 }

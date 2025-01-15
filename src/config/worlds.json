@@ -1,7 +1,7 @@
 {
   "local-empty": {
     "description": "Local empty world",
-    "serverUrl": "http://127.0.0.1:3001",
+    "serverUrl": "http://127.0.0.1:3000",
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
     "relayUrl": "http://127.0.0.1:8080",
@@ -22,7 +22,7 @@
   },
   "local-populated": {
     "description": "Local populated world",
-    "serverUrl": "http://127.0.0.1:3001",
+    "serverUrl": "http://127.0.0.1:3000",
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
     "relayUrl": "http://127.0.0.1:8080",

@@ -9,9 +9,9 @@ import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
 import { drawTiles } from "./drawTiles.ts"
 import { EventEmitter } from "@/global/events.ts"
+import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore.ts"
 
 interface ViewportProps {
-    pixelStore: PixelStore
     tileset: Tileset | null
     zoom: number
     center: Coordinate
@@ -28,7 +28,6 @@ const Viewport: React.FC<ViewportProps> = ({
     center,
     setCenter,
     onWorldviewChange,
-    pixelStore,
     tileset,
     onCellClick,
     onCellHover,
@@ -79,7 +78,7 @@ const Viewport: React.FC<ViewportProps> = ({
 
     useEffect(() => {
         const lolwut = () => {
-            console.log("lol")
+            // console.log("lol")
         }
 
         EventEmitter.on("pixelUpdated", lolwut)
@@ -98,51 +97,41 @@ const Viewport: React.FC<ViewportProps> = ({
         }
     }, [dimensions, worldOffset, pixelOffset])
 
-    const updatePixels = useCallback(() => {
-        if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
-            return
-        }
-
-        if (zoom > ZOOM_TILEMODE) {
-            prepareCanvas()
-
-            drawGrid(bufferContextRef.current, zoom, pixelOffset, dimensions)
-
-            // drawTiles(bufferContext, zoom, pixelOffset, dimensions, worldOffset, tileStore)
-
-            drawPixels(
-                bufferContextRef.current,
-                zoom,
-                pixelOffset,
-                dimensions,
-                worldOffset,
-                hoveredCell,
-                pixelStore.getPixel, // FIXME: this passthrough of the store through props is a bad idea- because now all these stores have to be reactive. The big question is, isn't this really something of a global state or not?
-                // TODO: use global zustand store instead
-                // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
-                // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive
-            )
-
-            drawOutline(bufferContextRef.current, dimensions)
-
-            contextRef.current?.drawImage(bufferCanvasRef.current, 0, 0)
-        }
-    }, [dimensions, hoveredCell, pixelOffset, hoveredCell, worldOffset, zoom, pixelStore.getPixel, pixelStore.cacheUpdated])
-
+    // RENDERLOOP
     useEffect(() => {
-        updatePixels();
-    }, [hoveredCell, pixelOffset, worldOffset, zoom, updatePixels])
-
-    // Render when in pixel mode
-    useEffect(() => {
-        EventEmitter.on("pixelUpdated", updatePixels);
-
-        return () => {
-            EventEmitter.off("pixelUpdated", updatePixels);
+        const render = () => {
+            if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
+                return
+            }
+            if (zoom > ZOOM_TILEMODE) {
+                prepareCanvas()
+    
+                drawGrid(bufferContextRef.current, zoom, pixelOffset, dimensions)
+    
+                // drawTiles(bufferContext, zoom, pixelOffset, dimensions, worldOffset, tileStore)
+    
+                drawPixels(
+                    bufferContextRef.current,
+                    zoom,
+                    pixelOffset,
+                    dimensions,
+                    worldOffset,
+                    hoveredCell,
+                    DojoSQLPixelStore.getPixel, // FIXME: this passthrough of the store through props is a bad idea- because now all these stores have to be reactive. The big question is, isn't this really something of a global state or not?
+                    // TODO: use global zustand store instead
+                    // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
+                    // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive
+                )
+    
+                drawOutline(bufferContextRef.current, dimensions)
+    
+                contextRef.current?.drawImage(bufferCanvasRef.current, 0, 0)
+            }
+            window.requestAnimationFrame(render)
         }
-    }, [
-        updatePixels,
-    ])
+        window.requestAnimationFrame(render)
+
+    },[dimensions, hoveredCell, pixelOffset, worldOffset, zoom])
 
     // Render when in Tile mode
     useEffect(() => {
@@ -355,6 +344,7 @@ const Viewport: React.FC<ViewportProps> = ({
             style={{ width: "100%", height: "100%" }}
         >
             <canvas
+                id="pixelaw-canvas"
                 width={dimensions[0]}
                 height={dimensions[1]}
                 ref={canvasRef}
@@ -367,5 +357,17 @@ const Viewport: React.FC<ViewportProps> = ({
     )
     //</editor-fold>
 }
+
+// export const Canvas = () => {
+//     const r3f = useRef<HTMLCanvasElement | null>(null)
+
+//     useEffect(() => {
+//         document.getElementById("pixelaw-canvas")?.
+//         new Three(r3f.canvas);
+
+//     })
+
+//     return <canvas id="pixelaw-canvas" width={100} height={100}/>
+// }
 
 export default Viewport

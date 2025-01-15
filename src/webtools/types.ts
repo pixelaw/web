@@ -1,5 +1,3 @@
-import type { Manifest } from "@dojoengine/core"
-
 export type Pixel = {
     action: string
     color: number | string
@@ -38,6 +36,11 @@ export interface AppStore {
     getAll: () => App[]
 }
 
+
+export type TPixelStore = PixelStore & {
+    isSubscribed: () => boolean;
+};
+
 export interface PixelStore {
     refresh: () => void
     prepare: (bounds: Bounds) => void
@@ -45,7 +48,7 @@ export interface PixelStore {
     setPixelColor: (coord: Coordinate, color: number) => void
     setPixel: (key: string, pixel: Pixel) => void
     setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
-    setCacheUpdated: (value: number) => void
+    // setCacheUpdated: (value: number) => void
     cacheUpdated: number
 }
 

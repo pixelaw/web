@@ -4,8 +4,6 @@ import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
-import { useDojoSdkPixelStore } from "@/stores/DojoSdkPixelStore.ts"
-import { useDojoSqlPixelStore } from "@/stores/DojoSqlPixelStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import Viewport from "@/webtools/components/Viewport/ViewPort.tsx"
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts"
@@ -13,6 +11,7 @@ import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
 import type { Bounds, Coordinate } from "@/webtools/types.ts"
 import { useEffect, useMemo, useState } from "react"
 import styles from "./ViewportPage.module.css"
+import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore"
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
@@ -31,8 +30,12 @@ const ViewportPage: React.FC = () => {
 
     const updateService = useUpdateService(worldConfig.serverUrl!)
     const appStore = useDojoAppStore()
-    // const pixelStore = useDojoSdkPixelStore(dojoStuff?.sdk!)
-    const pixelStore = useDojoSqlPixelStore(dojoStuff?.sdk!)
+    
+    useEffect(() => {
+        console.log(dojoStuff)
+        DojoSQLPixelStore.setup(dojoStuff?.sdk!);
+    },[dojoStuff]);
+
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell } = useViewStateStore()
 
@@ -48,7 +51,7 @@ const ViewportPage: React.FC = () => {
         setParamDialogVisible(false)
     }
 
-    useDojoInteractHandler(pixelStore, handleParamsRequired, (submit) => {
+    useDojoInteractHandler(handleParamsRequired, (submit) => {
         setSubmitParamsCallback(() => submit)
     })
 
@@ -63,15 +66,15 @@ const ViewportPage: React.FC = () => {
     useEffect(() => {
         if (!updateService.tileChanged) return
         tileStore.fetchTile(updateService.tileChanged?.tileName)
-        pixelStore.refresh()
-    }, [updateService.tileChanged, pixelStore.refresh, tileStore.fetchTile])
+        DojoSQLPixelStore.refresh()
+    }, [updateService.tileChanged, tileStore.fetchTile])
 
     const onWorldviewChange = (newWorldview: Bounds) => {
         updateService.setBounds(newWorldview)
         tileStore.prepare(newWorldview)
 
         if (zoom > 3000) {
-            pixelStore.prepare(newWorldview)
+            DojoSQLPixelStore.prepare(newWorldview)
         }
     }
 
@@ -103,7 +106,6 @@ const ViewportPage: React.FC = () => {
         <>
             <Viewport
                 tileset={tileStore.tileset}
-                pixelStore={pixelStore}
                 zoom={zoom}
                 setZoom={setZoom}
                 center={center}

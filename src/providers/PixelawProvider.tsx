@@ -16,7 +16,6 @@ export type IPixelawContext = {
 export const PixelawContext = createContext<IPixelawContext | undefined>(undefined)
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
-    console.log("PixelawProvider")
     const { setWallet, setWorld, worldConfig, world } = useSettingStore()
 
     const { dojoStuff, status } = useDojo(worldConfig)
@@ -40,6 +39,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     })
 
     useEffect(() => {
+        console.log("PixelawProvider")
         if (dojoStuff && (status !== "ready" || contextValues.clientState !== "ready")) {
             console.log(status)
             setContextValues((prev) => ({

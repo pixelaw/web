@@ -6,10 +6,11 @@ import { useEffect, useRef, useState } from "react"
 import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
 import type { Pixel, SchemaType } from "@/generated/models.gen.ts"
 import { QueryBuilder, type SDK } from "@dojoengine/sdk"
+import { EventEmitter } from "@/global/events"
 
 type State = { [key: string]: Pixel | undefined }
 
-function createSqlQuery(bounds: Bounds) {
+export function createSqlQuery(bounds: Bounds) {
     const [[left, top], [right, bottom]] = bounds
 
     const xWraps = right - left < 0
@@ -58,7 +59,7 @@ function createSqlQuery(bounds: Bounds) {
 }
 
 export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
-    const [state, setState] = useState<State>({})
+    const state = useRef<State>({}).current;
     const [queryBounds, setQueryBounds] = useState<Bounds | null>(null)
     const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now())
     const isSubscribed = useRef(false)
@@ -78,15 +79,8 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
                         console.log("callback", response.data[0])
                         const p = response.data[0].models.pixelaw.Pixel
 
-                        const pixel: Pixel = {
-                            ...p,
-                        }
-
-                        setState(
-                            produce((draftState) => {
-                                draftState[`${p?.x}_${p?.y}`] = pixel
-                            }),
-                        )
+                        const key = `${p?.x}_${p?.y}`
+                        setPixel(key, p as Pixel)
                     }
 
                     setCacheUpdated(Date.now())
@@ -114,55 +108,7 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
         }
     }, [queryBounds])
 
-    // function fetchData(bounds: Bounds): void {
-    //     let [[left, top], [right, bottom]] = bounds
-    //
-    //     if (left > MAX_VIEW_SIZE && left > right) right = MAX_DIMENSION
-    //     if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_DIMENSION
-    //
-    //     const q = `SELECT color as 'c', substr(text,  -4) as 't'
-    //                 FROM "pixelaw-Pixel"
-    //                 WHERE( x > 0
-    //                 AND x < 50
-    //                 AND y > 0
-    //                 AND y < 50)
-    //                 OR(x > 32750 and x < 32768 )
-    //                 ;`
-    //
-    //     const pixelQuery = new QueryBuilder<SchemaType>()
-    //         .namespace("pixelaw", (n) =>
-    //             n.entity("Pixel", (e) => {
-    //                 e.gte("x", left).gte("y", top).lte("x", right).lte("y", bottom)
-    //             }),
-    //         )
-    //         .build()
-    //
-    //     sdk.getEntities({
-    //         query: pixelQuery,
-    //         callback: (r) => {
-    //             r.data?.map((entity) => {
-    //                 // console.log(entity.models.pixelaw.Pixel)
-    //                 const p = entity.models.pixelaw.Pixel
-    //
-    //                 const pixel: Pixel = {
-    //                     ...p,
-    //                     // text: shortString.decodeShortString(p.text),
-    //                     // action: shortString.decodeShortString(p.action),
-    //                     // timestamp: Number.parseInt(p.timestamp as string, 16),
-    //                 }
-    //
-    //                 setState(
-    //                     produce((draftState) => {
-    //                         draftState[`${p?.x}_${p?.y}`] = pixel
-    //                     }),
-    //                 )
-    //             })
-    //             // console.log("updated")
-    //             setCacheUpdated(Date.now())
-    //         },
-    //     })
-    // }
-
+    
     const refresh = (): void => {
         if (!queryBounds) return
 
@@ -206,8 +152,13 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
 
     const getPixel = (coord: Coordinate): Pixel | undefined => {
         const key = `${coord[0]}_${coord[1]}`
-
         return state[key]
+    }
+
+    const setPixel = (key: string, pixel: Pixel): void => {
+        // TODO: check for invalid keyss
+        state[key] = pixel;
+        EventEmitter.emit("pixelUpdated", { pixel });
     }
 
     const setPixelColor = (coord: Coordinate, color: number): void => {
@@ -223,7 +174,7 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
                 timestamp: Date.now(),
                 x: coord[0],
                 y: coord[1],
-            }
+            } as Pixel
         } else {
             pixel = {
                 ...pixel,
@@ -231,29 +182,13 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
             }
         }
 
-        setState(
-            produce((draft) => {
-                draft[key] = pixel
-            }),
-        )
-    }
-
-    const setPixel = (key: string, pixel: Pixel): void => {
-        setState(
-            produce((draft) => {
-                draft[key] = pixel
-            }),
-        )
+        setPixel(key, pixel)
     }
 
     const setPixels = (pixels: { key: string; pixel: Pixel }[]): void => {
-        setState(
-            produce((draft) => {
-                for (const { key, pixel } of pixels) {
-                    draft[key] = pixel
-                }
-            }),
-        )
+        for (const { key, pixel } of pixels) {
+            setPixel(key, pixel)
+        }
     }
 
     return { getPixel, setPixel, setPixelColor, setPixels, prepare, refresh, setCacheUpdated, cacheUpdated }
