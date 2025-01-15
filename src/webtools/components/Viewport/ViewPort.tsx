@@ -1,7 +1,7 @@
 import type React from "react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import useDimensions from "../../hooks/useDimensions.ts"
-import type { Bounds, Coordinate, PixelStore, Tileset } from "../../types.ts"
+import type { Bounds, Coordinate, Tileset } from "../../types.ts"
 import { applyWorldOffset, areBoundsEqual, cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts"
 import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants.ts"
 import { drawGrid } from "./drawGrid.ts"
@@ -9,7 +9,6 @@ import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
 import { drawTiles } from "./drawTiles.ts"
 import { EventEmitter } from "@/global/events.ts"
-import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore.ts"
 
 interface ViewportProps {
     tileset: Tileset | null
@@ -117,7 +116,7 @@ const Viewport: React.FC<ViewportProps> = ({
                     dimensions,
                     worldOffset,
                     hoveredCell,
-                    DojoSQLPixelStore.getPixel, // FIXME: this passthrough of the store through props is a bad idea- because now all these stores have to be reactive. The big question is, isn't this really something of a global state or not?
+                    // DojoSQLPixelStore.getPixel, // FIXME: this passthrough of the store through props is a bad idea- because now all these stores have to be reactive. The big question is, isn't this really something of a global state or not?
                     // TODO: use global zustand store instead
                     // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
                     // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive

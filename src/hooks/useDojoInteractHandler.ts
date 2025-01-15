@@ -4,8 +4,8 @@ import { NAMESPACE } from "@/global/constants.js"
 import { coordinateToPosition, hexRGBtoNumber } from "@/global/utils.ts"
 import useWalletConnection from "@/hooks/useWalletConnection.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
-import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
+import { PixelStore } from "@/stores/PixelStore"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
 import type { DojoCall } from "@dojoengine/core"
 import { useCallback, useEffect, useState } from "react"
@@ -38,7 +38,7 @@ export const useDojoInteractHandler = (
         console.log(`Clicked cell ${clickedCell} with app: ${selectedApp}`)
 
         // Retrieve info of the pixel
-        const pixel = DojoSQLPixelStore.getPixel(clickedCell) //FIXME: DOOJO PIXEL HANNDLES FROM SUZSTAND
+        const pixel = PixelStore().getPixel(clickedCell) //FIXME: DOOJO PIXEL HANNDLES FROM SUZSTAND
         console.log(pixel, dojoStuff)
 
         // If the pixel is not set, or the action is not overridden, use the default "interact"

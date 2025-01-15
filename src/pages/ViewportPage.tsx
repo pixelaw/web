@@ -11,7 +11,7 @@ import { useUpdateService } from "@/webtools/hooks/UpdateService.ts"
 import type { Bounds, Coordinate } from "@/webtools/types.ts"
 import { useEffect, useMemo, useState } from "react"
 import styles from "./ViewportPage.module.css"
-import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore"
+import { PixelStore } from "@/stores/PixelStore"
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
@@ -24,17 +24,12 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    const { clientError, dojoStuff, worldConfig } = usePixelawProvider()
+    const { clientError, worldConfig } = usePixelawProvider()
     if (clientError) return
     if (!worldConfig) return
 
     const updateService = useUpdateService(worldConfig.serverUrl!)
     const appStore = useDojoAppStore()
-    
-    useEffect(() => {
-        console.log(dojoStuff)
-        DojoSQLPixelStore.setup(dojoStuff?.sdk!);
-    },[dojoStuff]);
 
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
     const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell } = useViewStateStore()
@@ -66,7 +61,7 @@ const ViewportPage: React.FC = () => {
     useEffect(() => {
         if (!updateService.tileChanged) return
         tileStore.fetchTile(updateService.tileChanged?.tileName)
-        DojoSQLPixelStore.refresh()
+        PixelStore().refresh()
     }, [updateService.tileChanged, tileStore.fetchTile])
 
     const onWorldviewChange = (newWorldview: Bounds) => {
@@ -74,7 +69,7 @@ const ViewportPage: React.FC = () => {
         tileStore.prepare(newWorldview)
 
         if (zoom > 3000) {
-            DojoSQLPixelStore.prepare(newWorldview)
+            PixelStore().prepare(newWorldview)
         }
     }
 

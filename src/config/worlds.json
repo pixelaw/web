@@ -5,7 +5,7 @@
     "rpcUrl": "http://127.0.0.1:5050",
     "toriiUrl": "http://127.0.0.1:8080",
     "relayUrl": "http://127.0.0.1:8080",
-    "world": "0x2bf4d3aa0dced89d37d8c3b4ff6a05895c0af32ff3baf9b02abf8504e53eaad",
+    "world": "0x1869796b1c25976fc5f4b08ca84995945aa68a8850d3739c96e4c9994456ed7",
     "feeTokenAddress": "0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
     "wallets": {
       "burner": {

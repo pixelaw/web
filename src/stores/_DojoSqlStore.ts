@@ -6,7 +6,7 @@ import { createSqlQuery } from "./DojoSqlPixelStore";
 import type { SDK, SchemaType } from "@dojoengine/sdk";
 import type { TPackedSQLPixel } from "@/global/types";
 
-class _DojoSQLPixelStore implements PixelStore {
+export class DojoSQLPixelStore implements PixelStore {
     uid = Math.random()* 100;
     events = EventEmitter; //FIXME: use instance instead of global
     state = new Map<string, Pixel>();
@@ -16,12 +16,11 @@ class _DojoSQLPixelStore implements PixelStore {
     private subscription: Awaited<ReturnType<SDK<SchemaType>["subscribeEntityQuery"]>> | null = null;
     awaitingSubscription = false;
 
-    setup = (sdk: SDK<SchemaType>) => {
+    constructor(sdk: SDK<SchemaType>) {
         if (this.awaitingSubscription) return;
 
         if (this.isSubscribed()) {
             return;
-            this.unsubscribe();
         }
 
         const subscribe = async () => {
@@ -140,7 +139,3 @@ class _DojoSQLPixelStore implements PixelStore {
         }
     };
 }
-
-const DojoSQLPixelStore = new _DojoSQLPixelStore();
-
-export { DojoSQLPixelStore };

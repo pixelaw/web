@@ -1,6 +1,7 @@
+import { DojoSQLPixelStore } from "@/stores/_DojoSqlStore"
 import { type DojoStuff, type Status, useDojo } from "@/stores/DojoStore.js"
+import { PixelStore } from "@/stores/PixelStore"
 import useSettingStore, { type WorldConfig } from "@/stores/SettingStore.ts"
-
 import { type ReactNode, createContext, useContext, useEffect, useState } from "react"
 
 export type IPixelawContext = {
@@ -10,14 +11,15 @@ export type IPixelawContext = {
     clientState: Status
     clientError: Error | string | null
     dojoStuff: DojoStuff | undefined
+    pixelStore: typeof PixelStore
     setWorld: (id: string) => void
 }
+
 
 export const PixelawContext = createContext<IPixelawContext | undefined>(undefined)
 
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     const { setWallet, setWorld, worldConfig, world } = useSettingStore()
-
     const { dojoStuff, status } = useDojo(worldConfig)
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
@@ -27,6 +29,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         clientState: "loading",
         clientError: null,
         dojoStuff: undefined,
+        pixelStore: PixelStore,
         setWorld: (id: string) => {
             setWallet("")
             setWorld(id)
@@ -48,6 +51,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                 dojoStuff,
                 world: world,
             }))
+            PixelStore().setStore(new DojoSQLPixelStore(dojoStuff.sdk!))
         }
     }, [dojoStuff, status, contextValues.clientState, world])
 
