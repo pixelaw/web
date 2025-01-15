@@ -17,8 +17,8 @@ const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
 
     const [paramDialogVisible, setParamDialogVisible] = useState(false)
-    const [paramDialogParams, setParamDialogParams] = useState<any>(null)
-    const [submitParamsCallback, setSubmitParamsCallback] = useState<(params: any) => void>(() => () => {})
+    const [paramDialogParams, setParamDialogParams] = useState<unknown>(null)
+    const [submitParamsCallback, setSubmitParamsCallback] = useState<(params: unknown) => void>(() => () => {})
 
     //</editor-fold>
 
@@ -32,16 +32,16 @@ const ViewportPage: React.FC = () => {
     const appStore = useDojoAppStore()
 
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`)
-    const { color, setColor, center, setCenter, zoom, setZoom, setHoveredCell } = useViewStateStore()
+    const { color, center, setCenter, zoom } = useViewStateStore()
 
     useSyncedViewStateStore()
 
-    const handleParamsRequired = (params: any) => {
+    const handleParamsRequired = (params: unknown) => {
         setParamDialogParams(params)
         setParamDialogVisible(true)
     }
 
-    const handleParamSubmit = (submittedParams: any) => {
+    const handleParamSubmit = (submittedParams: unknown) => {
         submitParamsCallback(submittedParams)
         setParamDialogVisible(false)
     }
@@ -73,19 +73,6 @@ const ViewportPage: React.FC = () => {
         }
     }
 
-    const onCellHover = (coordinate: Coordinate | undefined) => {
-        setHoveredCell(coordinate)
-    }
-
-    const onCellClick = (coordinate: Coordinate) => {
-        useViewStateStore.getState().setClickedCell(coordinate)
-    }
-
-    const onColorSelect = (color: string) => {
-        const result = color.replace("#", "")
-        setColor(result)
-    }
-
     const zoombasedAdjustment = useMemo(() => {
         if (zoom > 3000) {
             return "1rem"
@@ -102,15 +89,15 @@ const ViewportPage: React.FC = () => {
             <Viewport
                 tileset={tileStore.tileset}
                 zoom={zoom}
-                setZoom={setZoom}
+                setZoom={useViewStateStore.getState().setZoom}
                 center={center}
                 setCenter={setCenter}
                 onWorldviewChange={onWorldviewChange}
-                onCellClick={onCellClick}
-                onCellHover={onCellHover}
+                onCellClick={coordinate => useViewStateStore.getState().setClickedCell(coordinate)}
+                onCellHover={coordinate => useViewStateStore.getState().setHoveredCell(coordinate)}
             />
             <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
-                <SimpleColorPicker color={color} onColorSelect={onColorSelect} />
+                <SimpleColorPicker color={color} onColorSelect={color => useViewStateStore.getState().setColor(color)} />
             </div>
             <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
                 <Apps appStore={appStore} />
