@@ -36,20 +36,14 @@ export interface AppStore {
     getAll: () => App[]
 }
 
-
-export type TPixelStore = PixelStore & {
-    isSubscribed: () => boolean;
-};
-
-export interface PixelStore {
+export interface PixelStore { //TODO: rename to IPixelStore
+    // events: //@dev potentially use typed events?
     refresh: () => void
     prepare: (bounds: Bounds) => void
     getPixel: (coordinate: Coordinate) => Pixel | undefined
     setPixelColor: (coord: Coordinate, color: number) => void
     setPixel: (key: string, pixel: Pixel) => void
     setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
-    // setCacheUpdated: (value: number) => void
-    cacheUpdated: number
 }
 
 export interface TileStore {

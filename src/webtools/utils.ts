@@ -412,3 +412,7 @@ if (import.meta.vitest) {
         })
     })
 }
+
+export function miniUID() {
+    return (`000${(Math.random() * 46656 | 0).toString(36)}`).slice(-3) + (`000${(Math.random() * 46656 | 0).toString(36)}`).slice(-3);
+}

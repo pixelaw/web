@@ -1,0 +1,5 @@
+-   PixelStore type -> needs to become IPixelStore (i for interface is nicer)
+-   generate uid funciton in utils
+-   Zustand based PixelStore() so we get out of reactive rendering
+-   BasePixelStore class implementing IPixelStore
+-   DojoSQLPixelStore class implementing BasePixelStore for Dojo

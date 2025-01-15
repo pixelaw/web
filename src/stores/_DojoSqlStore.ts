@@ -1,22 +1,17 @@
-import { makeString, type Bounds, type Coordinate, type PixelStore, type Pixel } from "@/webtools/types"; // FIXME: Clean up pixel type
-import { EventEmitter } from "@/global/events";
-import { getQueryBounds, SUBSCRIPTION_QUERY } from "@/dojo/querybuilder";
-import { areBoundsEqual } from "@/webtools/utils";
+import type { Pixel } from "@/webtools/types"; // FIXME: Clean up pixel type
+import { SUBSCRIPTION_QUERY } from "@/dojo/querybuilder";
 import { createSqlQuery } from "./DojoSqlPixelStore";
 import type { SDK, SchemaType } from "@dojoengine/sdk";
 import type { TPackedSQLPixel } from "@/global/types";
+import { BasePixelStore } from "./BasePixelStore";
 
-export class DojoSQLPixelStore implements PixelStore {
-    uid = Math.random()* 100;
-    events = EventEmitter; //FIXME: use instance instead of global
-    state = new Map<string, Pixel>();
-    queryBounds: Bounds | null = null;
-    cacheUpdated = -1;
+export class DojoSQLPixelStore extends BasePixelStore {
     isSubscribed = () => this.subscription !== null;
     private subscription: Awaited<ReturnType<SDK<SchemaType>["subscribeEntityQuery"]>> | null = null;
     awaitingSubscription = false;
 
     constructor(sdk: SDK<SchemaType>) {
+        super();
         if (this.awaitingSubscription) return;
 
         if (this.isSubscribed()) {
@@ -38,7 +33,6 @@ export class DojoSQLPixelStore implements PixelStore {
                         this.setPixel(key, p as Pixel);
                     }
 
-                    this.cacheUpdated = Date.now();
                     console.log(`[${this.constructor.name}] subscribed`, this);
                     this.awaitingSubscription = false;
                 },
@@ -54,11 +48,6 @@ export class DojoSQLPixelStore implements PixelStore {
             this.subscription.cancel();
             this.subscription = null;
         }
-    };
-
-    getPixel = (coord: Coordinate): Pixel | undefined => {
-        const key = `${coord[0]}_${coord[1]}`;
-        return this.state.get(key);
     };
 
     refresh = (): void => {
@@ -93,49 +82,4 @@ export class DojoSQLPixelStore implements PixelStore {
             });
     };
 
-    prepare = (newBounds: Bounds): void => {
-        const { queryBounds } = this;
-        const newQueryBounds = getQueryBounds(newBounds);
-
-        if (!queryBounds || !areBoundsEqual(queryBounds, newQueryBounds)) {
-            // console.log("prep/setB", newQueryBounds)
-            this.queryBounds = newQueryBounds;
-        }
-    };
-
-    setPixel = (key: string, pixel: Pixel): void => {
-        // TODO: check for invalid keyss
-        this.state.set(key, pixel);
-        EventEmitter.emit("pixelUpdated", { pixel: pixel as Pixel });
-    };
-
-    setPixelColor = (coord: Coordinate, color: number): void => {
-        const key = makeString(coord);
-        let pixel = this.state.get(key);
-
-        if (!pixel) {
-            pixel = {
-                action: "",
-                color: color,
-                owner: "",
-                text: "",
-                timestamp: Date.now(),
-                x: coord[0],
-                y: coord[1],
-            } as Pixel;
-        } else {
-            pixel = {
-                ...pixel,
-                color,
-            };
-        }
-
-        this.setPixel(key, pixel);
-    };
-
-    setPixels = (pixels: { key: string; pixel: Pixel }[]): void => {
-        for (const { key, pixel } of pixels) {
-            this.setPixel(key, pixel);
-        }
-    };
 }
