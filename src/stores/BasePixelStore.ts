@@ -1,4 +1,4 @@
-import { makeString, type Bounds, type Coordinate, type PixelStore as IPixelStore, type Pixel } from "@/webtools/types"; // FIXME: Clean up pixel type
+import { makeString, type Bounds, type Coordinate, type PixelStore as IPixelStore, type Pixel, type TPixelStoreStatus } from "@/webtools/types"; // FIXME: Clean up pixel type
 import { EventEmitter } from "@/global/events";
 import { getQueryBounds } from "@/dojo/querybuilder";
 import { areBoundsEqual } from "@/webtools/utils";
@@ -6,6 +6,7 @@ import { areBoundsEqual } from "@/webtools/utils";
 // @dev Backend agnostic base class
 
 export class BasePixelStore implements IPixelStore {
+    status = () => "error" as TPixelStoreStatus;
     events = EventEmitter;
     state = new Map<string, Pixel>();
     queryBounds: Bounds | null = null;

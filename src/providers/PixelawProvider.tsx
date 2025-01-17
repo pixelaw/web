@@ -10,7 +10,7 @@ export type IPixelawContext = {
     walletType: "" | "argent" | "braavos" | "burner" | "controller" | undefined
     clientState: Status
     clientError: Error | string | null
-    dojoStuff: DojoStuff | undefined
+    dojoStuff: DojoStuff | undefined // FIXME: this is still hooked on it being dojo
     pixelStore: typeof PixelStore
     setWorld: (id: string) => void
 }
@@ -28,7 +28,7 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
         walletType: "",
         clientState: "loading",
         clientError: null,
-        dojoStuff: undefined,
+        dojoStuff: undefined, // FIXME: this is still hooked on it being dojo
         pixelStore: PixelStore,
         setWorld: (id: string) => {
             setWallet("")
@@ -42,16 +42,25 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     })
 
     useEffect(() => {
-        console.log("PixelawProvider")
+        console.count("PixelawProvider")
         if (dojoStuff && (status !== "ready" || contextValues.clientState !== "ready")) {
-            console.log(status)
+            console.count(`PixelawProvider ${status}`)
             setContextValues((prev) => ({
                 ...prev,
                 clientState: status,
-                dojoStuff,
+                dojoStuff, // FIXME: this is still hooked on it being dojo
                 world: world,
             }))
-            PixelStore().setStore(new DojoSQLPixelStore(dojoStuff.sdk!))
+            
+        }
+        // FIXME: we need to determine whether we have the right store for the 'dojo' SDK or another store, right now we don't know why we're setting something up
+        if (dojoStuff && (status === "ready" || contextValues.clientState === "ready") && PixelStore()?.status?.() !== "loading") {
+            const setupStore = async () => {
+                console.log("asdf")
+                await PixelStore().unload?.();
+                PixelStore().setStore(new DojoSQLPixelStore(dojoStuff.sdk!))
+            }
+            setupStore();
         }
     }, [dojoStuff, status, contextValues.clientState, world])
 

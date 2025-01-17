@@ -34,6 +34,9 @@ export const useDojoInteractHandler = (
     useEffect(() => {
         if (!clickedCell || !selectedApp) return
         if (!dojoStuff) return
+        if (!dojoStuff.manifest) {
+            throw new Error("Manifest is not loaded")
+        }
 
         console.log(`Clicked cell ${clickedCell} with app: ${selectedApp}`)
 
@@ -47,7 +50,7 @@ export const useDojoInteractHandler = (
         const contractName = `${selectedApp}_actions`
         const position = coordinateToPosition(clickedCell)
 
-        console.log(action);
+        console.log(action, position);
 
         const params = getParamsDef(dojoStuff.manifest, contractName, action, position, false)
         console.log("params", params)
@@ -57,7 +60,7 @@ export const useDojoInteractHandler = (
             return // Stop further execution until params are handled
         }
 
-        console.log("pd", paramData)
+        console.log("pd", paramData, color, hexRGBtoNumber("000000"),)
         // Generate the DojoCall
         const dojoCall: DojoCall = generateDojoCall(
             params,
@@ -67,7 +70,7 @@ export const useDojoInteractHandler = (
             coordinateToPosition(clickedCell),
             hexRGBtoNumber(color),
         )
-
+        console.log(dojoCall)
         // Execute the call
         dojoStuff.provider
             .execute(currentAccount!, dojoCall, NAMESPACE, {})

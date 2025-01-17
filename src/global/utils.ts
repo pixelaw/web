@@ -78,7 +78,7 @@ export const coordinateToPosition = (coord: Coordinate): Position => {
 }
 
 export const hexRGBtoNumber = (color: string) => {
-    return Number.parseInt(`0x${color}FF`, 16)
+    return Number.parseInt(`0x${color.replace("#", "")}FF`, 16)
 }
 
 // Converts the numeric RGBA to a normal hex color

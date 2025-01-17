@@ -1,4 +1,4 @@
-import type { Pixel } from "@/webtools/types"; // FIXME: Clean up pixel type
+import type { Pixel, TPixelStoreStatus } from "@/webtools/types"; // FIXME: Clean up pixel type
 import { SUBSCRIPTION_QUERY } from "@/dojo/querybuilder";
 import { createSqlQuery } from "./DojoSqlPixelStore";
 import type { SDK, SchemaType } from "@dojoengine/sdk";
@@ -6,23 +6,31 @@ import type { TPackedSQLPixel } from "@/global/types";
 import { BasePixelStore } from "./BasePixelStore";
 
 export class DojoSQLPixelStore extends BasePixelStore {
+    status = () => {return this._status};
+    private _status: TPixelStoreStatus = "loading";
     isSubscribed = () => this.subscription !== null;
     private subscription: Awaited<ReturnType<SDK<SchemaType>["subscribeEntityQuery"]>> | null = null;
     awaitingSubscription = false;
 
     constructor(sdk: SDK<SchemaType>) {
         super();
+        console.log("asdf")
         if (this.awaitingSubscription) return;
-
+        console.log("asdf33", this.subscription)
         if (this.isSubscribed()) {
             return;
         }
-
+        console.log("asdf555")
+        
         const subscribe = async () => {
+            if (this.awaitingSubscription) return;
+            await this.unload();
+            console.log("asdf6766")
             this.awaitingSubscription = true;
             this.subscription = await sdk.subscribeEntityQuery({
                 query: SUBSCRIPTION_QUERY,
                 callback: (response) => {
+                    console.log("callback", response);
                     if (response.error) {
                         console.error("Error setting up entity sync:", response.error);
                     } else if (response.data && response.data[0].entityId !== "0x0") {
@@ -37,15 +45,18 @@ export class DojoSQLPixelStore extends BasePixelStore {
                     this.awaitingSubscription = false;
                 },
             });
+            console.log(this.subscription)
+            this._status = "ready";
         };
 
         subscribe();
     };
 
-    unsubscribe = () => {
+    async unload() { 
+        console.log("unload")
         if (this.subscription) {
             console.log(`[${this.constructor.name}] unsubscribed`);
-            this.subscription.cancel();
+            await this.subscription.cancel();
             this.subscription = null;
         }
     };
