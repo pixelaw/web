@@ -9,6 +9,7 @@ import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
 import { drawTiles } from "./drawTiles.ts"
 import { EventEmitter } from "@/global/events.ts"
+import { PixelStore } from "@/stores/PixelStore.ts"
 
 interface ViewportProps {
     tileset: Tileset | null
@@ -53,6 +54,7 @@ const Viewport: React.FC<ViewportProps> = ({
         [0, 0],
         [0, 0],
     ])
+    const lastUpdate = useRef<number>(Date.now())
     //</editor-fold>
 
     //<editor-fold desc="Rendering">
@@ -84,19 +86,28 @@ const Viewport: React.FC<ViewportProps> = ({
         }
     }, [dimensions, worldOffset, pixelOffset])
 
+    useEffect(() => {
+        prepareCanvas
+    },[]);
+
     // RENDERLOOP
     useEffect(() => {
         const render = () => {
-            if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
+            window.requestAnimationFrame(render)
+            if (
+                !bufferContextRef.current ||
+                !bufferContextRef.current ||
+                !bufferCanvasRef.current ||
+                !contextRef.current
+            ) {
                 return
             }
-            if (zoom > ZOOM_TILEMODE) {
                 prepareCanvas()
-    
+
                 drawGrid(bufferContextRef.current, zoom, pixelOffset, dimensions)
-    
+
                 // drawTiles(bufferContext, zoom, pixelOffset, dimensions, worldOffset, tileStore)
-    
+
                 drawPixels(
                     bufferContextRef.current,
                     zoom,
@@ -109,32 +120,13 @@ const Viewport: React.FC<ViewportProps> = ({
                     // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
                     // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive
                 )
-    
+                drawTiles(bufferContextRef.current, zoom, pixelOffset, dimensions, worldOffset, tileset)
+
                 drawOutline(bufferContextRef.current, dimensions)
-    
-                contextRef.current?.drawImage(bufferCanvasRef.current, 0, 0)
-            }
-            window.requestAnimationFrame(render)
-        }
-        window.requestAnimationFrame(render)
-
-    },[dimensions, hoveredCell, pixelOffset, worldOffset, zoom])
-
-    // Render when in Tile mode
-    useEffect(() => {
-        if (!bufferContextRef.current || !bufferContextRef.current || !bufferCanvasRef.current || !contextRef.current) {
-            return
-        }
-        if (zoom <= ZOOM_TILEMODE && zoom > ZOOM_MIN) {
-            prepareCanvas()
-
-            drawTiles(bufferContextRef.current, zoom, pixelOffset, dimensions, worldOffset, tileset)
-            drawOutline(bufferContextRef.current, dimensions)
-
             contextRef.current.drawImage(bufferCanvasRef.current, 0, 0)
         }
-    }, [dimensions, zoom, pixelOffset, tileset, worldOffset])
-    //</editor-fold>
+        render()
+    }, [dimensions, hoveredCell, pixelOffset, worldOffset, zoom, tileset])
 
     //<editor-fold desc="Helpers">
 
@@ -201,7 +193,7 @@ const Viewport: React.FC<ViewportProps> = ({
 
         const handleWheel = (e: WheelEvent) => {
             e.preventDefault()
-
+            PixelStore().updateCache()
             const rect = canvas.getBoundingClientRect()
             let newZoom = zoom
 
@@ -262,6 +254,7 @@ const Viewport: React.FC<ViewportProps> = ({
             drag(lastDragPoint, mouse)
 
             setLastDragPoint(mouse)
+            PixelStore().updateCache()
         } else {
             if (zoom > ZOOM_TILEMODE) {
                 const rect = e.currentTarget.getBoundingClientRect()
@@ -275,6 +268,7 @@ const Viewport: React.FC<ViewportProps> = ({
                     setHoveredCell(viewportCell)
                     onCellHover(hoveredWorldCell)
                 }
+                PixelStore().updateCache()
             }
         }
     }
@@ -326,10 +320,7 @@ const Viewport: React.FC<ViewportProps> = ({
     //<editor-fold desc="Output">
 
     return (
-        <div
-            ref={wrapperRef}
-            style={{ width: "100%", height: "100%" }}
-        >
+        <div ref={wrapperRef} style={{ width: "100%", height: "100%" }}>
             <canvas
                 id="pixelaw-canvas"
                 width={dimensions[0]}
