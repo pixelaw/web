@@ -24,8 +24,6 @@ export class DojoSQLPixelStore extends BasePixelStore {
         
         const subscribe = async () => {
             if (this.awaitingSubscription) return;
-            await this.unload();
-            console.log("asdf6766")
             this.awaitingSubscription = true;
             this.subscription = await sdk.subscribeEntityQuery({
                 query: SUBSCRIPTION_QUERY,
@@ -43,13 +41,14 @@ export class DojoSQLPixelStore extends BasePixelStore {
 
                     console.log(`[${this.constructor.name}] subscribed`, this);
                     this.awaitingSubscription = false;
+                    this.updateCache();
                 },
             });
             console.log(this.subscription)
-            this._status = "ready";
         };
 
         subscribe();
+        this.refresh();
     };
 
     async unload() { 
@@ -61,19 +60,23 @@ export class DojoSQLPixelStore extends BasePixelStore {
         }
     };
 
-    refresh = (): void => {
+    refresh = async (): void => {
+        console.log("refresh")
         const { queryBounds } = this;
         if (!queryBounds) return;
 
         const query = encodeURIComponent(createSqlQuery(queryBounds));
+        console.log(`http://localhost:8080/sql?query=${query}`)
         fetch(`http://localhost:8080/sql?query=${query}`, {}) // FIXME: hardcoded
             .then((response) => {
+                console.log("refresh", response, "call")
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 response
                     .json()
                     .then((json) => {
+                        console.log("pixelitems")
                         const pixelItems = json.map((p: TPackedSQLPixel) => {
                             const x = p.v >> 16;
                             const y = p.v & 0xffff;

@@ -108,6 +108,7 @@ const Viewport: React.FC<ViewportProps> = ({
 
                 // drawTiles(bufferContext, zoom, pixelOffset, dimensions, worldOffset, tileStore)
 
+                drawTiles(bufferContextRef.current, zoom, pixelOffset, dimensions, worldOffset, tileset)
                 drawPixels(
                     bufferContextRef.current,
                     zoom,
@@ -120,7 +121,6 @@ const Viewport: React.FC<ViewportProps> = ({
                     // TODO: lots of reactive React stuff doesn't work at 120 fps, so you need to reverse some reactive paradigms (just bad model for this use)
                     // a good example this is already seeping in, is that we're already using 'refs' instead of 'state' reactivity, because refs are not reactive
                 )
-                drawTiles(bufferContextRef.current, zoom, pixelOffset, dimensions, worldOffset, tileset)
 
                 drawOutline(bufferContextRef.current, dimensions)
             contextRef.current.drawImage(bufferCanvasRef.current, 0, 0)
@@ -232,6 +232,7 @@ const Viewport: React.FC<ViewportProps> = ({
                 currentWorldOffset[0] + cellDiffX,
                 currentWorldOffset[1] + cellDiffY,
             ])
+            PixelStore().refresh();
         }
 
         canvas.addEventListener("wheel", handleWheel, { passive: false })
@@ -249,6 +250,10 @@ const Viewport: React.FC<ViewportProps> = ({
     }
 
     const handleMouseMove = (e: React.MouseEvent) => {
+        // const bounds = getWorldViewBounds();
+        // console.log(bounds);
+        // onWorldviewChange(getWorldViewBounds())
+        // PixelStore().refresh();
         if (dragStart) {
             const mouse: Coordinate = [e.clientX, e.clientY]
             drag(lastDragPoint, mouse)

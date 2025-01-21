@@ -68,9 +68,9 @@ const ViewportPage: React.FC = () => {
         updateService.setBounds(newWorldview)
         tileStore.prepare(newWorldview)
 
-        if (zoom > 3000) {
+        // if (zoom > 3000) {
             PixelStore().prepare(newWorldview)
-        }
+        // }
     }, [updateService.setBounds, tileStore.prepare, zoom])
 
     const zoombasedAdjustment = useMemo(() => {

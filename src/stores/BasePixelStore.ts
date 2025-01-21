@@ -10,6 +10,7 @@ export class BasePixelStore implements IPixelStore {
     events = EventEmitter;
     state = new Map<string, Pixel>();
     queryBounds: Bounds | null = null;
+    cacheUpdated = 0;
 
     getPixel = (coord: Coordinate): Pixel | undefined => {
         const key = `${coord[0]}_${coord[1]}`;
@@ -34,6 +35,7 @@ export class BasePixelStore implements IPixelStore {
         // TODO: check for invalid keyss
         this.state.set(key, pixel);
         EventEmitter.emit("pixelUpdated", { pixel: pixel as Pixel });
+        this.updateCache();
     };
 
     setPixelColor = (coord: Coordinate, color: number): void => {
@@ -65,4 +67,8 @@ export class BasePixelStore implements IPixelStore {
             this.setPixel(key, pixel);
         }
     };
+
+    updateCache = () => {
+        this.cacheUpdated = Date.now();
+    }
 }

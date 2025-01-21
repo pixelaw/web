@@ -48,6 +48,8 @@ export interface PixelStore { //TODO: rename to IPixelStore
     setPixel: (key: string, pixel: Pixel) => void
     setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
     unload?: () => Promise<void>
+    updateCache: () => void
+    cacheUpdated: number
 }
 
 export interface TileStore {
