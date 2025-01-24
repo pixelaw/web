@@ -1,5 +1,5 @@
 import { PixelStore } from "@/stores/PixelStore.ts"
-import type { Coordinate, Dimension, Pixel } from "../../types.ts"
+import type { Coordinate, Dimension, Pixel } from "../../types/types.ts"
 import { applyWorldOffset, getCellSize, numRGBAToHex } from "../../utils.ts"
 import { ZOOM_TILEMODE } from "./constants.ts"
 

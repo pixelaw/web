@@ -1,5 +1,5 @@
 import { useRef, useState } from "react"
-import type { Bounds, Coordinate, Pixel, PixelStore } from "../types.ts"
+import type { Bounds, Coordinate, Pixel, PixelStore } from "../types/types.ts"
 
 type State = { [key: string]: Pixel }
 

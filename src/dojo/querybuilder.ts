@@ -1,4 +1,4 @@
-import {Bounds, MAX_DIMENSION, QUERY_BUFFER} from "@/webtools/types.ts";
+import {Bounds, MAX_DIMENSION, QUERY_BUFFER} from "@/webtools/types/types.ts";
 import {MAX_VIEW_SIZE} from "@/webtools/utils.ts";
 
 

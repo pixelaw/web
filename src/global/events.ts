@@ -1,4 +1,4 @@
-import type { Bounds, Pixel } from "@/webtools/types"
+import type { Bounds, Pixel } from "@/webtools/types/types.ts"
 import mitt from "mitt"
 
 type Events = {

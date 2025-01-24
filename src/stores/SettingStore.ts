@@ -1,52 +1,23 @@
 import worldsConfig from "@/config/worlds.json"
 import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { create } from "zustand"
+import { DojoConfig, EngineConfig, DojoEngineConfig, MudEngineConfig } from "@/global/world.types"
 
-// const DEPLOYMENTS_CONFIG_URL = 'https://raw.githubusercontent.com/pixelaw/config/refs/heads/main/web.config.json';
+// Ensure the worldsConfig is correctly typed
+const typedWorldsConfig: Record<string, EngineConfig> = worldsConfig as Record<string, EngineConfig>
 
-export interface BurnerConfig {
-    masterAddress: string
-    masterPrivateKey: string
-    accountClassHash: string
-}
-
-// Controller Configuration
-export interface ControllerConfig {
-    rpcUrl: string
-    profileUrl: string
-    url: string
-}
-
-// Wallets Configuration
-export interface WalletsConfig {
-    burner?: BurnerConfig
-    controller?: ControllerConfig
-}
-
-export interface WorldConfig {
-    serverUrl: string
-    rpcUrl: string
-    toriiUrl: string
-    relayUrl: string
-    world: string
-    feeTokenAddress: string
-    wallets: WalletsConfig
-}
-
-export interface WorldsConfig {
-    [id: string]: WorldConfig
-}
-
+// Define the StoreState interface
 export interface StoreState {
     wallet: string
     world: string
-    worldsConfig: WorldsConfig
-    worldConfig: WorldConfig | undefined
-    addWorld: (id: string, worldConfig: WorldConfig) => void
+    worldsConfig: Record<string, EngineConfig>
+    worldConfig: EngineConfig | undefined
+    addWorld: (id: string, worldConfig: EngineConfig) => void
     setWallet: (id: string) => void
     setWorld: (id: string) => void
 }
 
+// Load state from localStorage
 const loadState = (): Partial<StoreState> => {
     try {
         const serializedState = localStorage.getItem("storeState")
@@ -58,6 +29,7 @@ const loadState = (): Partial<StoreState> => {
     }
 }
 
+// Save state to localStorage
 const saveState = (state: StoreState) => {
     try {
         const serializedState = JSON.stringify(state)
@@ -67,12 +39,13 @@ const saveState = (state: StoreState) => {
     }
 }
 
+// Create the Zustand store
 const useSettingStore = create<StoreState>((set) => ({
     ...{
         wallet: "",
         world: DEFAULT_WORLD,
-        worldConfig: worldsConfig[DEFAULT_WORLD],
-        worldsConfig: worldsConfig,
+        worldConfig: typedWorldsConfig[DEFAULT_WORLD],
+        worldsConfig: typedWorldsConfig,
     },
     ...loadState(),
     addWorld: (id, worldConfig) => {
@@ -90,7 +63,6 @@ const useSettingStore = create<StoreState>((set) => ({
     },
     setWorld: (id: string) => {
         set((state) => {
-            console.log(state.worldsConfig)
             const worldConfig = state.worldsConfig[id]
             if (!worldConfig) {
                 console.error(`World with key ${id} does not exist.`)

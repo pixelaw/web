@@ -1,5 +1,5 @@
 import GET_PIXELS_QUERY from "@/../graphql/GetPixels.graphql"
-import { type Bounds, type Coordinate, MAX_DIMENSION, type Pixel, type PixelStore, makeString } from "@/webtools/types.ts"
+import { type Bounds, type Coordinate, MAX_DIMENSION, type Pixel, type PixelStore, makeString } from "@/webtools/types/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
 import { GraphQLClient } from "graphql-request"
 import { produce } from "immer"

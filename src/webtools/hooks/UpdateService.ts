@@ -1,6 +1,6 @@
 import { areBoundsEqual, calculateTileBounds } from "@/webtools/utils.js"
 import { useRef, useState } from "react"
-import { type Bounds, TILESIZE, type UpdateService } from "../types.ts"
+import { type Bounds, TILESIZE, type UpdateService } from "../types/types.ts"
 
 type Message = {
     cmd: string

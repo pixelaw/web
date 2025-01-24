@@ -36,21 +36,6 @@ export interface AppStore {
     getAll: () => App[]
 }
 
-export type TPixelStoreStatus = "ready" | "loading" | "error"
-
-export interface PixelStore { //TODO: rename to IPixelStore
-    // events: //@dev potentially use typed events?
-    status: () => TPixelStoreStatus
-    refresh: () => void
-    prepare: (bounds: Bounds) => void
-    getPixel: (coordinate: Coordinate) => Pixel | undefined
-    setPixelColor: (coord: Coordinate, color: number) => void
-    setPixel: (key: string, pixel: Pixel) => void
-    setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
-    unload?: () => Promise<void>
-    updateCache: () => void
-    cacheUpdated: number
-}
 
 export interface TileStore {
     refresh: () => void

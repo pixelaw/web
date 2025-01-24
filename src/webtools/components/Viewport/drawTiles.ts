@@ -1,4 +1,4 @@
-import { type Coordinate, type Dimension, MAX_DIMENSION, type Tileset } from "../../types.ts"
+import { type Coordinate, type Dimension, MAX_DIMENSION, type Tileset } from "../../types/types.ts"
 import { applyWorldOffset, cellForPosition, getInitialOffset, nextTileCoord } from "../../utils.ts"
 import { ZOOM_FACTOR } from "./constants.ts"
 

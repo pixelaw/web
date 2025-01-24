@@ -1,9 +1,10 @@
-import type { Pixel, TPixelStoreStatus } from "@/webtools/types"; // FIXME: Clean up pixel type
+import type { Pixel, TPixelStoreStatus } from "@/webtools/types/types.ts"; // FIXME: Clean up pixel type
 import { SUBSCRIPTION_QUERY } from "@/dojo/querybuilder";
-import { createSqlQuery } from "./DojoSqlPixelStore";
+
 import type { SDK, SchemaType } from "@dojoengine/sdk";
 import type { TPackedSQLPixel } from "@/global/types";
 import { BasePixelStore } from "./BasePixelStore";
+import {createSqlQuery} from "@/global/utils.ts";
 
 export class DojoSQLPixelStore extends BasePixelStore {
     status = () => {return this._status};

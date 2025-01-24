@@ -1,4 +1,4 @@
-import type { Coordinate, Dimension } from "../../types.ts"
+import type { Coordinate, Dimension } from "../../types/types.ts"
 import { getCellSize } from "../../utils.ts"
 
 export function drawGrid(

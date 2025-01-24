@@ -1,7 +1,7 @@
 import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import useSettingStore from "@/stores/SettingStore.ts"
-import type { Coordinate } from "@/webtools/types.ts"
+import type { Coordinate } from "@/webtools/types/types.ts"
 import { useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { create } from "zustand"

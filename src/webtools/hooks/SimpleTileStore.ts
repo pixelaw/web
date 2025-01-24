@@ -8,7 +8,7 @@ import {
     type Tile,
     type TileStore,
     type Tileset,
-} from "../types.ts"
+} from "../types/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual, calculateTileBounds, getWrappedTileCoordinate } from "../utils.ts"
 import { PixelStore } from "@/stores/PixelStore.ts"
 

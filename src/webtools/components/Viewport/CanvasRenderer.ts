@@ -1,4 +1,4 @@
-import type { Bounds, Coordinate, Dimension } from "@/webtools/types";
+import type { Bounds, Coordinate, Dimension } from "@/webtools/types/types.ts";
 import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants";
 import { drawGrid } from "./drawGrid";
 import { drawOutline } from "./drawOutline";

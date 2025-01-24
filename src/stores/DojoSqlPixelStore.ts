@@ -1,169 +1,114 @@
-import { type Bounds, type Coordinate, MAX_DIMENSION, type PixelStore, makeString } from "@/webtools/types.ts"
-import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
-import { produce } from "immer"
-import { useEffect, useRef, useState } from "react"
+import {
+    type Bounds,
+    type Coordinate,
+    MAX_DIMENSION,
+    makeString
+} from "@/webtools/types/types.ts";
+import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts";
+import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts";
+import type { Pixel, SchemaType } from "@/generated/models.gen.ts";
+import {  type SDK } from "@dojoengine/sdk";
 
-import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
-import type { Pixel, SchemaType } from "@/generated/models.gen.ts"
-import { QueryBuilder, type SDK } from "@dojoengine/sdk"
-import { EventEmitter } from "@/global/events"
+import { createSqlQuery } from "@/global/utils.ts";
+import mitt from "mitt";
+import {PixelStore, PixelStoreEvents} from "@/webtools/types/PixelStore.types.ts";
 
-type State = { [key: string]: Pixel | undefined }
+type State = { [key: string]: Pixel | undefined };
 
-export function createSqlQuery(bounds: Bounds) {
-    const [[left, top], [right, bottom]] = bounds
+class DojoSqlPixelStore implements PixelStore {
+    private static instance: DojoSqlPixelStore;
+    private state: State = {};
+    private queryBounds: Bounds | null = null;
+    private cacheUpdated: number = Date.now();
+    private isSubscribed: boolean = false;
+    private sdk: SDK<SchemaType>;
+    public readonly eventEmitter = mitt<PixelStoreEvents>()
+    private worker: Worker;
 
-    const xWraps = right - left < 0
-    const yWraps = bottom - top < 0
-
-    // if (left > MAX_VIEW_SIZE && left > right) right = MAX_DIMENSION
-    // if (top > MAX_VIEW_SIZE && top > bottom) bottom = MAX_DIMENSION
-
-    let result = `SELECT color as 'c', substr(text,  -4) as 't', (x << 16) | y AS v
-                    FROM "pixelaw-Pixel"
-                    WHERE( x > 0 ) `
-
-    const ZERO = 0
-
-    if (xWraps && yWraps) {
-        // Quadrant 1   (topleft)
-        result += ` OR(x >= ${left} AND y >= ${top} AND x <= ${MAX_DIMENSION} AND y <= ${MAX_DIMENSION} )`
-
-        // Quadrant 2   (bottomleft)
-        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`
-
-        // Quadrant 3   (topright)
-        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`
-
-        // Quadrant 4   (bottomright) -> THIS IS THE "NORMAL"
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
-    } else if (xWraps) {
-        // Quadrant 2   (bottomleft)
-        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`
-
-        // Quadrant 4   (bottomright) -> THIS IS THE "NORMAL"
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
-    } else if (yWraps) {
-        // Quadrant 3   (topright)
-        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`
-
-        // Quadrant 4   (bottomright) -> THIS IS THE "NORMAL"
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
-    } else {
-        // Quadrant 4   (bottomright) -> THIS IS THE "NORMAL"
-        result += ` OR(x >= ${top} AND y >= ${bottom} AND x <= ${right} AND y <= ${bottom} )`
+    private constructor(sdk: SDK<SchemaType>) {
+        this.sdk = sdk;
+        this.worker = new Worker(new URL('../workers/pixelSql.ts', import.meta.url), { type: 'module' });
+        this.worker.onmessage = this.handleRefreshWorker.bind(this);
+        this.subscribe();
     }
-    result += ";"
 
-    return result
-}
+    public static getInstance(sdk: SDK<SchemaType>): DojoSqlPixelStore {
+        if (!DojoSqlPixelStore.instance) {
+            DojoSqlPixelStore.instance = new DojoSqlPixelStore(sdk);
+        }
+        return DojoSqlPixelStore.instance;
+    }
 
-export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
-    const state = useRef<State>({}).current;
-    const [queryBounds, setQueryBounds] = useState<Bounds | null>(null)
-    const [cacheUpdated, setCacheUpdated] = useState<number>(Date.now())
-    const isSubscribed = useRef(false)
+    private async subscribe() {
+        if (this.isSubscribed) return;
 
-    useEffect(() => {
-        if (isSubscribed.current) return
-
-        let unsubscribe: (() => void) | undefined
-
-        const subscribe = async () => {
-            const subscription = await sdk.subscribeEntityQuery({
+        try {
+            const subscription = await this.sdk.subscribeEntityQuery({
                 query: SUBSCRIPTION_QUERY,
                 callback: (response) => {
                     if (response.error) {
-                        console.error("Error setting up entity sync:", response.error)
+                        console.error("Error setting up entity sync:", response.error);
                     } else if (response.data && response.data[0].entityId !== "0x0") {
-                        console.log("callback", response.data[0])
-                        const p = response.data[0].models.pixelaw.Pixel
-
-                        const key = `${p?.x}_${p?.y}`
-                        setPixel(key, p as Pixel)
+                        const p = response.data[0].models.pixelaw.Pixel;
+                        const key = `${p?.x}_${p?.y}`;
+                        this.setPixel(key, p as Pixel);
                     }
-
-                    setCacheUpdated(Date.now())
+                    this.cacheUpdated = Date.now();
                 },
-            })
+            });
 
-            unsubscribe = () => subscription.cancel()
-        }
-
-        console.log("subscribe")
-        subscribe()
-        isSubscribed.current = true
-        return () => {
-            if (unsubscribe) {
-                console.log("unsub")
-                unsubscribe()
-                isSubscribed.current = false
-            }
-        }
-    }, [sdk])
-
-    useEffect(() => {
-        if (queryBounds) {
-            refresh()
-        }
-    }, [queryBounds])
-
-    
-    const refresh = (): void => {
-        if (!queryBounds) return
-
-        const query = encodeURIComponent(createSqlQuery(queryBounds))
-
-        fetch(`http://localhost:8080/sql?query=${query}`, {})
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`)
-                }
-                response
-                    .json()
-                    .then((json) => {
-                        const pixelItems = json.map((p) => {
-                            const x = p.v >> 16
-                            const y = p.v & 0xffff
-
-                            const pixel = { color: p.c, x, y, text: p.t } as Pixel
-                            return { key: `${x}_${y}`, pixel }
-                        })
-
-                        setPixels(pixelItems)
-                    })
-                    .catch((e) => {
-                        console.error("error parsing json", e)
-                    })
-            })
-            .catch((error) => {
-                console.log("neee", error)
-            })
-    }
-
-    const prepare = (newBounds: Bounds): void => {
-        const newQueryBounds = getQueryBounds(newBounds)
-
-        if (!queryBounds || !areBoundsEqual(queryBounds, newQueryBounds)) {
-            // console.log("prep/setB", newQueryBounds)
-            setQueryBounds(newQueryBounds)
+            this.isSubscribed = true;
+            return () => {
+                subscription.cancel();
+                this.isSubscribed = false;
+            };
+        } catch (error) {
+            console.error("Subscription error:", error);
         }
     }
 
-    const getPixel = (coord: Coordinate): Pixel | undefined => {
-        const key = `${coord[0]}_${coord[1]}`
-        return state[key]
+    private handleRefreshWorker(event: MessageEvent) {
+        const { success, data, error } = event.data;
+        if (success) {
+            this.state = {... data}
+
+            this.eventEmitter.emit('cacheUpdated', Date.now())
+            console.log("pixels in cache: ", Object.keys(this.state).length)
+        } else {
+            console.error("RefreshWorker error:", error);
+        }
     }
 
-    const setPixel = (key: string, pixel: Pixel): void => {
-        // TODO: check for invalid keyss
-        state[key] = pixel;
-        EventEmitter.emit("pixelUpdated", { pixel });
+    public refresh(): void {
+        this.queryBounds = [[0,0], [1,1]]
+        if (!this.queryBounds) return;
+
+        const query = encodeURIComponent(createSqlQuery(this.queryBounds));
+
+        this.worker.postMessage({ query });
     }
 
-    const setPixelColor = (coord: Coordinate, color: number): void => {
-        const key = makeString(coord)
-        let pixel = state[key]
+
+    public prepare(newBounds: Bounds): void {
+        const newQueryBounds = getQueryBounds(newBounds);
+
+        if (!this.queryBounds || !areBoundsEqual(this.queryBounds, newQueryBounds)) {
+            this.queryBounds = newQueryBounds;
+        }
+    }
+
+    public getPixel(coord: Coordinate): Pixel | undefined {
+        const key = `${coord[0]}_${coord[1]}`;
+        return this.state[key];
+    }
+
+    public setPixel(key: string, pixel: Pixel): void {
+        this.state[key] = pixel;
+    }
+
+    public setPixelColor(coord: Coordinate, color: number): void {
+        const key = makeString(coord);
+        let pixel = this.state[key];
 
         if (!pixel) {
             pixel = {
@@ -174,22 +119,36 @@ export function useDojoSqlPixelStore(sdk: SDK<SchemaType>): PixelStore {
                 timestamp: Date.now(),
                 x: coord[0],
                 y: coord[1],
-            } as Pixel
+            } as Pixel;
         } else {
             pixel = {
                 ...pixel,
                 color,
-            }
+            };
         }
 
-        setPixel(key, pixel)
+        this.setPixel(key, pixel);
     }
 
-    const setPixels = (pixels: { key: string; pixel: Pixel }[]): void => {
+    public setPixels(pixels: { key: string; pixel: Pixel }[]): void {
         for (const { key, pixel } of pixels) {
-            setPixel(key, pixel)
+            this.setPixel(key, pixel);
         }
     }
-
-    return { getPixel, setPixel, setPixelColor, setPixels, prepare, refresh, setCacheUpdated, cacheUpdated }
+    public status () :TPixelStoreStatus {
+        return 'ready'  //TODO
 }
+    public updateCache ()  {
+
+}
+
+    public setCacheUpdated(value: number): void {
+        this.cacheUpdated = value;
+    }
+
+    public getCacheUpdated(): number {
+        return this.cacheUpdated;
+    }
+}
+
+export default DojoSqlPixelStore;

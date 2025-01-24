@@ -1,0 +1,23 @@
+import {Bounds, Coordinate, Pixel} from "@/webtools/types/types.ts";
+import type { Emitter } from "mitt";
+
+export type TPixelStoreStatus = "ready" | "loading" | "error"
+
+
+export type PixelStoreEvents = {
+    cacheUpdated: number;
+};
+
+export interface PixelStore { //TODO: rename to IPixelStore
+    eventEmitter: Emitter<PixelStoreEvents>;
+    status: () => TPixelStoreStatus
+    refresh: () => void
+    prepare: (bounds: Bounds) => void
+    getPixel: (coordinate: Coordinate) => Pixel | undefined
+    setPixelColor: (coord: Coordinate, color: number) => void
+    setPixel: (key: string, pixel: Pixel) => void
+    setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
+    unload?: () => Promise<void>
+    updateCache: () => void
+    cacheUpdated: number
+}

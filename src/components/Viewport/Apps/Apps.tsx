@@ -1,6 +1,6 @@
 import App from "@/components/Viewport/App/App.tsx"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
-import type { AppStore } from "@/webtools/types.ts"
+import type { AppStore } from "@/webtools/types/types.ts"
 import styles from "./Apps.module.css"
 
 type AppsProps = {

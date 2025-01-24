@@ -1,4 +1,4 @@
-import type { App, AppStore } from "@/webtools/types.ts"
+import type { App, AppStore } from "@/webtools/types/types.ts"
 
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 

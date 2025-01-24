@@ -1,5 +1,5 @@
 import type { AbiType, EnumType } from "@/global/types.ts"
-import type { Coordinate } from "@/webtools/types.ts"
+import type { Coordinate } from "@/webtools/types/types.ts"
 import { poseidonHashMany } from "micro-starknet"
 
 // TODO: change SALT to a dynamic constant

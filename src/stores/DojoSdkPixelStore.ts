@@ -1,4 +1,4 @@
-import { type Bounds, type Coordinate, MAX_DIMENSION, type PixelStore, makeString } from "@/webtools/types.ts"
+import { type Bounds, type Coordinate, MAX_DIMENSION, type PixelStore, makeString } from "@/webtools/types/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
 import { useEffect, useRef, useState } from "react"
 

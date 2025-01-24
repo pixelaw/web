@@ -1,4 +1,4 @@
-import { makeString, type Bounds, type Coordinate, type PixelStore as IPixelStore, type Pixel, type TPixelStoreStatus } from "@/webtools/types"; // FIXME: Clean up pixel type
+import { makeString, type Bounds, type Coordinate, type PixelStore as IPixelStore, type Pixel, type TPixelStoreStatus } from "@/webtools/types/types.ts"; // FIXME: Clean up pixel type
 import { EventEmitter } from "@/global/events";
 import { getQueryBounds } from "@/dojo/querybuilder";
 import { areBoundsEqual } from "@/webtools/utils";
