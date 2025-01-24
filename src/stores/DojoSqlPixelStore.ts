@@ -25,7 +25,7 @@ class DojoSqlPixelStore implements PixelStore {
     public readonly eventEmitter = mitt<PixelStoreEvents>()
     private worker: Worker;
 
-    private constructor(sdk: SDK<SchemaType>) {
+    constructor(sdk: SDK<SchemaType>) {
         this.sdk = sdk;
         this.worker = new Worker(new URL('../workers/pixelSql.ts', import.meta.url), { type: 'module' });
         this.worker.onmessage = this.handleRefreshWorker.bind(this);
