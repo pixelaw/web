@@ -44,7 +44,7 @@ export type DojoStuff = {
 const controllerConnectorCache = new Map<string, ControllerConnector | null>()
 const burnerConnectorCache = new Map<string, Promise<BurnerConnector | null>>()
 
-async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: App[]; manifest: Manifest }> {
+export async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: App[]; manifest: Manifest }> {
     const gqlClient = new GraphQLClient(`${worldConfig.toriiUrl}/graphql`)
     try {
         const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
@@ -75,7 +75,7 @@ async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: A
     }
 }
 
-function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig): ControllerConnector | null {
+export function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig): ControllerConnector | null {
     const cacheKey = JSON.stringify({ manifest, rpcUrl: worldConfig.wallets.controller?.rpcUrl })
     if (controllerConnectorCache.has(cacheKey)) {
         return controllerConnectorCache.get(cacheKey) || null
@@ -93,7 +93,7 @@ function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig):
     return connector
 }
 
-async function setupBurnerConnector(
+export async function setupBurnerConnector(
     rpcProvider: DojoProvider,
     worldConfig: WorldConfig,
 ): Promise<BurnerConnector | null> {

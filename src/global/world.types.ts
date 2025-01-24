@@ -39,3 +39,7 @@ export interface MudEngineConfig {
 
 export type EngineConfig = DojoEngineConfig | MudEngineConfig;
 
+export type WorldConfig = {
+    name: string;
+    config: EngineConfig;
+}
