@@ -27,7 +27,7 @@ export type TileChangedMessage = {
 }
 
 export interface UpdateService {
-    tileChanged: TileChangedMessage | null
+    // tileChanged: TileChangedMessage | null
     setBounds: (newBounds: Bounds) => void
 }
 
@@ -40,7 +40,7 @@ export interface AppStore {
 export interface TileStore {
     refresh: () => void
     prepare: (bounds: Bounds) => void
-    fetchTile: (key: string) => void
+    // fetchTile: (key: string) => void
     // getTile: (key: string) => Tile | undefined | "";
     // setTile: (key: string, tile: Tile) => Promise<void>;
     setTiles: (tiles: { key: string; tile: Tile }[]) => Promise<void>

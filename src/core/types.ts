@@ -1,4 +1,4 @@
-import type { Bounds, Pixel } from "@/webtools/types/types.ts"
+import type {Bounds, Pixel, TileStore} from "@/webtools/types/types.ts"
 import mitt from "mitt"
 import type {PixelStore} from "@/webtools/types/PixelStore.types.ts";
 
@@ -21,12 +21,11 @@ export type CoreStatus = "ready" | "loading" | "error" | "uninitialized";
 export interface Engine {
     interacthandler: InteractHandler;
     pixelStore: PixelStore;
+    tileStore: TileStore;
     status: EngineStatus;
 
     init(engineConfig: EngineConfig): Promise<void>;
 }
-
-
 
 export type EngineConstructor<T extends Engine> = new () => T;
 

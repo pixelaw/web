@@ -16,11 +16,11 @@ export class RestTileStore implements TileStore {
     private tilesLoaded: boolean = false;
     private isLoading: boolean = true;
     private fetchCounter: number = 0;
-    private tileset: Tileset | null = null;
+    public tileset: Tileset | null = null;
     private tileCache: State = {};
     private actualBounds: Bounds | null = null;
     private inputBounds: Bounds | null = null;
-    private cacheUpdated: number = Date.now();
+    public cacheUpdated: number = Date.now();
     private baseUrl: string;
 
     constructor(baseUrl: string) {
@@ -130,7 +130,7 @@ export class RestTileStore implements TileStore {
         return this.tileCache[key];
     }
 
-    public setTiles(_tiles: { key: string; tile: Tile }[]): void {
+    public async setTiles(_tiles: { key: string; tile: Tile }[]): Promise<void> {
         // Implementation for setting tiles if needed
     }
 

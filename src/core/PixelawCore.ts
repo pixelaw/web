@@ -23,9 +23,13 @@ export class PixelawCore {
     events = mitt<PixelCoreEvents>();
 
     async loadWorld(worldConfig: WorldConfig) {
+        if (this.worldConfig && JSON.stringify(this.worldConfig) === JSON.stringify(worldConfig)) {
+            console.log("Configuration already loaded.");
+            return;
+        }
+
         this.status = "loading";
         this.worldConfig = worldConfig;
-
 
         const engine = supportedEngines.find(([engineName]) => engineName === worldConfig.engine);
         if (!engine) {

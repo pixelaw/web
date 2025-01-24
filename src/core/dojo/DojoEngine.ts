@@ -1,19 +1,17 @@
 import type {PixelStore} from "@/webtools/types/PixelStore.types.ts";
-
-import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts";
-
-
 import {InteractHandler, EngineStatus, Engine, DojoConfig} from "@/core/types.ts";
-import {dojoInit, DojoStuff, setupPixelStore, setupTileStore} from "@/core/dojo/DojoEngineInit.ts";
-import {schema, type SchemaType} from "@/generated/models.gen.ts";
+import {dojoInit, DojoStuff, setupPixelStore, setupTileStore, setupUpdateService} from "@/core/dojo/DojoEngineInit.ts";
+import {schema} from "@/generated/models.gen.ts";
+import {TileStore, UpdateService} from "@/webtools/types/types.ts";
+import {WsUpdateService} from "@/core/WsUpdateService.ts";
 import {RestTileStore} from "@/core/RestTileStore.ts";
-import {TileStore} from "@/webtools/types/types.ts";
-import type {SDK} from "@dojoengine/sdk";
+import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts";
 
 export class DojoEngine implements Engine {
     interacthandler: InteractHandler = null!;
     pixelStore: PixelStore = null!;
     tileStore: TileStore = null!;
+    updateService: UpdateService = null!;
     status: EngineStatus = "uninitialized";
     config: DojoConfig = null!;
     dojoSetup: DojoStuff | null = null;
@@ -27,12 +25,13 @@ export class DojoEngine implements Engine {
             this.status = this.dojoSetup ? "ready" : "error";
 
             // Setup PixelStore
-            this.pixelStore = await setupPixelStore(this.dojoSetup!.sdk!);
+            this.pixelStore =  new DojoSqlPixelStore(this.dojoSetup!.sdk!)
 
-            // TODO Setup UpdateService
+            // Setup UpdateService
+            this.updateService = new WsUpdateService(config.serverUrl);
 
             // Setup TileStore
-            this.tileStore = await setupTileStore(config.serverUrl);
+            this.tileStore = new RestTileStore(config.serverUrl);
 
             // TODO Setup InteractHandler
             // TODO Setup ViewPort

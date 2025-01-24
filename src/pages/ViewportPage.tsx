@@ -7,7 +7,7 @@ import { useDojoAppStore } from "@/stores/DojoAppStore.ts";
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts";
 import Viewport from "@/webtools/components/Viewport/ViewPort"; // Assuming this is the class-based component
 import { useSimpleTileStore } from "@/webtools/hooks/SimpleTileStore.ts";
-import { useUpdateService } from "@/webtools/hooks/UpdateService.ts";
+import { useUpdateService } from "@/core/UpdateService.ts";
 import type { Bounds } from "@/webtools/types/types.ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ViewportPage.module.css";

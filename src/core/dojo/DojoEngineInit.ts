@@ -1,13 +1,13 @@
 import { init } from "@dojoengine/sdk";
 import { DojoProvider } from "@dojoengine/core";
-import type {DojoConfig, DojoEngineConfig} from "./types.ts";
+import type {DojoConfig} from "../types.ts";
 import type { SchemaType } from "@/generated/models.gen.ts";
 import GET_APPS_QUERY from "@/../graphql/GetApps.graphql"
 import { getControllerConnector } from "@/dojo/controller.ts"
 import baseManifest from "@/dojo/manifest.js"
 import { getAbi } from "@/dojo/utils.ts"
 import { formatAddress } from "@/global/utils.ts"
-import type {App, TileStore} from "@/webtools/types/types.ts"
+import type {App} from "@/webtools/types/types.ts"
 import { felt252ToUnicode } from "@/webtools/utils.ts"
 import type ControllerConnector from "@cartridge/connector/controller"
 import {  type Manifest } from "@dojoengine/core"
@@ -15,9 +15,6 @@ import { BurnerConnector, BurnerManager } from "@dojoengine/create-burner"
 import { type SDK } from "@dojoengine/sdk"
 import { GraphQLClient } from "graphql-request"
 import { Account, RpcProvider, shortString } from "starknet"
-import type {PixelStore} from "@/webtools/types/PixelStore.types.ts";
-import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts";
-import {RestTileStore} from "@/core/RestTileStore.ts";
 
 
 type GetAppsResponse = {
@@ -87,7 +84,7 @@ export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Pro
     }
 }
 
-async function fetchAppsAndManifest(worldConfig: DojoEngineConfig): Promise<{ apps: App[]; manifest: Manifest }> {
+async function fetchAppsAndManifest(worldConfig: DojoConfig): Promise<{ apps: App[]; manifest: Manifest }> {
     const gqlClient = new GraphQLClient(`${worldConfig.toriiUrl}/graphql`)
     try {
         const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
@@ -118,7 +115,7 @@ async function fetchAppsAndManifest(worldConfig: DojoEngineConfig): Promise<{ ap
     }
 }
 
-function setupControllerConnector(manifest: Manifest, worldConfig: DojoEngineConfig): ControllerConnector | null {
+function setupControllerConnector(manifest: Manifest, worldConfig: DojoConfig): ControllerConnector | null {
     const cacheKey = JSON.stringify({ manifest, rpcUrl: worldConfig.wallets.controller?.rpcUrl })
     if (controllerConnectorCache.has(cacheKey)) {
         return controllerConnectorCache.get(cacheKey) || null
@@ -138,7 +135,7 @@ function setupControllerConnector(manifest: Manifest, worldConfig: DojoEngineCon
 
 async function setupBurnerConnector(
     rpcProvider: DojoProvider,
-    worldConfig: DojoEngineConfig,
+    worldConfig: DojoConfig,
 ): Promise<BurnerConnector | null> {
     const cacheKey = JSON.stringify({ rpcProvider, burnerConfig: worldConfig.wallets?.burner })
     if (burnerConnectorCache.has(cacheKey)) {
@@ -181,18 +178,4 @@ async function setupBurnerConnector(
 
     burnerConnectorCache.set(cacheKey, promise)
     return promise
-}
-
-export async function setupPixelStore(sdk: SDK<SchemaType>): Promise<PixelStore> {
-
-    const store = new DojoSqlPixelStore(sdk);
-    await store.refresh();
-    return store;
-}
-
-export async function setupTileStore(baseUrl: string): Promise<TileStore> {
-
-    const store = new RestTileStore(baseUrl);
-    await store.refresh();
-    return store;
 }
