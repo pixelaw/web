@@ -1,4 +1,4 @@
-import type { PixelStore as IPixelStore } from "@/webtools/types/types.ts"
+import type { PixelStore as IPixelStore } from "@/webtools/types/PixelStore.types.ts"
 import { create } from "zustand"
 
 export type TProviderPixelStore = {

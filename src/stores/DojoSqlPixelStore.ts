@@ -8,21 +8,22 @@ import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts";
 import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts";
 import type { Pixel, SchemaType } from "@/generated/models.gen.ts";
 import {  type SDK } from "@dojoengine/sdk";
-
 import { createSqlQuery } from "@/global/utils.ts";
 import mitt from "mitt";
 import {PixelStore, PixelStoreEvents} from "@/webtools/types/PixelStore.types.ts";
+import {DojoSQLPixelStore} from "@/stores/_DojoSqlStore.ts";
 
 type State = { [key: string]: Pixel | undefined };
 
+
 class DojoSqlPixelStore implements PixelStore {
+    public readonly eventEmitter = mitt<PixelStoreEvents>()
     private static instance: DojoSqlPixelStore;
     private state: State = {};
     private queryBounds: Bounds | null = null;
     private cacheUpdated: number = Date.now();
     private isSubscribed: boolean = false;
     private sdk: SDK<SchemaType>;
-    public readonly eventEmitter = mitt<PixelStoreEvents>()
     private worker: Worker;
 
     private constructor(sdk: SDK<SchemaType>) {
@@ -80,7 +81,7 @@ class DojoSqlPixelStore implements PixelStore {
     }
 
     public refresh(): void {
-        this.queryBounds = [[0,0], [1,1]]
+        this.queryBounds = [[0,0], [1,1]]   // TODO
         if (!this.queryBounds) return;
 
         const query = encodeURIComponent(createSqlQuery(this.queryBounds));

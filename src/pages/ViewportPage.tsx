@@ -33,6 +33,7 @@ const ViewportPage: React.FC = () => {
     const appStore = useDojoAppStore();
 
     const pixelStore = DojoSqlPixelStore.getInstance(dojoStuff?.sdk!)
+
     pixelStore.refresh()
     const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`);
     const { color, center, setCenter, zoom } = useViewStateStore();
@@ -86,6 +87,20 @@ const ViewportPage: React.FC = () => {
 
 
     useEffect(() => {
+        const handleWorldViewChanged = (newWorldView: Bounds) => {
+            pixelStore.prepare(newWorldView);
+        };
+
+        // Subscribe to the worldViewChanged event
+        viewportRef.current!.emitter.on('worldViewChanged', handleWorldViewChanged);
+
+        return () => {
+            // Unsubscribe from the event when the component unmounts
+            viewportRef.current!.emitter.off('worldViewChanged', handleWorldViewChanged);
+        };
+    }, [pixelStore]);
+
+    useEffect(() => {
         if (!viewportContainerRef.current) return;
 
         // Initialize the Viewport instance once
@@ -93,7 +108,6 @@ const ViewportPage: React.FC = () => {
             viewportContainerRef.current,
             tileStore,
             pixelStore
-
         );
 
         return () => {

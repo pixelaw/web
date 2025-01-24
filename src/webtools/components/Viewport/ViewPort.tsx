@@ -1,4 +1,4 @@
-import type {Bounds, Coordinate, PixelStore, Tileset, TileStore} from "../../types/types.ts";
+import type {Bounds, Coordinate,  Tileset, TileStore} from "../../types/types.ts";
 import { applyWorldOffset,  cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts";
 import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants.ts";
 import { drawGrid } from "./drawGrid.ts";
@@ -7,6 +7,7 @@ import { drawPixels } from "./drawPixels.ts";
 import { drawTiles } from "./drawTiles.ts";
 
 import mitt from 'mitt';
+import {PixelStore} from "@/webtools/types/PixelStore.types.ts";
 
 export type ViewportEvents = {
     zoomChanged: number;
@@ -16,9 +17,10 @@ export type ViewportEvents = {
     worldViewChanged: Bounds;
 };
 
-export const emitter = mitt<ViewportEvents>();
+
 
 class Viewport {
+    public emitter = mitt<ViewportEvents>();
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D | null;
     private bufferCanvas: HTMLCanvasElement;
