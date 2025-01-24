@@ -1,21 +1,24 @@
+import { init } from "@dojoengine/sdk";
+import { DojoProvider } from "@dojoengine/core";
+import type {DojoConfig, DojoEngineConfig} from "./types.ts";
+import type { SchemaType } from "@/generated/models.gen.ts";
 import GET_APPS_QUERY from "@/../graphql/GetApps.graphql"
 import { getControllerConnector } from "@/dojo/controller.ts"
 import baseManifest from "@/dojo/manifest.js"
-import { getAbi, sleep } from "@/dojo/utils.ts"
-import { type SchemaType, schema } from "@/generated/models.gen.ts"
+import { getAbi } from "@/dojo/utils.ts"
 import { formatAddress } from "@/global/utils.ts"
-import type { WorldConfig } from "@/stores/SettingStore.ts"
-import type { App } from "@/webtools/types/types.ts"
+import type {App, TileStore} from "@/webtools/types/types.ts"
 import { felt252ToUnicode } from "@/webtools/utils.ts"
 import type ControllerConnector from "@cartridge/connector/controller"
-import { DojoProvider, type Manifest } from "@dojoengine/core"
+import {  type Manifest } from "@dojoengine/core"
 import { BurnerConnector, BurnerManager } from "@dojoengine/create-burner"
-import { type SDK, init } from "@dojoengine/sdk"
+import { type SDK } from "@dojoengine/sdk"
 import { GraphQLClient } from "graphql-request"
-import { useEffect, useState } from "react"
 import { Account, RpcProvider, shortString } from "starknet"
+import type {PixelStore} from "@/webtools/types/PixelStore.types.ts";
+import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts";
+import {RestTileStore} from "@/core/RestTileStore.ts";
 
-export type Status = "loading" | "ready" | "error"
 
 type GetAppsResponse = {
     pixelawAppModels: {
@@ -44,7 +47,47 @@ export type DojoStuff = {
 const controllerConnectorCache = new Map<string, ControllerConnector | null>()
 const burnerConnectorCache = new Map<string, Promise<BurnerConnector | null>>()
 
-export async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ apps: App[]; manifest: Manifest }> {
+export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Promise<DojoStuff | null> {
+    if (!worldConfig) {
+        throw new Error("WorldConfig is not loaded");
+    }
+    try {
+        const sdkSetup = {
+            client: {
+                rpcUrl: worldConfig.rpcUrl,
+                toriiUrl: worldConfig.toriiUrl,
+                relayUrl: "",
+                worldAddress: worldConfig.world,
+            },
+            domain: {
+                name: "pixelaw",
+                version: "1.0",
+                chainId: "KATANA",
+                revision: "1",
+            },
+        };
+
+        const sdk = await init<SchemaType>(sdkSetup, schema);
+        const { apps, manifest } = await fetchAppsAndManifest(worldConfig);
+        const provider = new DojoProvider(manifest, worldConfig.rpcUrl);
+        const controllerConnector = setupControllerConnector(manifest, worldConfig);
+        const burnerConnector = await setupBurnerConnector(provider, worldConfig);
+
+        return {
+            sdk,
+            controllerConnector,
+            apps,
+            manifest,
+            burnerConnector,
+            provider,
+        };
+    } catch (error) {
+        console.error("Initialization error:", error);
+        return null;
+    }
+}
+
+async function fetchAppsAndManifest(worldConfig: DojoEngineConfig): Promise<{ apps: App[]; manifest: Manifest }> {
     const gqlClient = new GraphQLClient(`${worldConfig.toriiUrl}/graphql`)
     try {
         const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
@@ -75,7 +118,7 @@ export async function fetchAppsAndManifest(worldConfig: WorldConfig): Promise<{ 
     }
 }
 
-export function setupControllerConnector(manifest: Manifest, worldConfig: WorldConfig): ControllerConnector | null {
+function setupControllerConnector(manifest: Manifest, worldConfig: DojoEngineConfig): ControllerConnector | null {
     const cacheKey = JSON.stringify({ manifest, rpcUrl: worldConfig.wallets.controller?.rpcUrl })
     if (controllerConnectorCache.has(cacheKey)) {
         return controllerConnectorCache.get(cacheKey) || null
@@ -83,19 +126,19 @@ export function setupControllerConnector(manifest: Manifest, worldConfig: WorldC
 
     const connector = worldConfig.wallets.controller
         ? getControllerConnector({
-              feeTokenAddress: worldConfig.feeTokenAddress,
-              manifest,
-              rpcUrl: worldConfig.wallets.controller.rpcUrl,
-          })
+            feeTokenAddress: worldConfig.feeTokenAddress,
+            manifest,
+            rpcUrl: worldConfig.wallets.controller.rpcUrl,
+        })
         : null
 
     controllerConnectorCache.set(cacheKey, connector)
     return connector
 }
 
-export async function setupBurnerConnector(
+async function setupBurnerConnector(
     rpcProvider: DojoProvider,
-    worldConfig: WorldConfig,
+    worldConfig: DojoEngineConfig,
 ): Promise<BurnerConnector | null> {
     const cacheKey = JSON.stringify({ rpcProvider, burnerConfig: worldConfig.wallets?.burner })
     if (burnerConnectorCache.has(cacheKey)) {
@@ -140,59 +183,16 @@ export async function setupBurnerConnector(
     return promise
 }
 
-export function useDojo(worldConfig?: WorldConfig): { dojoStuff: DojoStuff | null; status: Status } {
-    const [status, setStatus] = useState<Status>("loading")
-    const [dojoStuff, setDojoStuff] = useState<DojoStuff | null>(null)
+export async function setupPixelStore(sdk: SDK<SchemaType>): Promise<PixelStore> {
 
-    useEffect(() => {
-        console.log("useEffect triggered!!!")
-        if (!worldConfig) return
+    const store = new DojoSqlPixelStore(sdk);
+    await store.refresh();
+    return store;
+}
 
-        const initialize = async () => {
-            try {
-                console.log("init")
-                setStatus("loading")
+export async function setupTileStore(baseUrl: string): Promise<TileStore> {
 
-                const sdk = await init<SchemaType>(
-                    {
-                        client: {
-                            rpcUrl: worldConfig.rpcUrl,
-                            toriiUrl: worldConfig.toriiUrl,
-                            relayUrl: "",
-                            worldAddress: worldConfig.world,
-                        },
-                        domain: {
-                            name: "pixelaw",
-                            version: "1.0",
-                            chainId: "KATANA",
-                            revision: "1",
-                        },
-                    },
-                    schema,
-                )
-
-                const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
-                const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
-                const controllerConnector = setupControllerConnector(manifest, worldConfig)
-
-                const burnerConnector = await setupBurnerConnector(provider, worldConfig)
-
-                setDojoStuff({
-                    sdk,
-                    controllerConnector,
-                    apps,
-                    manifest,
-                    burnerConnector,
-                    provider,
-                })
-                setStatus("ready")
-            } catch (error) {
-                console.error("Initialization error:", error)
-                setStatus("error")
-            }
-        }
-        initialize()
-    }, [worldConfig])
-
-    return { dojoStuff, status }
+    const store = new RestTileStore(baseUrl);
+    await store.refresh();
+    return store;
 }

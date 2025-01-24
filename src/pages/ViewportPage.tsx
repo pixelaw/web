@@ -12,12 +12,12 @@ import type { Bounds } from "@/webtools/types/types.ts";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ViewportPage.module.css";
 // import { PixelStore } from "@/stores/PixelStore";
-import DojoSqlPixelStore from "@/stores/DojoSqlPixelStore.ts";
+import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts";
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
 
-    const { clientError, dojoStuff, worldConfig } = usePixelawProvider()
+    const {  worldConfig } = usePixelawProvider()
     const [paramDialogVisible, setParamDialogVisible] = useState(false);
     const [paramDialogParams, setParamDialogParams] = useState<unknown>(null);
     const [submitParamsCallback, setSubmitParamsCallback] = useState<(params: unknown) => void>(() => () => {});
@@ -26,16 +26,16 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Hooks">
 
-    if (clientError) return null;
+    // if (clientError) return null;
     if (!worldConfig) return null;
 
-    const updateService = useUpdateService(worldConfig.serverUrl!);
+    // const updateService = useUpdateService(worldConfig.serverUrl!);
     const appStore = useDojoAppStore();
-
-    const pixelStore = DojoSqlPixelStore.getInstance(dojoStuff?.sdk!)
-
-    pixelStore.refresh()
-    const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`);
+    //
+    // const pixelStore = DojoSqlPixelStore.getInstance(dojoStuff?.sdk!)
+    //
+    // pixelStore.refresh()
+    // const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`);
     const { color, center, setCenter, zoom } = useViewStateStore();
 
     useSyncedViewStateStore();
@@ -62,18 +62,6 @@ const ViewportPage: React.FC = () => {
 
     //<editor-fold desc="Handlers">
 
-    // useEffect(() => {
-    //     if (!updateService.tileChanged) return;
-    //     tileStore.fetchTile(updateService.tileChanged?.tileName);
-    //     PixelStore().refresh();
-    // }, [updateService.tileChanged, tileStore]);
-    //
-    // const onWorldviewChange = useCallback((newWorldview: Bounds) => {
-    //     updateService.setBounds(newWorldview);
-    //     tileStore.prepare(newWorldview);
-    //     PixelStore().prepare(newWorldview);
-    // }, [updateService, tileStore]);
-
     const zoombasedAdjustment = useMemo(() => {
         return zoom > 3000 ? "1rem" : "-100%";
     }, [zoom]);
@@ -86,34 +74,34 @@ const ViewportPage: React.FC = () => {
     const viewportRef = useRef<Viewport | null>(null);
 
 
-    useEffect(() => {
-        const handleWorldViewChanged = (newWorldView: Bounds) => {
-            pixelStore.prepare(newWorldView);
-        };
+    // useEffect(() => {
+    //     const handleWorldViewChanged = (newWorldView: Bounds) => {
+    //         pixelStore.prepare(newWorldView);
+    //     };
+    //
+    //     // Subscribe to the worldViewChanged event
+    //     viewportRef.current!.emitter.on('worldViewChanged', handleWorldViewChanged);
+    //
+    //     return () => {
+    //         // Unsubscribe from the event when the component unmounts
+    //         viewportRef.current!.emitter.off('worldViewChanged', handleWorldViewChanged);
+    //     };
+    // }, [pixelStore]);
 
-        // Subscribe to the worldViewChanged event
-        viewportRef.current!.emitter.on('worldViewChanged', handleWorldViewChanged);
-
-        return () => {
-            // Unsubscribe from the event when the component unmounts
-            viewportRef.current!.emitter.off('worldViewChanged', handleWorldViewChanged);
-        };
-    }, [pixelStore]);
-
-    useEffect(() => {
-        if (!viewportContainerRef.current) return;
-
-        // Initialize the Viewport instance once
-        viewportRef.current = new Viewport(
-            viewportContainerRef.current,
-            tileStore,
-            pixelStore
-        );
-
-        return () => {
-            viewportRef.current?.destroy();
-        };
-    }, []);
+    // useEffect(() => {
+    //     if (!viewportContainerRef.current) return;
+    //
+    //     // Initialize the Viewport instance once
+    //     viewportRef.current = new Viewport(
+    //         viewportContainerRef.current,
+    //         tileStore,
+    //         pixelStore
+    //     );
+    //
+    //     return () => {
+    //         viewportRef.current?.destroy();
+    //     };
+    // }, []);
 
     // useEffect(() => {
     //     // Update properties without recreating the Viewport
@@ -129,9 +117,9 @@ const ViewportPage: React.FC = () => {
             <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
                 <SimpleColorPicker color={color} onColorSelect={useViewStateStore.getState().setColor} />
             </div>
-            <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
-                <Apps appStore={appStore} />
-            </div>
+            {/*<div className={styles.apps} style={{ left: zoombasedAdjustment }}>*/}
+            {/*    <Apps appStore={appStore} />*/}
+            {/*</div>*/}
             {paramDialogVisible && (
                 <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />
             )}

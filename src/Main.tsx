@@ -8,8 +8,6 @@ import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { Route, Routes } from "react-router-dom"
 import styles from "./Main.module.css"
 
-import { Main as AlexMain } from "@/providers/PixelawCore";
-AlexMain();
 
 function Main() {
     //<editor-fold desc="State">

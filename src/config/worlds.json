@@ -2,7 +2,7 @@
     "local-empty": {
         "engine": "dojo",
         "description": "Local empty world",
-        "dojoConfig": {
+        "config": {
             "serverUrl": "http://127.0.0.1:3000",
             "rpcUrl": "http://127.0.0.1:5050",
             "toriiUrl": "http://127.0.0.1:8080",
@@ -23,10 +23,10 @@
             "world": "0x1869796b1c25976fc5f4b08ca84995945aa68a8850d3739c96e4c9994456ed7"
         }
     },
-    "myud-empty": {
+    "mud-empty": {
         "engine": "mud",
         "description": "Local empty world",
-        "dojoConfig": {
+        "config": {
             "serverUrl": "http://127.0.0.1:3000",
             "rpcUrl": "http://127.0.0.1:5050",
             "toriiUrl": "http://127.0.0.1:8080",
@@ -50,7 +50,7 @@
     "local-populated": {
         "engine": "dojo",
         "description": "Local populated world",
-        "dojoConfig": {
+        "config": {
             "serverUrl": "http://127.0.0.1:3000",
             "rpcUrl": "http://127.0.0.1:5050",
             "toriiUrl": "http://127.0.0.1:8080",
@@ -69,7 +69,7 @@
     "sepolia": {
         "engine": "dojo",
         "description": "Sepolia: https://sepolia.pixelaw.xyz",
-        "dojoConfig": {
+        "config": {
             "serverUrl": "https://sepolia.pixelaw.xyz",
             "rpcUrl": "https://starknet-sepolia.public.blastapi.io/rpc/v0_7",
             "toriiUrl": "https://torii.sepolia.pixelaw.xyz",
@@ -88,7 +88,7 @@
     "dev": {
         "engine": "dojo",
         "description": "Dev server: https://dev.pixelaw.xyz",
-        "dojoConfig": {
+        "config": {
             "serverUrl": "https://dev.pixelaw.xyz",
             "rpcUrl": "https://katana.dev.pixelaw.xyz",
             "toriiUrl": "https://torii.dev.pixelaw.xyz",

@@ -1,18 +1,18 @@
 import worldsConfig from "@/config/worlds.json"
 import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { create } from "zustand"
-import { DojoConfig, EngineConfig, DojoEngineConfig, MudEngineConfig } from "@/global/world.types"
+import {EngineConfig, WorldConfig} from "@/core/types.ts";
 
 // Ensure the worldsConfig is correctly typed
-const typedWorldsConfig: Record<string, EngineConfig> = worldsConfig as Record<string, EngineConfig>
+const typedWorldsConfig: Record<string, WorldConfig> = worldsConfig as Record<string, WorldConfig>
 
 // Define the StoreState interface
 export interface StoreState {
     wallet: string
     world: string
-    worldsConfig: Record<string, EngineConfig>
-    worldConfig: EngineConfig | undefined
-    addWorld: (id: string, worldConfig: EngineConfig) => void
+    worldsConfig: Record<string, WorldConfig>
+    worldConfig: WorldConfig
+    addWorld: (id: string, worldConfig: WorldConfig) => void
     setWallet: (id: string) => void
     setWorld: (id: string) => void
 }

@@ -8,33 +8,10 @@ import {
     type Tile,
     type TileStore,
     type Tileset,
-} from "../types/types.ts"
+} from "../types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual, calculateTileBounds, getWrappedTileCoordinate } from "../utils.ts"
-import { PixelStore } from "@/stores/PixelStore.ts"
 
 type State = { [key: string]: HTMLImageElement | undefined | "" }
-
-const pixelizeImage = (image: HTMLImageElement) => {
-    PixelStore().updateCache();
-    // const tempCanvas = document.createElement("canvas");
-    // tempCanvas.width = image.width;
-    // tempCanvas.height = image.height;
-    // const tempCtx = tempCanvas.getContext("2d");
-    // if (!tempCtx) {
-    //     throw new Error("Failed to get temp canvas context");
-    // }
-    // tempCtx.drawImage(image, 0, 0);
-    // const pixels = tempCtx.getImageData(0, 0, image.width, image.height).data;
-    // console.log(pixels);
-    // for (let i = 0; i < pixels.length; i += 4) {
-    //     const x = i % image.width;
-    //     const y = Math.floor(i / image.width);
-    //     const pixel = pixels[i];
-    //     const color = pixel << 24 | pixel << 16 | pixel << 8 | pixel;
-    //     PixelStore().setPixelColor([x, y], color);
-    // }
-}
-
 
 export function useSimpleTileStore(baseUrl: string): TileStore {
     // const [state, setState] = useState<State>({});
@@ -57,15 +34,8 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
                 // Cannot use immer here because it won't work with HTMLImageElement, which is a read-only type
                 // setState(prevState => ({...prevState, [key]: img}));
                 tileCache.current[key] = await loadImage(base64Img) // Cache the loaded image
-                const image = tileCache.current[key];
                 fetchCounter.current--
                 setCacheUpdated(Date.now())
-                // iterate over all the pixels and set in PixelStore
-                // draw image to temp canvas
-                // iterate over all the pixels and set in PixelStore
-                // console.log("ABOUT TO PIELIZE IMAGE", image)
-                // pixelizeImage(image);
-
             })
             .catch((e) => {
                 setIdb(key, "").then(() => {
@@ -94,8 +64,6 @@ export function useSimpleTileStore(baseUrl: string): TileStore {
                             tilesObj[key] = ""
                         } else {
                             tilesObj[key] = await loadImage(base64)
-                            const image = tilesObj[key];
-                            pixelizeImage(image);
                         }
                     } catch (e) {
                         console.log("Error loading", key, e)

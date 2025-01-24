@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import type { Pixel, SchemaType } from "@/generated/models.gen.ts"
 import { QueryBuilder, type SDK } from "@dojoengine/sdk"
 import { getQueryBounds, SUBSCRIPTION_QUERY } from "@/dojo/querybuilder.ts"
-import { EventEmitter } from "@/global/events"
+import { EventEmitter } from "@/core/events.ts"
 
 type State = { [key: string]: Pixel | undefined }
 

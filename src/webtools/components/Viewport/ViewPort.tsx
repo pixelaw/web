@@ -19,7 +19,7 @@ export type ViewportEvents = {
 
 
 
-class Viewport {
+export class Viewport {
     public emitter = mitt<ViewportEvents>();
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D | null;

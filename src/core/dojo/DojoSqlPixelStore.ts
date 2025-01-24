@@ -11,7 +11,6 @@ import {  type SDK } from "@dojoengine/sdk";
 import { createSqlQuery } from "@/global/utils.ts";
 import mitt from "mitt";
 import {PixelStore, PixelStoreEvents} from "@/webtools/types/PixelStore.types.ts";
-import {DojoSQLPixelStore} from "@/stores/_DojoSqlStore.ts";
 
 type State = { [key: string]: Pixel | undefined };
 
@@ -28,7 +27,7 @@ class DojoSqlPixelStore implements PixelStore {
 
     constructor(sdk: SDK<SchemaType>) {
         this.sdk = sdk;
-        this.worker = new Worker(new URL('../workers/pixelSql.ts', import.meta.url), { type: 'module' });
+        this.worker = new Worker(new URL('@/workers/pixelSql.ts', import.meta.url), { type: 'module' });
         this.worker.onmessage = this.handleRefreshWorker.bind(this);
         this.subscribe();
     }
