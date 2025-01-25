@@ -56,11 +56,17 @@ export class Viewport {
 
     public setContainer(container: HTMLElement) {
         container.appendChild(this.canvas)
+        this.render()
     }
 
     private subscribeToEvents() {
-        this.pixelCoreEvents.on("cacheUpdated", (timestamp: number) => {
-            console.log(`Cache updated at: ${timestamp}`)
+        this.pixelCoreEvents.on("pixelStoreUpdated", (timestamp: number) => {
+            console.log(`pixelStoreUpdated at: ${timestamp}`)
+
+            this.render()
+        })
+        this.pixelCoreEvents.on("tileStoreUpdated", (timestamp: number) => {
+            console.log(`tileStoreUpdated at: ${timestamp}`)
 
             this.render()
         })
@@ -74,6 +80,7 @@ export class Viewport {
     }
 
     private handleMouseDown(event: MouseEvent) {
+        console.log("handleMouseDown")
         this.dragStart = Date.now()
         this.hoveredCell = undefined
         this.dragStartPoint = [event.clientX, event.clientY]
@@ -85,7 +92,6 @@ export class Viewport {
             const mouse: Coordinate = [event.clientX, event.clientY]
             this.drag(this.lastDragPoint, mouse)
             this.lastDragPoint = mouse
-            // this.pixelStore.updateCache();       // TODO
         } else {
             // Handle hover logic
         }
@@ -108,7 +114,7 @@ export class Viewport {
             ])
             const worldClicked = applyWorldOffset(this.worldOffset, viewportCell)
 
-            emitter.emit("cellClicked", worldClicked)
+            this.pixelCoreEvents.emit("cellClicked", worldClicked)
         } else {
             const mouse: Coordinate = [event.clientX, event.clientY]
             this.drag(this.lastDragPoint, mouse)
@@ -221,17 +227,17 @@ export class Viewport {
 
     private setZoom(newZoom: number) {
         this.zoom = newZoom
-        emitter.emit("zoomChanged", newZoom)
+        this.pixelCoreEvents.emit("zoomChanged", newZoom)
     }
 
     private setCenter(newCenter: Coordinate) {
         this.center = newCenter
-        emitter.emit("centerChanged", newCenter)
+        this.pixelCoreEvents.emit("centerChanged", newCenter)
     }
 
     private setWorldView(newBounds: Bounds) {
         this.worldView = newBounds
-        emitter.emit("worldViewChanged", newBounds)
+        this.pixelCoreEvents.emit("worldViewChanged", newBounds)
     }
 
     public destroy() {

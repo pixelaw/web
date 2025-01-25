@@ -17,7 +17,6 @@ export const PixelawContext = createContext<IPixelawContext | undefined>(undefin
 export const PixelawProvider = ({ children }: { children: ReactNode }) => {
     const { setWallet, setWorld, worldConfig, world } = useSettingStore()
     const [pixelawCore] = useState(() => new PixelawCore()) // Initialize PixelawCore
-    // const [coreStatus, setCoreStatus] = useState<CoreStatus>("uninitialized") // Initialize coreStatus
 
     const [contextValues, setContextValues] = useState<IPixelawContext>({
         world,

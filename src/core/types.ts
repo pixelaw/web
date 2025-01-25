@@ -1,16 +1,19 @@
 import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
-import type { Bounds, Pixel, TileStore } from "@/webtools/types/types.ts"
-import mitt from "mitt"
+import type { AppStore, Bounds, Coordinate, TileStore } from "@/webtools/types/types.ts"
 
 export type PixelCoreEvents = {
+    cellClicked: Coordinate
+    centerChanged: Coordinate
+    worldViewChanged: Bounds
+    zoomChanged: number
     statusChange: CoreStatus
-    pixelUpdated: { pixel: Pixel }
+    pixelStoreUpdated: number
+    tileStoreUpdated: number
+    appStoreUpdated: number
     userScrolled: { bounds: Bounds }
     userZoomed: { bounds: Bounds }
     cacheUpdated: number
 }
-
-export const pixelCoreEvents = mitt<PixelCoreEvents>()
 
 export type InteractHandler = {
     hoi: string
@@ -22,6 +25,7 @@ export interface Engine {
     interacthandler: InteractHandler
     pixelStore: PixelStore
     tileStore: TileStore
+    appStore: AppStore
     status: EngineStatus
 
     init(engineConfig: EngineConfig): Promise<void>

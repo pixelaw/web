@@ -4,14 +4,12 @@ import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
-import type Viewport from "@/webtools/components/Viewport/ViewPort"
 import { useEffect, useMemo, useRef, useState } from "react"
 import styles from "./ViewportPage.module.css"
 
 const ViewportPage: React.FC = () => {
     //<editor-fold desc="State">
     const {
-        worldConfig,
         pixelawCore: { viewPort },
         coreStatus,
     } = usePixelawProvider()
@@ -28,11 +26,7 @@ const ViewportPage: React.FC = () => {
 
     // const updateService = useUpdateService(worldConfig.serverUrl!);
     const appStore = useDojoAppStore()
-    //
-    // const pixelStore = DojoSqlPixelStore.getInstance(dojoStuff?.sdk!)
-    //
-    // pixelStore.refresh()
-    // const tileStore = useSimpleTileStore(`${worldConfig.serverUrl}/tiles`);
+
     const { color, center, setCenter, zoom } = useViewStateStore()
 
     useSyncedViewStateStore()
@@ -68,15 +62,12 @@ const ViewportPage: React.FC = () => {
     //<editor-fold desc="Output">
 
     const viewportContainerRef = useRef<HTMLDivElement | null>(null)
-    // const viewportRef = useRef<Viewport | null>(null)
-    console.log("viewPort", viewPort)
 
     useEffect(() => {
-        // if (coreStatus === "ready")
-        // if (!viewPort || !viewportContainerRef.current) return
-        // viewPort.setContainer(viewportContainerRef.current)
-        console.log("aa", coreStatus)
-    }, [coreStatus])
+        if (coreStatus !== "ready") return
+
+        viewPort.setContainer(viewportContainerRef.current!)
+    }, [coreStatus, viewPort])
 
     return (
         <>

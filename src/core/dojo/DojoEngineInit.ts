@@ -1,21 +1,20 @@
-import { init } from "@dojoengine/sdk";
-import { DojoProvider } from "@dojoengine/core";
-import type {DojoConfig} from "../types.ts";
-import type { SchemaType } from "@/generated/models.gen.ts";
 import GET_APPS_QUERY from "@/../graphql/GetApps.graphql"
 import { getControllerConnector } from "@/dojo/controller.ts"
 import baseManifest from "@/dojo/manifest.js"
 import { getAbi } from "@/dojo/utils.ts"
+import type { SchemaType } from "@/generated/models.gen.ts"
 import { formatAddress } from "@/global/utils.ts"
-import type {App} from "@/webtools/types/types.ts"
+import type { App } from "@/webtools/types/types.ts"
 import { felt252ToUnicode } from "@/webtools/utils.ts"
 import type ControllerConnector from "@cartridge/connector/controller"
-import {  type Manifest } from "@dojoengine/core"
+import { DojoProvider } from "@dojoengine/core"
+import type { Manifest } from "@dojoengine/core"
 import { BurnerConnector, BurnerManager } from "@dojoengine/create-burner"
-import { type SDK } from "@dojoengine/sdk"
+import { init } from "@dojoengine/sdk"
+import type { SDK } from "@dojoengine/sdk"
 import { GraphQLClient } from "graphql-request"
 import { Account, RpcProvider, shortString } from "starknet"
-
+import type { DojoConfig } from "../types.ts"
 
 type GetAppsResponse = {
     pixelawAppModels: {
@@ -44,9 +43,9 @@ export type DojoStuff = {
 const controllerConnectorCache = new Map<string, ControllerConnector | null>()
 const burnerConnectorCache = new Map<string, Promise<BurnerConnector | null>>()
 
-export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Promise<DojoStuff | null> {
+export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Promise<DojoStuff> {
     if (!worldConfig) {
-        throw new Error("WorldConfig is not loaded");
+        throw new Error("WorldConfig is not loaded")
     }
     try {
         const sdkSetup = {
@@ -62,13 +61,13 @@ export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Pro
                 chainId: "KATANA",
                 revision: "1",
             },
-        };
+        }
 
-        const sdk = await init<SchemaType>(sdkSetup, schema);
-        const { apps, manifest } = await fetchAppsAndManifest(worldConfig);
-        const provider = new DojoProvider(manifest, worldConfig.rpcUrl);
-        const controllerConnector = setupControllerConnector(manifest, worldConfig);
-        const burnerConnector = await setupBurnerConnector(provider, worldConfig);
+        const sdk = await init<SchemaType>(sdkSetup, schema)
+        const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
+        const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
+        const controllerConnector = setupControllerConnector(manifest, worldConfig)
+        const burnerConnector = await setupBurnerConnector(provider, worldConfig)
 
         return {
             sdk,
@@ -77,10 +76,10 @@ export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Pro
             manifest,
             burnerConnector,
             provider,
-        };
+        }
     } catch (error) {
-        console.error("Initialization error:", error);
-        return null;
+        console.error("Initialization error:", error)
+        return null
     }
 }
 
@@ -123,10 +122,10 @@ function setupControllerConnector(manifest: Manifest, worldConfig: DojoConfig): 
 
     const connector = worldConfig.wallets.controller
         ? getControllerConnector({
-            feeTokenAddress: worldConfig.feeTokenAddress,
-            manifest,
-            rpcUrl: worldConfig.wallets.controller.rpcUrl,
-        })
+              feeTokenAddress: worldConfig.feeTokenAddress,
+              manifest,
+              rpcUrl: worldConfig.wallets.controller.rpcUrl,
+          })
         : null
 
     controllerConnectorCache.set(cacheKey, connector)

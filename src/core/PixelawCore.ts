@@ -3,7 +3,7 @@ import { MudEngine } from "@/core/mud/MudEngine.ts"
 import type { CoreStatus, Engine, EngineConstructor, PixelCoreEvents, WorldConfig } from "@/core/types.ts"
 import ViewPort, { type Viewport } from "@/webtools/components/Viewport/ViewPort"
 import type { PixelStore } from "@/webtools/types/PixelStore.types"
-import type { TileStore } from "@/webtools/types/types.ts"
+import type { AppStore, TileStore } from "@/webtools/types/types.ts"
 import mitt from "mitt"
 
 export const supportedEngines: [string, EngineConstructor<Engine>][] = [
@@ -17,6 +17,7 @@ export class PixelawCore {
     engine: Engine = null!
     pixelStore: PixelStore = null!
     tileStore: TileStore = null!
+    appStore: AppStore = null!
     viewPort: Viewport = null!
     events = mitt<PixelCoreEvents>()
 
@@ -26,7 +27,7 @@ export class PixelawCore {
             return
         }
 
-        this.updateStatus("loading")
+        this.updateStatus("loadConfig")
         this.worldConfig = worldConfig
 
         const engine = supportedEngines.find(([engineName]) => engineName === worldConfig.engine)
@@ -37,10 +38,12 @@ export class PixelawCore {
         this.engine = new engineClass()
 
         this.updateStatus("initializing")
+
         await this.engine.init(worldConfig.config)
 
         this.pixelStore = this.engine.pixelStore
         this.tileStore = this.engine.tileStore
+        this.appStore = this.engine.appStore
 
         this.viewPort = new ViewPort(this.events, this.tileStore, this.pixelStore)
 

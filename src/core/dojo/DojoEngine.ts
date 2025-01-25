@@ -5,12 +5,14 @@ import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts"
 import type { DojoConfig, Engine, EngineStatus, InteractHandler } from "@/core/types.ts"
 import { schema } from "@/generated/models.gen.ts"
 import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
-import type { TileStore, UpdateService } from "@/webtools/types/types.ts"
+import type { AppStore, TileStore, UpdateService } from "@/webtools/types/types.ts"
+import { DojoAppStore } from "./DojoAppStore.ts"
 
 export class DojoEngine implements Engine {
     interacthandler: InteractHandler = null!
     pixelStore: PixelStore = null!
     tileStore: TileStore = null!
+    appStore: AppStore = null!
     updateService: UpdateService = null!
     status: EngineStatus = "uninitialized"
     config: DojoConfig = null!
@@ -23,6 +25,9 @@ export class DojoEngine implements Engine {
             this.dojoSetup = await dojoInit(this.config, schema)
             this.status = this.dojoSetup ? "ready" : "error"
 
+            // Setup AppStore
+            this.appStore = new DojoAppStore(this.dojoSetup)
+
             // Setup PixelStore
             this.pixelStore = new DojoSqlPixelStore(this.dojoSetup!.sdk!)
 
@@ -33,7 +38,6 @@ export class DojoEngine implements Engine {
             this.tileStore = new RestTileStore(config.serverUrl)
 
             // TODO Setup InteractHandler
-            // TODO Setup ViewPort
         } catch (error) {
             console.error("Dojo init error:", error)
         }
