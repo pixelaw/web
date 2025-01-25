@@ -1,21 +1,20 @@
-import type { PixelStore as IPixelStore } from "@/webtools/types/PixelStore.types.ts"
+import type { PixelStore as IPixelStore } from "@/core/PixelStore.types.ts"
 import { create } from "zustand"
 
 export type TProviderPixelStore = {
-  store: IPixelStore,
-  setStore: (store: IPixelStore) => void
+    store: IPixelStore
+    setStore: (store: IPixelStore) => void
 }
 
-
 export const usePixelStore = create<TProviderPixelStore>()((set) => ({
-  store: null!,
-  setStore: (store) => set({ store }),
+    store: null!,
+    setStore: (store) => set({ store }),
 }))
 
 // @dev deconstructing the store for easier access, setStore always replaces the store (and thus all other functions) giving you -> PixelStore().getPixel(x,y)
 export const PixelStore = () => {
-  return {
-      ...usePixelStore.getState().store,
-      setStore: usePixelStore.getState().setStore,
-  }
+    return {
+        ...usePixelStore.getState().store,
+        setStore: usePixelStore.getState().setStore,
+    }
 }

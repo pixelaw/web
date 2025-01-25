@@ -1,10 +1,10 @@
+import type { PixelStore } from "@/core/PixelStore.types.ts"
 import { RestTileStore } from "@/core/common/RestTileStore.ts"
 import { WsUpdateService } from "@/core/common/WsUpdateService.ts"
 import { type DojoStuff, dojoInit } from "@/core/dojo/DojoEngineInit.ts"
 import DojoSqlPixelStore from "@/core/dojo/DojoSqlPixelStore.ts"
 import type { DojoConfig, Engine, EngineStatus, InteractHandler } from "@/core/types.ts"
 import { schema } from "@/generated/models.gen.ts"
-import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
 import type { AppStore, TileStore, UpdateService } from "@/webtools/types/types.ts"
 import { DojoAppStore } from "./DojoAppStore.ts"
 

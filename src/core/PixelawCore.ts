@@ -1,8 +1,8 @@
+import type { PixelStore } from "@/core/PixelStore.types.ts"
 import { DojoEngine } from "@/core/dojo/DojoEngine.ts"
 import { MudEngine } from "@/core/mud/MudEngine.ts"
 import type { CoreStatus, Engine, EngineConstructor, PixelCoreEvents, WorldConfig } from "@/core/types.ts"
 import ViewPort, { type Viewport } from "@/webtools/components/Viewport/ViewPort"
-import type { PixelStore } from "@/webtools/types/PixelStore.types"
 import type { AppStore, TileStore } from "@/webtools/types/types.ts"
 import mitt from "mitt"
 

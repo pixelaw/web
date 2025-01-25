@@ -2,7 +2,6 @@ import SimpleColorPicker from "@/components/Viewport/ColorPicker/SimpleColorPick
 import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
-import { useDojoAppStore } from "@/stores/DojoAppStore.ts"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import { useEffect, useMemo, useRef, useState } from "react"
 import styles from "./ViewportPage.module.css"
@@ -20,12 +19,6 @@ const ViewportPage: React.FC = () => {
     //</editor-fold>
 
     //<editor-fold desc="Hooks">
-
-    // if (clientError) return null;
-    // if (!worldConfig) return null
-
-    // const updateService = useUpdateService(worldConfig.serverUrl!);
-    const appStore = useDojoAppStore()
 
     const { color, center, setCenter, zoom } = useViewStateStore()
 

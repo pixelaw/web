@@ -1,4 +1,4 @@
-import { PixelStore } from "@/stores/PixelStore.ts"
+import type { PixelStore } from "@/core/PixelStore.types.ts"
 import type { Coordinate, Dimension, Pixel } from "../../types/types.ts"
 import { applyWorldOffset, getCellSize, numRGBAToHex } from "../../utils.ts"
 import { ZOOM_TILEMODE } from "./constants.ts"
@@ -10,6 +10,7 @@ export function drawPixels(
     dimensions: Dimension,
     worldTranslation: Coordinate,
     hoveredCell: Coordinate | undefined,
+    pixelStore: PixelStore,
 ) {
     const cellSize = getCellSize(zoom)
     const gridDimensions = [Math.ceil(dimensions[0] / cellSize), Math.ceil(dimensions[1] / cellSize)]
@@ -23,7 +24,7 @@ export function drawPixels(
     const drawPixel = (cellX: number, cellY: number, sizeAdjustment = 0) => {
         const worldCoords = applyWorldOffset(worldTranslation, [cellX, cellY])
 
-        const pixel = PixelStore().getPixel(worldCoords)
+        const pixel = pixelStore.getPixel(worldCoords)
         if (!pixel) return
 
         context.fillStyle = numRGBAToHex(pixel.color as number)

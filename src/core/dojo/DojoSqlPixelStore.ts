@@ -1,8 +1,9 @@
 import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
-import type { Pixel, SchemaType } from "@/generated/models.gen.ts"
+
+import type { PixelStore, PixelStoreEvents } from "@/core/PixelStore.types.ts"
+import type { SchemaType } from "@/generated/models.gen.ts"
 import { createSqlQuery } from "@/global/utils.ts"
-import type { PixelStore, PixelStoreEvents } from "@/webtools/types/PixelStore.types.ts"
-import { type Bounds, type Coordinate, MAX_DIMENSION, makeString } from "@/webtools/types/types.ts"
+import { type Bounds, type Coordinate, MAX_DIMENSION, type Pixel, makeString } from "@/webtools/types/types.ts"
 import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
 import type { SDK } from "@dojoengine/sdk"
 import mitt from "mitt"
@@ -131,9 +132,7 @@ class DojoSqlPixelStore implements PixelStore {
             this.setPixel(key, pixel)
         }
     }
-    public status(): TPixelStoreStatus {
-        return "ready" //TODO
-    }
+
     public updateCache() {}
 
     public setCacheUpdated(value: number): void {

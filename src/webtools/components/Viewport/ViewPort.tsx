@@ -6,8 +6,8 @@ import { drawOutline } from "./drawOutline.ts"
 import { drawPixels } from "./drawPixels.ts"
 import { drawTiles } from "./drawTiles.ts"
 
+import type { PixelStore } from "@/core/PixelStore.types.ts"
 import type { PixelCoreEvents } from "@/core/types.ts"
-import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
 import mitt, { type Emitter } from "mitt"
 
 export type ViewportEvents = {
@@ -19,7 +19,6 @@ export type ViewportEvents = {
 }
 
 export class Viewport {
-    public emitter = mitt<ViewportEvents>()
     private canvas: HTMLCanvasElement
     private context: CanvasRenderingContext2D | null
     private bufferCanvas: HTMLCanvasElement
@@ -36,7 +35,7 @@ export class Viewport {
     private dragStartPoint: Coordinate | null = null
     private tileStore: TileStore
     private pixelStore: PixelStore
-    private zoom: number
+    private zoom = 2000
     private center: Coordinate
     private pixelCoreEvents: Emitter<PixelCoreEvents>
 
@@ -55,6 +54,8 @@ export class Viewport {
     }
 
     public setContainer(container: HTMLElement) {
+        this.canvas.width = container.clientWidth
+        this.canvas.height = container.clientHeight
         container.appendChild(this.canvas)
         this.render()
     }
@@ -152,14 +153,22 @@ export class Viewport {
         this.setCenter(this.center)
 
         this.worldOffset = [this.worldOffset[0] + cellDiffX, this.worldOffset[1] + cellDiffY]
-
-        // this.pixelStore.refresh();   // TODO
     }
 
     private render() {
         if (!this.context || !this.bufferContext) return
 
         this.prepareCanvas()
+        console.log(
+            "zoom",
+            this.zoom,
+            "po",
+            this.pixelOffset,
+            "wh",
+            [this.canvas.width, this.canvas.height],
+            "wo",
+            this.worldOffset,
+        )
 
         drawGrid(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height])
         drawTiles(
@@ -177,10 +186,11 @@ export class Viewport {
             [this.canvas.width, this.canvas.height],
             this.worldOffset,
             this.hoveredCell,
+            this.pixelStore,
         )
         drawOutline(this.bufferContext, [this.canvas.width, this.canvas.height])
-        console.log("render")
         this.context.drawImage(this.bufferCanvas, 0, 0)
+        console.log("render")
     }
 
     private prepareCanvas() {

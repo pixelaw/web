@@ -1,4 +1,4 @@
-import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
+import type { PixelStore } from "@/core/PixelStore.types.ts"
 import type { AppStore, Bounds, Coordinate, TileStore } from "@/webtools/types/types.ts"
 
 export type PixelCoreEvents = {
