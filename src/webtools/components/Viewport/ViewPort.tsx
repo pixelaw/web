@@ -1,84 +1,90 @@
-import type {Bounds, Coordinate,  Tileset, TileStore} from "../../types/types.ts";
-import { applyWorldOffset,  cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts";
-import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants.ts";
-import { drawGrid } from "./drawGrid.ts";
-import { drawOutline } from "./drawOutline.ts";
-import { drawPixels } from "./drawPixels.ts";
-import { drawTiles } from "./drawTiles.ts";
+import type { Bounds, Coordinate, TileStore } from "../../types/types.ts"
+import { applyWorldOffset, cellForPosition, getCellSize, handlePixelChanges } from "../../utils.ts"
+import { ZOOM_MAX, ZOOM_MIN, ZOOM_SCALEFACTOR, ZOOM_TILEMODE } from "./constants.ts"
+import { drawGrid } from "./drawGrid.ts"
+import { drawOutline } from "./drawOutline.ts"
+import { drawPixels } from "./drawPixels.ts"
+import { drawTiles } from "./drawTiles.ts"
 
-import mitt from 'mitt';
-import {PixelStore} from "@/webtools/types/PixelStore.types.ts";
+import type { PixelCoreEvents } from "@/core/types.ts"
+import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
+import mitt, { type Emitter } from "mitt"
 
 export type ViewportEvents = {
-    zoomChanged: number;
-    centerChanged: Coordinate;
-    cellClicked: Coordinate;
-    cellHovered: Coordinate;
-    worldViewChanged: Bounds;
-};
-
-
+    zoomChanged: number
+    centerChanged: Coordinate
+    cellClicked: Coordinate
+    cellHovered: Coordinate
+    worldViewChanged: Bounds
+}
 
 export class Viewport {
-    public emitter = mitt<ViewportEvents>();
-    private canvas: HTMLCanvasElement;
-    private context: CanvasRenderingContext2D | null;
-    private bufferCanvas: HTMLCanvasElement;
-    private bufferContext: CanvasRenderingContext2D | null;
-    private pixelOffset: Coordinate = [0, 0];
-    private worldOffset: Coordinate = [0, 0];
-    private hoveredCell: Coordinate | undefined;
-    private worldView: Bounds = [[0, 0], [0, 0]];
-    private lastDragPoint: Coordinate = [0, 0];
-    private dragStart: number = 0;
-    private dragStartPoint: Coordinate | null = null;
-    private tileStore: TileStore;
-    private pixelStore: PixelStore;
-    private zoom: number;
-    private center: Coordinate;
+    public emitter = mitt<ViewportEvents>()
+    private canvas: HTMLCanvasElement
+    private context: CanvasRenderingContext2D | null
+    private bufferCanvas: HTMLCanvasElement
+    private bufferContext: CanvasRenderingContext2D | null
+    private pixelOffset: Coordinate = [0, 0]
+    private worldOffset: Coordinate = [0, 0]
+    private hoveredCell: Coordinate | undefined
+    private worldView: Bounds = [
+        [0, 0],
+        [0, 0],
+    ]
+    private lastDragPoint: Coordinate = [0, 0]
+    private dragStart = 0
+    private dragStartPoint: Coordinate | null = null
+    private tileStore: TileStore
+    private pixelStore: PixelStore
+    private zoom: number
+    private center: Coordinate
+    private pixelCoreEvents: Emitter<PixelCoreEvents>
 
-    constructor(container: HTMLElement, tileStore: TileStore, pixelStore: PixelStore) {
-        this.canvas = document.createElement('canvas');
-        this.context = this.canvas.getContext('2d');
-        this.bufferCanvas = document.createElement('canvas');
-        this.bufferContext = this.bufferCanvas.getContext('2d');
-        this.tileStore = tileStore;
-        this.pixelStore = pixelStore;
+    constructor(pixelCoreEvents: Emitter<PixelCoreEvents>, tileStore: TileStore, pixelStore: PixelStore) {
+        this.canvas = document.createElement("canvas")
+        this.context = this.canvas.getContext("2d")
+        this.bufferCanvas = document.createElement("canvas")
+        this.bufferContext = this.bufferCanvas.getContext("2d")
+        this.tileStore = tileStore
+        this.pixelStore = pixelStore
+        this.pixelCoreEvents = pixelCoreEvents
 
-        container.appendChild(this.canvas);
-        this.setupEventListeners();
-        this.subscribeToEvents();
-        this.render();
+        this.setupEventListeners()
+        this.subscribeToEvents()
+        this.render()
+    }
+
+    public setContainer(container: HTMLElement) {
+        container.appendChild(this.canvas)
     }
 
     private subscribeToEvents() {
-        this.pixelStore.eventEmitter.on('cacheUpdated', (timestamp: number) => {
+        this.pixelCoreEvents.on("cacheUpdated", (timestamp: number) => {
+            console.log(`Cache updated at: ${timestamp}`)
 
-            console.log(`Cache updated at: ${timestamp}`);
-
-            this.render();
-        });
+            this.render()
+        })
     }
 
     private setupEventListeners() {
-        this.canvas.addEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        this.canvas.addEventListener('mouseup', this.handleMouseUp.bind(this));
-        this.canvas.addEventListener('wheel', this.handleWheel.bind(this), { passive: false });
+        this.canvas.addEventListener("mousedown", this.handleMouseDown.bind(this))
+        this.canvas.addEventListener("mousemove", this.handleMouseMove.bind(this))
+        this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this))
+        this.canvas.addEventListener("wheel", this.handleWheel.bind(this), { passive: false })
     }
 
     private handleMouseDown(event: MouseEvent) {
-        this.dragStart = Date.now();
-        this.hoveredCell = undefined;
-        this.dragStartPoint = [event.clientX, event.clientY];
-        this.lastDragPoint = [event.clientX, event.clientY];
+        this.dragStart = Date.now()
+        this.hoveredCell = undefined
+        this.dragStartPoint = [event.clientX, event.clientY]
+        this.lastDragPoint = [event.clientX, event.clientY]
     }
 
     private handleMouseMove(event: MouseEvent) {
         if (this.dragStart) {
-            const mouse: Coordinate = [event.clientX, event.clientY];
-            this.drag(this.lastDragPoint, mouse);
-            this.lastDragPoint = mouse;
+            const mouse: Coordinate = [event.clientX, event.clientY]
+            this.drag(this.lastDragPoint, mouse)
+            this.lastDragPoint = mouse
             // this.pixelStore.updateCache();       // TODO
         } else {
             // Handle hover logic
@@ -86,141 +92,154 @@ export class Viewport {
     }
 
     private handleMouseUp(event: MouseEvent) {
-        let distance = 0;
+        let distance = 0
         if (this.dragStartPoint !== null) {
-            const startPos = this.dragStartPoint;
-            const endPos: Coordinate = [event.clientX, event.clientY];
-            distance = Math.sqrt((endPos[0] - startPos[0]) ** 2 + (endPos[1] - startPos[1]) ** 2);
+            const startPos = this.dragStartPoint
+            const endPos: Coordinate = [event.clientX, event.clientY]
+            distance = Math.sqrt((endPos[0] - startPos[0]) ** 2 + (endPos[1] - startPos[1]) ** 2)
         }
 
-        const timeDiff = Date.now() - this.dragStart;
+        const timeDiff = Date.now() - this.dragStart
         if (timeDiff < 500 && distance < 10) {
-            const rect = this.canvas.getBoundingClientRect();
-            const viewportCell = cellForPosition(this.zoom, this.pixelOffset, [event.clientX - rect.left, event.clientY - rect.top]);
-            const worldClicked = applyWorldOffset(this.worldOffset, viewportCell);
+            const rect = this.canvas.getBoundingClientRect()
+            const viewportCell = cellForPosition(this.zoom, this.pixelOffset, [
+                event.clientX - rect.left,
+                event.clientY - rect.top,
+            ])
+            const worldClicked = applyWorldOffset(this.worldOffset, viewportCell)
 
-            emitter.emit('cellClicked', worldClicked)
+            emitter.emit("cellClicked", worldClicked)
         } else {
-            const mouse: Coordinate = [event.clientX, event.clientY];
-            this.drag(this.lastDragPoint, mouse);
+            const mouse: Coordinate = [event.clientX, event.clientY]
+            this.drag(this.lastDragPoint, mouse)
         }
 
-        this.setCenter(this.calculateCenter());
-        this.dragStart = 0;
-        this.dragStartPoint = null;
+        this.setCenter(this.calculateCenter())
+        this.dragStart = 0
+        this.dragStartPoint = null
     }
 
     private handleWheel(event: WheelEvent) {
-        event.preventDefault();
+        event.preventDefault()
         // this.pixelStore.updateCache();   // TODO
-        const rect = this.canvas.getBoundingClientRect();
-        let newZoom = this.zoom;
+        const rect = this.canvas.getBoundingClientRect()
+        let newZoom = this.zoom
 
         if (event.deltaY < 0 && this.zoom < ZOOM_MAX) {
-            newZoom *= ZOOM_SCALEFACTOR;
+            newZoom *= ZOOM_SCALEFACTOR
         } else if (event.deltaY > 0 && this.zoom > ZOOM_MIN) {
-            newZoom /= ZOOM_SCALEFACTOR;
+            newZoom /= ZOOM_SCALEFACTOR
         }
 
-        newZoom = Math.round(Math.min(Math.max(newZoom, ZOOM_MIN), ZOOM_MAX));
+        newZoom = Math.round(Math.min(Math.max(newZoom, ZOOM_MIN), ZOOM_MAX))
 
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
+        const mouseX = event.clientX - rect.left
+        const mouseY = event.clientY - rect.top
 
-        const mouseCellBeforeZoom = cellForPosition(this.zoom, this.pixelOffset, [mouseX, mouseY]);
-        const mouseCellAfterZoom = cellForPosition(newZoom, this.pixelOffset, [mouseX, mouseY]);
+        const mouseCellBeforeZoom = cellForPosition(this.zoom, this.pixelOffset, [mouseX, mouseY])
+        const mouseCellAfterZoom = cellForPosition(newZoom, this.pixelOffset, [mouseX, mouseY])
 
-        const cellDiffX = mouseCellAfterZoom[0] - mouseCellBeforeZoom[0];
-        const cellDiffY = mouseCellAfterZoom[1] - mouseCellBeforeZoom[1];
+        const cellDiffX = mouseCellAfterZoom[0] - mouseCellBeforeZoom[0]
+        const cellDiffY = mouseCellAfterZoom[1] - mouseCellBeforeZoom[1]
 
-        this.setZoom(newZoom);
-        this.setCenter(this.center);
+        this.setZoom(newZoom)
+        this.setCenter(this.center)
 
-        this.worldOffset = [
-            this.worldOffset[0] + cellDiffX,
-            this.worldOffset[1] + cellDiffY,
-        ];
-
+        this.worldOffset = [this.worldOffset[0] + cellDiffX, this.worldOffset[1] + cellDiffY]
 
         // this.pixelStore.refresh();   // TODO
     }
 
-
-
     private render() {
+        if (!this.context || !this.bufferContext) return
 
-        if (!this.context || !this.bufferContext) return;
+        this.prepareCanvas()
 
-        this.prepareCanvas();
-
-        drawGrid(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height]);
-        drawTiles(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height], this.worldOffset, this.tileStore.tileset!);
-        drawPixels(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height], this.worldOffset, this.hoveredCell);
-        drawOutline(this.bufferContext, [this.canvas.width, this.canvas.height]);
+        drawGrid(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height])
+        drawTiles(
+            this.bufferContext,
+            this.zoom,
+            this.pixelOffset,
+            [this.canvas.width, this.canvas.height],
+            this.worldOffset,
+            this.tileStore.tileset!,
+        )
+        drawPixels(
+            this.bufferContext,
+            this.zoom,
+            this.pixelOffset,
+            [this.canvas.width, this.canvas.height],
+            this.worldOffset,
+            this.hoveredCell,
+        )
+        drawOutline(this.bufferContext, [this.canvas.width, this.canvas.height])
         console.log("render")
-        this.context.drawImage(this.bufferCanvas, 0, 0);
+        this.context.drawImage(this.bufferCanvas, 0, 0)
     }
 
     private prepareCanvas() {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
+        const width = this.canvas.width
+        const height = this.canvas.height
 
-        if (!this.context || !this.bufferContext) return;
+        if (!this.context || !this.bufferContext) return
 
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.context.imageSmoothingEnabled = false;
+        this.canvas.width = width
+        this.canvas.height = height
+        this.context.imageSmoothingEnabled = false
 
-        this.bufferCanvas.width = width;
-        this.bufferCanvas.height = height;
-        this.bufferContext.imageSmoothingEnabled = false;
+        this.bufferCanvas.width = width
+        this.bufferCanvas.height = height
+        this.bufferContext.imageSmoothingEnabled = false
 
-        this.bufferContext.clearRect(0, 0, width, height);
+        this.bufferContext.clearRect(0, 0, width, height)
     }
 
     private calculateCenter(): Coordinate {
-        const width = this.canvas.width;
-        const height = this.canvas.height;
-        const viewportCenter: Coordinate = [width / 2, height / 2];
-        const adjustedCenter: Coordinate = [viewportCenter[0] + this.pixelOffset[0], viewportCenter[1] + this.pixelOffset[1]];
-        const centerCell = cellForPosition(this.zoom, [0, 0], adjustedCenter);
-        return applyWorldOffset(this.worldOffset, centerCell);
+        const width = this.canvas.width
+        const height = this.canvas.height
+        const viewportCenter: Coordinate = [width / 2, height / 2]
+        const adjustedCenter: Coordinate = [
+            viewportCenter[0] + this.pixelOffset[0],
+            viewportCenter[1] + this.pixelOffset[1],
+        ]
+        const centerCell = cellForPosition(this.zoom, [0, 0], adjustedCenter)
+        return applyWorldOffset(this.worldOffset, centerCell)
     }
 
     private drag(lastDragPoint: Coordinate, mouse: Coordinate) {
-        const cellWidth = getCellSize(this.zoom);
+        const cellWidth = getCellSize(this.zoom)
         const [newPixelOffset, newWorldOffset] = handlePixelChanges(
             [...this.pixelOffset],
             [...this.worldOffset],
             [lastDragPoint[0] - mouse[0], lastDragPoint[1] - mouse[1]],
             cellWidth,
-        );
+        )
 
-        this.pixelOffset = newPixelOffset;
-        this.worldOffset = newWorldOffset;
+        this.pixelOffset = newPixelOffset
+        this.worldOffset = newWorldOffset
     }
 
     private setZoom(newZoom: number) {
-        this.zoom = newZoom;
-        emitter.emit('zoomChanged', newZoom);
+        this.zoom = newZoom
+        emitter.emit("zoomChanged", newZoom)
     }
 
     private setCenter(newCenter: Coordinate) {
-        this.center = newCenter;
-        emitter.emit('centerChanged', newCenter);
+        this.center = newCenter
+        emitter.emit("centerChanged", newCenter)
     }
 
     private setWorldView(newBounds: Bounds) {
-        this.worldView = newBounds;
-        emitter.emit('worldViewChanged', newBounds);
+        this.worldView = newBounds
+        emitter.emit("worldViewChanged", newBounds)
     }
 
     public destroy() {
-        this.canvas.removeEventListener('mousedown', this.handleMouseDown.bind(this));
-        this.canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this));
-        this.canvas.removeEventListener('mouseup', this.handleMouseUp.bind(this));
-        this.canvas.removeEventListener('wheel', this.handleWheel.bind(this));
+        this.canvas.removeEventListener("mousedown", this.handleMouseDown.bind(this))
+        this.canvas.removeEventListener("mousemove", this.handleMouseMove.bind(this))
+        this.canvas.removeEventListener("mouseup", this.handleMouseUp.bind(this))
+        this.canvas.removeEventListener("wheel", this.handleWheel.bind(this))
     }
 }
 
-export default Viewport;
+export default Viewport

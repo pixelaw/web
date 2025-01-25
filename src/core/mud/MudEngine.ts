@@ -1,17 +1,21 @@
-import type {PixelStore} from "@/webtools/types/PixelStore.types.ts";
-import type {EngineConfig, MudEngineConfig} from "./types.ts";
+import type { PixelStore } from "@/webtools/types/PixelStore.types.ts"
+import type { MudConfig } from "../types.ts"
 
-import {EngineStatus} from "@/core/types.ts";
-import {Engine, InteractHandler} from "@/core/types.ts";
+import type { DojoStuff } from "@/core/dojo/DojoEngineInit.ts"
+import type { DojoConfig, EngineStatus } from "@/core/types.ts"
+import type { Engine, InteractHandler } from "@/core/types.ts"
+import type { TileStore, UpdateService } from "@/webtools/types/types.ts"
 
 export class MudEngine implements Engine {
-    interacthandler: InteractHandler = null!;
-    pixelStore: PixelStore = null!;
-    status: EngineStatus = "uninitialized";
+    interacthandler: InteractHandler = null!
+    pixelStore: PixelStore = null!
+    tileStore: TileStore = null!
+    updateService: UpdateService = null!
+    status: EngineStatus = "uninitialized"
+    config: DojoConfig = null!
+    dojoSetup: DojoStuff | null = null
 
-    async init(engineConfig: EngineConfig) {
-        const config = engineConfig as MudEngineConfig;
-        console.log("ooppp mud", config, this.constructor["name"]);
-
+    async init(config: MudConfig) {
+        console.log("ooppp mud", config, this.constructor.name)
     }
 }
