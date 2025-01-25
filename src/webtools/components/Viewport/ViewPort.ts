@@ -22,6 +22,7 @@ export class Viewport {
         [0, 0],
         [0, 0],
     ]
+
     private lastDragPoint: Coordinate = [0, 0]
     private dragStart = 0
     private dragStartPoint: Coordinate | null = null
@@ -30,6 +31,7 @@ export class Viewport {
     private zoom = 2000
     private center: Coordinate
     private pixelCoreEvents: Emitter<PixelCoreEvents>
+    private isRendering = false
 
     constructor(pixelCoreEvents: Emitter<PixelCoreEvents>, tileStore: TileStore, pixelStore: PixelStore) {
         this.canvas = document.createElement("canvas")
@@ -42,26 +44,44 @@ export class Viewport {
 
         this.setupEventListeners()
         this.subscribeToEvents()
-        this.render()
+        this.requestRender()
+    }
+
+    private requestRender() {
+        if (!this.isRendering) {
+            this.isRendering = true
+            requestAnimationFrame(() => {
+                this.render()
+                this.isRendering = false
+            })
+        }
     }
 
     public setContainer(container: HTMLElement) {
         this.canvas.width = container.clientWidth
         this.canvas.height = container.clientHeight
         container.appendChild(this.canvas)
-        this.render()
+        this.requestRender()
+        this.setCenter()
     }
 
     private subscribeToEvents() {
+        // TODO decide on whether pixelstore cacheupdated goes to a global event bus or not
+        this.pixelStore.eventEmitter.on("cacheUpdated", (timestamp: number) => {
+            console.log(`cacheUpdated at: ${timestamp}`)
+
+            this.requestRender()
+        })
+
         this.pixelCoreEvents.on("pixelStoreUpdated", (timestamp: number) => {
             console.log(`pixelStoreUpdated at: ${timestamp}`)
 
-            this.render()
+            this.requestRender()
         })
         this.pixelCoreEvents.on("tileStoreUpdated", (timestamp: number) => {
             console.log(`tileStoreUpdated at: ${timestamp}`)
 
-            this.render()
+            this.requestRender()
         })
     }
 
@@ -167,23 +187,13 @@ export class Viewport {
         this.setCenter(this.center)
 
         this.worldOffset = [this.worldOffset[0] + cellDiffX, this.worldOffset[1] + cellDiffY]
-        this.render()
+        this.requestRender()
     }
 
     private render() {
         if (!this.context || !this.bufferContext) return
 
         this.prepareCanvas()
-        console.log(
-            "zoom",
-            this.zoom,
-            "po",
-            this.pixelOffset,
-            "wh",
-            [this.canvas.width, this.canvas.height],
-            "wo",
-            this.worldOffset,
-        )
 
         drawGrid(this.bufferContext, this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height])
         drawTiles(
@@ -205,7 +215,6 @@ export class Viewport {
         )
         drawOutline(this.bufferContext, [this.canvas.width, this.canvas.height])
         this.context.drawImage(this.bufferCanvas, 0, 0)
-        console.log("render")
     }
 
     private prepareCanvas() {
@@ -214,8 +223,10 @@ export class Viewport {
 
         if (!this.context || !this.bufferContext) return
 
+        // These lines are needed, otherwise an interesting ghosting effect..
         this.canvas.width = width
         this.canvas.height = height
+
         this.context.imageSmoothingEnabled = false
 
         this.bufferCanvas.width = width
@@ -237,6 +248,13 @@ export class Viewport {
         return applyWorldOffset(this.worldOffset, centerCell)
     }
 
+    private calculateWorldViewBounds(): Bounds {
+        const topLeft = applyWorldOffset(this.worldOffset, [0, 0])
+        const bottomRightCell = cellForPosition(this.zoom, this.pixelOffset, [this.canvas.width, this.canvas.height])
+        const bottomRight = applyWorldOffset(this.worldOffset, bottomRightCell)
+        return [topLeft, bottomRight]
+    }
+
     private drag(lastDragPoint: Coordinate, mouse: Coordinate) {
         const cellWidth = getCellSize(this.zoom)
         const [newPixelOffset, newWorldOffset] = handlePixelChanges(
@@ -248,7 +266,7 @@ export class Viewport {
 
         this.pixelOffset = newPixelOffset
         this.worldOffset = newWorldOffset
-        this.render()
+        this.requestRender()
     }
 
     private setZoom(newZoom: number) {
@@ -259,7 +277,9 @@ export class Viewport {
     private setCenter(newCenter: Coordinate) {
         this.center = newCenter
         this.pixelCoreEvents.emit("centerChanged", newCenter)
-        this.render()
+        this.pixelStore.prepare(this.calculateWorldViewBounds())
+        this.pixelStore.refresh()
+        this.requestRender()
     }
 
     private setWorldView(newBounds: Bounds) {

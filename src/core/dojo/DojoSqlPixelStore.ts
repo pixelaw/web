@@ -75,13 +75,11 @@ class DojoSqlPixelStore implements PixelStore {
     }
 
     public refresh(): void {
-        this.queryBounds = [
-            [0, 0],
-            [1, 1],
-        ] // TODO
+        console.log(JSON.stringify(this.queryBounds))
         if (!this.queryBounds) return
+        const q = createSqlQuery(this.queryBounds)
 
-        const query = encodeURIComponent(createSqlQuery(this.queryBounds))
+        const query = encodeURIComponent(q)
 
         this.worker.postMessage({ query })
     }

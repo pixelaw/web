@@ -23,24 +23,24 @@ const ViewportPage: React.FC = () => {
     const { color, center, setCenter, zoom } = useViewStateStore()
 
     useSyncedViewStateStore()
-
-    const handleParamsRequired = (params: unknown) => {
-        setParamDialogParams(params)
-        setParamDialogVisible(true)
-    }
-
-    const handleParamSubmit = (submittedParams: unknown) => {
-        submitParamsCallback(submittedParams)
-        setParamDialogVisible(false)
-    }
-
-    useDojoInteractHandler(handleParamsRequired, (submit) => {
-        setSubmitParamsCallback(() => submit)
-    })
-
-    const closeParamDialog = () => {
-        setParamDialogVisible(false)
-    }
+    //
+    // const handleParamsRequired = (params: unknown) => {
+    //     setParamDialogParams(params)
+    //     setParamDialogVisible(true)
+    // }
+    //
+    // const handleParamSubmit = (submittedParams: unknown) => {
+    //     submitParamsCallback(submittedParams)
+    //     setParamDialogVisible(false)
+    // }
+    //
+    // useDojoInteractHandler(handleParamsRequired, (submit) => {
+    //     setSubmitParamsCallback(() => submit)
+    // })
+    //
+    // const closeParamDialog = () => {
+    //     setParamDialogVisible(false)
+    // }
 
     //</editor-fold>
 

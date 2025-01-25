@@ -1,5 +1,5 @@
 import type { Position } from "@/global/types.ts"
-import {Bounds, Coordinate, MAX_DIMENSION} from "@/webtools/types/types.ts"
+import { type Bounds, type Coordinate, MAX_DIMENSION } from "@/webtools/types/types.ts"
 import { shortString } from "starknet"
 
 /*
@@ -101,26 +101,26 @@ export const formatWalletAddress = (address: string) => {
 }
 
 export function createSqlQuery(bounds: Bounds) {
-    const [[left, top], [right, bottom]] = bounds;
-    const xWraps = right - left < 0;
-    const yWraps = bottom - top < 0;
-    let result = `SELECT color as 'c', substr(text,  -4) as 't', (x << 16) | y AS v FROM "pixelaw-Pixel" WHERE( 1 = 0 ) `;
-    const ZERO = 0;
+    const [[left, top], [right, bottom]] = bounds
+    const xWraps = right - left < 0
+    const yWraps = bottom - top < 0
+    let result = `SELECT color as 'c', substr(text,  -4) as 't', (x << 16) | y AS v FROM "pixelaw-Pixel" WHERE( 1 = 0 ) `
+    const ZERO = 0
 
     if (xWraps && yWraps) {
-        result += ` OR(x >= ${left} AND y >= ${top} AND x <= ${MAX_DIMENSION} AND y <= ${MAX_DIMENSION} )`;
-        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`;
-        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`;
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`;
+        result += ` OR(x >= ${left} AND y >= ${top} AND x <= ${MAX_DIMENSION} AND y <= ${MAX_DIMENSION} )`
+        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`
+        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`
+        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
     } else if (xWraps) {
-        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`;
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`;
+        result += ` OR(x >= ${left} AND y >= ${ZERO} AND x <= ${MAX_DIMENSION} AND y <= ${bottom} )`
+        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
     } else if (yWraps) {
-        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`;
-        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`;
+        result += ` OR(x >= ${ZERO} AND y >= ${top} AND x <= ${right} AND y <= ${MAX_DIMENSION} )`
+        result += ` OR(x >= ${ZERO} AND y >= ${ZERO} AND x <= ${right} AND y <= ${bottom} )`
     } else {
-        result += ` OR(x >= ${top} AND y >= ${bottom} AND x <= ${right} AND y <= ${bottom} )`;
+        result += ` OR(x >= ${top} AND y >= ${top} AND x <= ${right} AND y <= ${bottom} )`
     }
-    result += ";";
-    return result;
+    result += ";"
+    return result
 }

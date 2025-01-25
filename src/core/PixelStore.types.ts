@@ -1,4 +1,5 @@
 import type { Bounds, Coordinate, Pixel } from "@/webtools/types/types.ts"
+import type mitt from "mitt"
 
 // export type TPixelStoreStatus = "ready" | "loading" | "error"
 
@@ -7,6 +8,7 @@ export type PixelStoreEvents = {
 }
 
 export interface PixelStore {
+    eventEmitter: ReturnType<typeof mitt<PixelStoreEvents>>
     refresh: () => void
     prepare: (bounds: Bounds) => void
     getPixel: (coordinate: Coordinate) => Pixel | undefined
