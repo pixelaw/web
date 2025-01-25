@@ -70,10 +70,10 @@ export class Viewport {
         this.canvas.addEventListener("mousemove", this.handleMouseMove.bind(this))
         this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this))
         this.canvas.addEventListener("wheel", this.handleWheel.bind(this), { passive: false })
+        this.canvas.addEventListener("mouseleave", this.handleMouseLeave.bind(this), { passive: false })
     }
 
     private handleMouseDown(event: MouseEvent) {
-        console.log("handleMouseDown")
         this.dragStart = Date.now()
         this.hoveredCell = undefined
         this.dragStartPoint = [event.clientX, event.clientY]
@@ -86,8 +86,31 @@ export class Viewport {
             this.drag(this.lastDragPoint, mouse)
             this.lastDragPoint = mouse
         } else {
-            // Handle hover logic
+            if (this.zoom > ZOOM_TILEMODE) {
+                // Only when zoomed in, we'll handle hovered Pixel
+                const rect = this.canvas.getBoundingClientRect()
+
+                const viewportCell = cellForPosition(this.zoom, this.pixelOffset, [
+                    event.clientX - rect.left,
+                    event.clientY - rect.top,
+                ])
+                const hoveredWorldCell = applyWorldOffset(this.worldOffset, viewportCell)
+                if (
+                    (!this.hoveredCell && viewportCell) ||
+                    (this.hoveredCell &&
+                        (this.hoveredCell[0] !== hoveredWorldCell[0] || this.hoveredCell[1] !== hoveredWorldCell[1]))
+                ) {
+                    this.hoveredCell = viewportCell
+
+                    // TODO emit onCellHover(hoveredWorldCell)
+                }
+            }
         }
+    }
+
+    private handleMouseLeave(_event: MouseEvent) {
+        this.hoveredCell = undefined
+        // TODO emit onCellHover(hoveredWorldCell)
     }
 
     private handleMouseUp(event: MouseEvent) {
@@ -120,7 +143,6 @@ export class Viewport {
 
     private handleWheel(event: WheelEvent) {
         event.preventDefault()
-        // this.pixelStore.updateCache();   // TODO
         const rect = this.canvas.getBoundingClientRect()
         let newZoom = this.zoom
 
@@ -145,6 +167,7 @@ export class Viewport {
         this.setCenter(this.center)
 
         this.worldOffset = [this.worldOffset[0] + cellDiffX, this.worldOffset[1] + cellDiffY]
+        this.render()
     }
 
     private render() {
@@ -225,6 +248,7 @@ export class Viewport {
 
         this.pixelOffset = newPixelOffset
         this.worldOffset = newWorldOffset
+        this.render()
     }
 
     private setZoom(newZoom: number) {
@@ -235,6 +259,7 @@ export class Viewport {
     private setCenter(newCenter: Coordinate) {
         this.center = newCenter
         this.pixelCoreEvents.emit("centerChanged", newCenter)
+        this.render()
     }
 
     private setWorldView(newBounds: Bounds) {

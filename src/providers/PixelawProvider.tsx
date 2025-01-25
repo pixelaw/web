@@ -56,10 +56,13 @@ export const PixelawProvider = ({ children }: { children: ReactNode }) => {
                 }))
             })
         }
+        const logger = (type, e) => console.log(type, e)
 
+        pixelawCore.events.on("*", logger)
         pixelawCore.events.on("statusChange", handleStatusChange)
         return () => {
             pixelawCore.events.off("statusChange", handleStatusChange)
+            pixelawCore.events.off("*", logger)
         }
     }, [worldConfig, pixelawCore])
 
