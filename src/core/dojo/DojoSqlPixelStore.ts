@@ -1,10 +1,9 @@
-import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
-
 import type { PixelStore, PixelStoreEvents } from "@/core/PixelStore.types.ts"
+import { SUBSCRIPTION_QUERY, getQueryBounds } from "@/dojo/querybuilder.ts"
 import type { SchemaType } from "@/generated/models.gen.ts"
 import { createSqlQuery } from "@/global/utils.ts"
-import { type Bounds, type Coordinate, MAX_DIMENSION, type Pixel, makeString } from "@/webtools/types/types.ts"
-import { MAX_VIEW_SIZE, areBoundsEqual } from "@/webtools/utils.ts"
+import { type Bounds, type Coordinate, type Pixel, makeString } from "@/webtools/types/types.ts"
+import { areBoundsEqual } from "@/webtools/utils.ts"
 import type { SDK } from "@dojoengine/sdk"
 import mitt from "mitt"
 
@@ -39,6 +38,7 @@ class DojoSqlPixelStore implements PixelStore {
 
         try {
             const subscription = await this.sdk.subscribeEntityQuery({
+                // @ts-ignore TODO fix the type of query
                 query: SUBSCRIPTION_QUERY,
                 callback: (response) => {
                     if (response.error) {

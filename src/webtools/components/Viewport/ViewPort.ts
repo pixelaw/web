@@ -8,15 +8,7 @@ import { drawTiles } from "./drawTiles.ts"
 
 import type { PixelStore } from "@/core/PixelStore.types.ts"
 import type { PixelCoreEvents } from "@/core/types.ts"
-import mitt, { type Emitter } from "mitt"
-
-export type ViewportEvents = {
-    zoomChanged: number
-    centerChanged: Coordinate
-    cellClicked: Coordinate
-    cellHovered: Coordinate
-    worldViewChanged: Bounds
-}
+import type { Emitter } from "mitt"
 
 export class Viewport {
     private canvas: HTMLCanvasElement

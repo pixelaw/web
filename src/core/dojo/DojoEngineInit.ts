@@ -9,7 +9,7 @@ import { felt252ToUnicode } from "@/webtools/utils.ts"
 import type ControllerConnector from "@cartridge/connector/controller"
 import { DojoProvider } from "@dojoengine/core"
 import type { Manifest } from "@dojoengine/core"
-import { BurnerConnector, BurnerManager } from "@dojoengine/create-burner"
+import { BurnerConnector, BurnerManager, type BurnerManagerOptions } from "@dojoengine/create-burner"
 import { init } from "@dojoengine/sdk"
 import type { SDK } from "@dojoengine/sdk"
 import { GraphQLClient } from "graphql-request"
@@ -47,39 +47,35 @@ export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Pro
     if (!worldConfig) {
         throw new Error("WorldConfig is not loaded")
     }
-    try {
-        const sdkSetup = {
-            client: {
-                rpcUrl: worldConfig.rpcUrl,
-                toriiUrl: worldConfig.toriiUrl,
-                relayUrl: "",
-                worldAddress: worldConfig.world,
-            },
-            domain: {
-                name: "pixelaw",
-                version: "1.0",
-                chainId: "KATANA",
-                revision: "1",
-            },
-        }
 
-        const sdk = await init<SchemaType>(sdkSetup, schema)
-        const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
-        const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
-        const controllerConnector = setupControllerConnector(manifest, worldConfig)
-        const burnerConnector = await setupBurnerConnector(provider, worldConfig)
+    const sdkSetup = {
+        client: {
+            rpcUrl: worldConfig.rpcUrl,
+            toriiUrl: worldConfig.toriiUrl,
+            relayUrl: "",
+            worldAddress: worldConfig.world,
+        },
+        domain: {
+            name: "pixelaw",
+            version: "1.0",
+            chainId: "KATANA",
+            revision: "1",
+        },
+    }
 
-        return {
-            sdk,
-            controllerConnector,
-            apps,
-            manifest,
-            burnerConnector,
-            provider,
-        }
-    } catch (error) {
-        console.error("Initialization error:", error)
-        return null
+    const sdk = await init<SchemaType>(sdkSetup, schema)
+    const { apps, manifest } = await fetchAppsAndManifest(worldConfig)
+    const provider = new DojoProvider(manifest, worldConfig.rpcUrl)
+    const controllerConnector = setupControllerConnector(manifest, worldConfig)
+    const burnerConnector = await setupBurnerConnector(provider, worldConfig)
+
+    return {
+        sdk,
+        controllerConnector,
+        apps,
+        manifest,
+        burnerConnector,
+        provider,
     }
 }
 
@@ -124,7 +120,7 @@ function setupControllerConnector(manifest: Manifest, worldConfig: DojoConfig): 
         ? getControllerConnector({
               feeTokenAddress: worldConfig.feeTokenAddress,
               manifest,
-              rpcUrl: worldConfig.wallets.controller.rpcUrl,
+              rpcUrl: worldConfig.wallets.controller.rpcUrl!,
           })
         : null
 
@@ -150,10 +146,10 @@ async function setupBurnerConnector(
                 rpcProvider: rpcProvider.provider,
                 masterAccount: new Account(
                     rpcProvider.provider,
-                    burnerConfig.masterAddress,
-                    burnerConfig.masterPrivateKey,
+                    burnerConfig.masterAddress!,
+                    burnerConfig.masterPrivateKey!,
                 ),
-            })
+            } as unknown as BurnerManagerOptions)
 
             await manager.init()
             if (manager.list().length === 0) {

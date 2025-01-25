@@ -1,7 +1,6 @@
 import type { Bounds, Coordinate, Pixel } from "@/webtools/types/types.ts"
-import type { Emitter } from "mitt"
 
-export type TPixelStoreStatus = "ready" | "loading" | "error"
+// export type TPixelStoreStatus = "ready" | "loading" | "error"
 
 export type PixelStoreEvents = {
     cacheUpdated: number
