@@ -1,4 +1,5 @@
 import { DEFAULT_WORLD } from "@/global/constants.ts"
+import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import useSettingStore from "@/stores/SettingStore.ts"
 import { type Coordinate, MAX_DIMENSION } from "@/webtools/types/types.ts"
 import { useEffect, useRef } from "react"
@@ -9,7 +10,7 @@ const ZOOM_PRESETS = { tile: 100, pixel: 7000 }
 const DEFAULT_ZOOM = ZOOM_PRESETS.pixel
 const DEFAULT_CENTER: Coordinate = [MAX_DIMENSION - 100, MAX_DIMENSION - 100]
 
-interface AppState {
+interface ViewState {
     selectedApp: string
     center: Coordinate
     zoom: number
@@ -21,11 +22,11 @@ interface AppState {
     setCenter: (center: Coordinate) => void
     setZoom: (zoom: number) => void
     setColor: (color: string) => void
-    setHoveredCell: (cell?: Coordinate) => void
-    setClickedCell: (cell?: Coordinate) => void
+    // setHoveredCell: (cell?: Coordinate) => void
+    // setClickedCell: (cell?: Coordinate) => void
 }
 
-export const useViewStateStore = create<AppState>((set) => ({
+const useViewState = create<ViewState>((set) => ({
     selectedApp: "",
     center: DEFAULT_CENTER,
     zoom: DEFAULT_ZOOM,
@@ -38,17 +39,16 @@ export const useViewStateStore = create<AppState>((set) => ({
     setZoom: (zoom: number) => set({ zoom }),
     setColor: (color: string) => set({ color: color }),
     setWorld: (world: string) => set({ world: world }),
-    setHoveredCell: (cell?: Coordinate) => set({ hoveredCell: cell }),
-    setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
+    // setHoveredCell: (cell?: Coordinate) => set({ hoveredCell: cell }),
+    // setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
 }))
 
-export function useSyncedViewStateStore() {
+export function useViewStateStore(): ViewState {
     const location = useLocation()
-    const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } = useViewStateStore()
-
+    const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } = useViewState()
     const { setWorld, world } = useSettingStore()
-
     const initialLoad = useRef(true)
+    const { pixelawCore } = usePixelawProvider()
 
     // Initial load
     useEffect(() => {
@@ -85,11 +85,24 @@ export function useSyncedViewStateStore() {
         }
         updateURL()
     }, [selectedApp, center, zoom, color, world])
-}
 
-export const ViewStateStore = () => {
-    return {
-        ...useViewStateStore.getState(),
-        set: useViewStateStore.setState,
-    }
+    // Handle viewport events
+    useEffect(() => {
+        const handleZoomChange = (newZoom: number) => {
+            setZoom(newZoom)
+        }
+        const handleCenterChange = (newCenter: Coordinate) => {
+            setCenter(newCenter)
+        }
+
+        pixelawCore.events.on("zoomChanged", handleZoomChange)
+        pixelawCore.events.on("centerChanged", handleCenterChange)
+
+        return () => {
+            pixelawCore.events.off("zoomChanged", handleZoomChange)
+            pixelawCore.events.off("centerChanged", handleCenterChange)
+        }
+    }, [pixelawCore, setZoom, setCenter])
+
+    return { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor, world }
 }
