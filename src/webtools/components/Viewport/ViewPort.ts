@@ -62,7 +62,6 @@ export class Viewport {
         this.canvas.height = container.clientHeight
         container.appendChild(this.canvas)
         this.requestRender()
-        this.setCenter()
     }
 
     private subscribeToEvents() {
@@ -143,6 +142,7 @@ export class Viewport {
 
         const timeDiff = Date.now() - this.dragStart
         if (timeDiff < 500 && distance < 10) {
+            // It's a click
             const rect = this.canvas.getBoundingClientRect()
             const viewportCell = cellForPosition(this.zoom, this.pixelOffset, [
                 event.clientX - rect.left,
@@ -152,11 +152,12 @@ export class Viewport {
 
             this.pixelCoreEvents.emit("cellClicked", worldClicked)
         } else {
+            // It's the end of a drag
             const mouse: Coordinate = [event.clientX, event.clientY]
             this.drag(this.lastDragPoint, mouse)
+            this.setCenter(this.calculateCenter())
         }
 
-        this.setCenter(this.calculateCenter())
         this.dragStart = 0
         this.dragStartPoint = null
     }

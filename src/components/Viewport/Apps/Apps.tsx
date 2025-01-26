@@ -1,17 +1,17 @@
 import App from "@/components/Viewport/App/App.tsx"
+import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { useViewStateStore } from "@/stores/ViewStateStore.ts"
-import type { AppStore } from "@/webtools/types/types.ts"
+
 import styles from "./Apps.module.css"
 
-type AppsProps = {
-    appStore: AppStore
-}
+const Apps: React.FC = () => {
+    const { pixelawCore } = usePixelawProvider()
+    const { appStore } = pixelawCore
 
-const Apps: React.FC<AppsProps> = ({ appStore }) => {
     const { selectedApp, setSelectedApp, hoveredCell } = useViewStateStore()
 
+    if (!appStore) return null
     const allApps = appStore.getAll()
-
     return (
         <div className={styles.inner}>
             {allApps.map((app) => (
@@ -21,10 +21,7 @@ const Apps: React.FC<AppsProps> = ({ appStore }) => {
                     onClick={() => setSelectedApp(app.name)}
                     className={selectedApp === app.name ? styles.selected : ""}
                 >
-                    <App
-                        icon={app.icon}
-                        name={app.name}
-                    />
+                    <App icon={app.icon} name={app.name} />
                 </div>
             ))}
             {hoveredCell && (

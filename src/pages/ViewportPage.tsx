@@ -1,26 +1,36 @@
+import Apps from "@/components/Viewport/Apps/Apps.tsx"
 import SimpleColorPicker from "@/components/Viewport/ColorPicker/SimpleColorPicker.tsx"
 import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
+import type { CoreStatus } from "@/core/types.ts"
 import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
+import type { Coordinate } from "@/webtools/types/types.ts"
 import { useEffect, useMemo, useRef, useState } from "react"
 import styles from "./ViewportPage.module.css"
 
 const ViewportPage: React.FC = () => {
-    //<editor-fold desc="State">
-    const {
-        pixelawCore: { viewPort },
-        coreStatus,
-    } = usePixelawProvider()
-    const [paramDialogVisible, setParamDialogVisible] = useState(false)
-    const [paramDialogParams, setParamDialogParams] = useState<unknown>(null)
-    const [submitParamsCallback, setSubmitParamsCallback] = useState<(params: unknown) => void>(() => () => {})
+    const { pixelawCore, coreStatus } = usePixelawProvider()
+    const { viewPort, appStore } = pixelawCore
 
-    //</editor-fold>
+    const { color, center, setCenter, zoom, setZoom } = useViewStateStore()
 
-    //<editor-fold desc="Hooks">
+    useEffect(() => {
+        const handleZoomChange = (newZoom: number) => {
+            setZoom(newZoom)
+        }
+        const handleCenterChange = (newCenter: Coordinate) => {
+            setCenter(newCenter)
+        }
 
-    const { color, center, setCenter, zoom } = useViewStateStore()
+        pixelawCore.events.on("zoomChanged", handleZoomChange)
+        pixelawCore.events.on("centerChanged", handleCenterChange)
+
+        return () => {
+            pixelawCore.events.off("zoomChanged", handleZoomChange)
+            pixelawCore.events.off("centerChanged", handleCenterChange)
+        }
+    }, [pixelawCore, setZoom, setCenter])
 
     useSyncedViewStateStore()
     //
@@ -42,17 +52,9 @@ const ViewportPage: React.FC = () => {
     //     setParamDialogVisible(false)
     // }
 
-    //</editor-fold>
-
-    //<editor-fold desc="Handlers">
-
     const zoombasedAdjustment = useMemo(() => {
         return zoom > 3000 ? "1rem" : "-100%"
     }, [zoom])
-
-    //</editor-fold>
-
-    //<editor-fold desc="Output">
 
     const viewportContainerRef = useRef<HTMLDivElement | null>(null)
 
@@ -68,12 +70,12 @@ const ViewportPage: React.FC = () => {
             <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
                 <SimpleColorPicker color={color} onColorSelect={useViewStateStore.getState().setColor} />
             </div>
-            {/*<div className={styles.apps} style={{ left: zoombasedAdjustment }}>*/}
-            {/*    <Apps appStore={appStore} />*/}
-            {/*</div>*/}
-            {paramDialogVisible && (
-                <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />
-            )}
+            <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
+                <Apps appStore={appStore} />
+            </div>
+            {/*{paramDialogVisible && (*/}
+            {/*    <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />*/}
+            {/*)}*/}
         </>
     )
 
