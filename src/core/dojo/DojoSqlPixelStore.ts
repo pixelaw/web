@@ -65,7 +65,7 @@ class DojoSqlPixelStore implements PixelStore {
     private handleRefreshWorker(event: MessageEvent) {
         const { success, data, error } = event.data
         if (success) {
-            this.state = { ...data }
+            this.state = { ...this.state, ...data }
 
             this.eventEmitter.emit("cacheUpdated", Date.now())
             console.log("pixels in cache: ", Object.keys(this.state).length)

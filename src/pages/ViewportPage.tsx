@@ -1,12 +1,9 @@
 import Apps from "@/components/Viewport/Apps/Apps.tsx"
 import SimpleColorPicker from "@/components/Viewport/ColorPicker/SimpleColorPicker.tsx"
-import ParamDialog from "@/components/Viewport/ParamDialog/ParamDialog.tsx"
-import type { CoreStatus } from "@/core/types.ts"
-import { useDojoInteractHandler } from "@/hooks/useDojoInteractHandler.js"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import { useSyncedViewStateStore, useViewStateStore } from "@/stores/ViewStateStore.ts"
 import type { Coordinate } from "@/webtools/types/types.ts"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import styles from "./ViewportPage.module.css"
 
 const ViewportPage: React.FC = () => {
@@ -71,7 +68,7 @@ const ViewportPage: React.FC = () => {
                 <SimpleColorPicker color={color} onColorSelect={useViewStateStore.getState().setColor} />
             </div>
             <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
-                <Apps appStore={appStore} />
+                <Apps />
             </div>
             {/*{paramDialogVisible && (*/}
             {/*    <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />*/}
