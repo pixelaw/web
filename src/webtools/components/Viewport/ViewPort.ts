@@ -185,7 +185,7 @@ export class Viewport {
         const cellDiffY = mouseCellAfterZoom[1] - mouseCellBeforeZoom[1]
 
         this.setZoom(newZoom)
-        this.setCenter(this.center)
+        this.setCenter(this.calculateCenter())
 
         this.worldOffset = [this.worldOffset[0] + cellDiffX, this.worldOffset[1] + cellDiffY]
         this.requestRender()

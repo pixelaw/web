@@ -3,7 +3,7 @@ import type { App, AppStore } from "@/webtools/types/types.ts"
 
 export class DojoAppStore implements AppStore {
     private dojoStuff
-
+    // TODO handle updated apps
     constructor(dojoStuff: DojoStuff) {
         this.dojoStuff = dojoStuff
     }
