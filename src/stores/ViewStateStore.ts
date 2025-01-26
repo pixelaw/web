@@ -1,14 +1,13 @@
 import { DEFAULT_WORLD } from "@/global/constants.ts"
-import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import useSettingStore from "@/stores/SettingStore.ts"
-import type { Coordinate } from "@/webtools/types/types.ts"
+import { type Coordinate, MAX_DIMENSION } from "@/webtools/types/types.ts"
 import { useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { create } from "zustand"
 
 const ZOOM_PRESETS = { tile: 100, pixel: 7000 }
 const DEFAULT_ZOOM = ZOOM_PRESETS.pixel
-const DEFAULT_CENTER: Coordinate = [4294967194, 0]
+const DEFAULT_CENTER: Coordinate = [MAX_DIMENSION - 100, MAX_DIMENSION - 100]
 
 interface AppState {
     selectedApp: string

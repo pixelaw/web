@@ -13,6 +13,15 @@ const ViewportPage: React.FC = () => {
     const { color, center, setCenter, zoom, setZoom } = useViewStateStore()
 
     useEffect(() => {
+        if (viewPort) viewPort.setZoom(zoom)
+    }, [zoom, viewPort])
+
+    useEffect(() => {
+        if (viewPort) viewPort.setCenter(center)
+    }, [center, viewPort])
+
+    // Handle changes from inside ViewPort
+    useEffect(() => {
         const handleZoomChange = (newZoom: number) => {
             setZoom(newZoom)
         }

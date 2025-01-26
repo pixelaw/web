@@ -270,12 +270,15 @@ export class Viewport {
         this.requestRender()
     }
 
-    private setZoom(newZoom: number) {
+    public setZoom(newZoom: number) {
+        if (this.zoom === newZoom) return
         this.zoom = newZoom
         this.pixelCoreEvents.emit("zoomChanged", newZoom)
     }
 
-    private setCenter(newCenter: Coordinate) {
+    public setCenter(newCenter: Coordinate) {
+        if (this.center === newCenter) return
+
         this.center = newCenter
         this.pixelCoreEvents.emit("centerChanged", newCenter)
         this.pixelStore.prepare(this.calculateWorldViewBounds())
