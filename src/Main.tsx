@@ -1,13 +1,12 @@
 import Loading from "@/components/Loading/Loading.tsx"
 import MenuBar from "@/components/MenuBar/MenuBar.tsx"
+import GamePage from "@/pages/GamePage/GamePage.tsx"
 import SettingsPage from "@/pages/SettingsPage.tsx"
-import ViewportPage from "@/pages/ViewportPage.tsx"
 import WalletSelectorPage from "@/pages/WalletSelectorPage.tsx"
 import WorldSelectorPage from "@/pages/WorldSelectorPage.tsx"
 import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import { Route, Routes } from "react-router-dom"
 import styles from "./Main.module.css"
-
 
 function Main() {
     //<editor-fold desc="State">
@@ -16,7 +15,7 @@ function Main() {
 
     //<editor-fold desc="Hooks">
 
-    const { clientState, clientError } = usePixelawProvider()
+    const { coreStatus } = usePixelawProvider()
 
     //</editor-fold>
 
@@ -29,12 +28,12 @@ function Main() {
     //</editor-fold>
 
     //<editor-fold desc="Output">
-    if (clientState === "loading") {
+    if (["uninitialized", "initializing", "loadConfig"].includes(coreStatus)) {
         document.title = "PixeLAW: Loading"
         return <Loading />
     }
 
-    if (clientState === "error") {
+    if (coreStatus === "error") {
         document.title = "PixeLAW: Error"
         const errorMessage = `${clientError}`
         return (
@@ -61,7 +60,7 @@ function Main() {
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/world" element={<WorldSelectorPage />} />
                     <Route path="/wallet" element={<WalletSelectorPage />} />
-                    <Route path="/" element={<ViewportPage />} />
+                    <Route path="/" element={<GamePage />} />
                 </Routes>
             </div>
         </div>

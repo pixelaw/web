@@ -1,10 +1,13 @@
+import Apps from "@/components/Viewport/Apps/Apps.tsx"
+import SimpleColorPicker from "@/components/Viewport/ColorPicker/SimpleColorPicker.tsx"
 import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import useSettingStore from "@/stores/SettingStore.ts"
 import { type Coordinate, MAX_DIMENSION } from "@/webtools/types/types.ts"
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { useLocation } from "react-router-dom"
-import { create } from "zustand"
+import { create } from "zustand/index"
+import styles from "./GamePage.module.css"
 
 const ZOOM_PRESETS = { tile: 100, pixel: 7000 }
 const DEFAULT_ZOOM = ZOOM_PRESETS.pixel
@@ -22,8 +25,8 @@ interface ViewState {
     setCenter: (center: Coordinate) => void
     setZoom: (zoom: number) => void
     setColor: (color: string) => void
-    // setHoveredCell: (cell?: Coordinate) => void
-    // setClickedCell: (cell?: Coordinate) => void
+    setHoveredCell: (cell?: Coordinate) => void
+    setClickedCell: (cell?: Coordinate) => void
 }
 
 const useViewState = create<ViewState>((set) => ({
@@ -39,16 +42,36 @@ const useViewState = create<ViewState>((set) => ({
     setZoom: (zoom: number) => set({ zoom }),
     setColor: (color: string) => set({ color: color }),
     setWorld: (world: string) => set({ world: world }),
-    // setHoveredCell: (cell?: Coordinate) => set({ hoveredCell: cell }),
-    // setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
+    setHoveredCell: (cell?: Coordinate) => set({ hoveredCell: cell }),
+    setClickedCell: (cell?: Coordinate) => set({ clickedCell: cell }),
 }))
 
-export function useViewStateStore(): ViewState {
+const GamePage: React.FC = () => {
+    const { pixelawCore, coreStatus } = usePixelawProvider()
+    const { viewPort } = pixelawCore
+    const viewportContainerRef = useRef<HTMLDivElement | null>(null)
+
     const location = useLocation()
-    const { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor } = useViewState()
+    const {
+        selectedApp,
+        setSelectedApp,
+        center,
+        setCenter,
+        zoom,
+        setZoom,
+        color,
+        setColor,
+        hoveredCell,
+        setHoveredCell,
+        clickedCell,
+        setClickedCell,
+    } = useViewState()
     const { setWorld, world } = useSettingStore()
     const initialLoad = useRef(true)
-    const { pixelawCore } = usePixelawProvider()
+
+    const zoombasedAdjustment = useMemo(() => {
+        return zoom > 3000 ? "1rem" : "-100%"
+    }, [zoom])
 
     // Initial load
     useEffect(() => {
@@ -69,6 +92,7 @@ export function useViewStateStore(): ViewState {
         }
     }, [setSelectedApp, setCenter, setZoom, setColor, location.search, setWorld])
 
+    // Updating the URL
     useEffect(() => {
         const updateURL = () => {
             const queryParams = new URLSearchParams()
@@ -94,15 +118,53 @@ export function useViewStateStore(): ViewState {
         const handleCenterChange = (newCenter: Coordinate) => {
             setCenter(newCenter)
         }
+        const handleCellHover = (cell?: Coordinate) => {
+            setHoveredCell(cell)
+        }
+        const handleCellClick = (cell?: Coordinate) => {
+            setClickedCell(cell)
+        }
 
         pixelawCore.events.on("zoomChanged", handleZoomChange)
         pixelawCore.events.on("centerChanged", handleCenterChange)
+        pixelawCore.events.on("cellHovered", handleCellHover)
+        pixelawCore.events.on("cellClicked", handleCellClick)
 
         return () => {
             pixelawCore.events.off("zoomChanged", handleZoomChange)
             pixelawCore.events.off("centerChanged", handleCenterChange)
+            pixelawCore.events.off("cellHovered", handleCellHover)
+            pixelawCore.events.off("cellClicked", handleCellClick)
         }
-    }, [pixelawCore, setZoom, setCenter])
+    }, [pixelawCore, setZoom, setCenter, setHoveredCell, setClickedCell])
 
-    return { selectedApp, setSelectedApp, center, setCenter, zoom, setZoom, color, setColor, world }
+    useEffect(() => {
+        if (coreStatus !== "ready") return
+
+        viewPort.setContainer(viewportContainerRef.current!)
+    }, [coreStatus, viewPort])
+
+    return (
+        <>
+            <div ref={viewportContainerRef} style={{ width: "100%", height: "100%" }} />
+            <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
+                <SimpleColorPicker color={color} onColorSelect={setColor} />
+            </div>
+            <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
+                <Apps
+                    appStore={pixelawCore.appStore}
+                    selectedApp={selectedApp}
+                    setSelectedApp={setSelectedApp}
+                    hoveredCell={hoveredCell}
+                />
+            </div>
+            {/*{paramDialogVisible && (*/}
+            {/*    <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />*/}
+            {/*)}*/}
+        </>
+    )
+
+    //</editor-fold>
 }
+
+export default GamePage

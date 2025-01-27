@@ -119,9 +119,9 @@ export class Viewport {
                     (this.hoveredCell &&
                         (this.hoveredCell[0] !== hoveredWorldCell[0] || this.hoveredCell[1] !== hoveredWorldCell[1]))
                 ) {
-                    this.hoveredCell = viewportCell
+                    this.hoveredCell = hoveredWorldCell
 
-                    // TODO emit onCellHover(hoveredWorldCell)
+                    this.pixelCoreEvents.emit("cellHovered", viewportCell)
                 }
             }
         }
@@ -129,7 +129,7 @@ export class Viewport {
 
     private handleMouseLeave(_event: MouseEvent) {
         this.hoveredCell = undefined
-        // TODO emit onCellHover(hoveredWorldCell)
+        this.pixelCoreEvents.emit("cellHovered", undefined)
     }
 
     private handleMouseUp(event: MouseEvent) {

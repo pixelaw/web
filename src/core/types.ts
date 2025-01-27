@@ -3,6 +3,7 @@ import type { AppStore, Bounds, Coordinate, TileStore } from "@/webtools/types/t
 
 export type PixelCoreEvents = {
     cellClicked: Coordinate
+    cellHovered: Coordinate | undefined
     centerChanged: Coordinate
     worldViewChanged: Bounds
     zoomChanged: number

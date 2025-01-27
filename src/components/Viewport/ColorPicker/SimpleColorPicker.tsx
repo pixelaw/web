@@ -1,3 +1,4 @@
+import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
 import styles from "./SimpleColorPicker.module.css"
 
 const colors = [

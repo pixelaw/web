@@ -1,17 +1,18 @@
 import App from "@/components/Viewport/App/App.tsx"
-import { usePixelawProvider } from "@/providers/PixelawProvider.tsx"
-import { useViewStateStore } from "@/stores/ViewStateStore.ts"
-
+import type { AppStore, Coordinate } from "@/webtools/types/types.ts"
 import styles from "./Apps.module.css"
 
-const Apps: React.FC = () => {
-    const { pixelawCore } = usePixelawProvider()
-    const { appStore } = pixelawCore
+export type AppsProps = {
+    appStore: AppStore
+    setSelectedApp: (app: string) => void
+    selectedApp: string
+    hoveredCell: Coordinate | undefined
+}
 
-    const { selectedApp, setSelectedApp, hoveredCell } = useViewStateStore()
-
+const Apps: React.FC<AppsProps> = ({ appStore, setSelectedApp, selectedApp, hoveredCell }) => {
     if (!appStore) return null
     const allApps = appStore.getAll()
+
     return (
         <div className={styles.inner}>
             {allApps.map((app) => (
