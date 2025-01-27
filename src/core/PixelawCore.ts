@@ -22,6 +22,9 @@ export class PixelawCore {
     viewPort: Canvas2DRenderer = null!
     events = mitt<PixelCoreEvents>()
 
+    // TODO add Query(string) manager that allows safe read/write to the zoom/world etc.
+    // TODO Wallets?
+
     async loadWorld(worldConfig: WorldConfig) {
         if (this.worldConfig && JSON.stringify(this.worldConfig) === JSON.stringify(worldConfig)) {
             console.log("Configuration already loaded.")
