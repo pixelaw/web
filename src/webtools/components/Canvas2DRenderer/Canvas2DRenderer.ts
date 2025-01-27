@@ -10,7 +10,7 @@ import type { PixelStore } from "@/core/PixelStore.types.ts"
 import type { PixelCoreEvents } from "@/core/types.ts"
 import type { Emitter } from "mitt"
 
-export class Viewport {
+export class Canvas2DRenderer {
     private canvas: HTMLCanvasElement
     private context: CanvasRenderingContext2D | null
     private bufferCanvas: HTMLCanvasElement
@@ -298,5 +298,3 @@ export class Viewport {
         this.canvas.removeEventListener("wheel", this.handleWheel.bind(this))
     }
 }
-
-export default Viewport

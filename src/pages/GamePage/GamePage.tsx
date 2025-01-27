@@ -1,5 +1,5 @@
-import Apps from "@/components/Viewport/Apps/Apps.tsx"
-import SimpleColorPicker from "@/components/Viewport/ColorPicker/SimpleColorPicker.tsx"
+import Apps from "@/components/GamePage/Apps/Apps.tsx"
+import SimpleColorPicker from "@/components/GamePage/ColorPicker/SimpleColorPicker.tsx"
 import { DEFAULT_WORLD } from "@/global/constants.ts"
 import { usePixelawProvider } from "@/providers/PixelawProvider.js"
 import useSettingStore from "@/stores/SettingStore.ts"
@@ -51,6 +51,7 @@ const GamePage: React.FC = () => {
     const { viewPort } = pixelawCore
     const viewportContainerRef = useRef<HTMLDivElement | null>(null)
 
+    // v TODO move below to Core
     const location = useLocation()
     const {
         selectedApp,
@@ -109,6 +110,8 @@ const GamePage: React.FC = () => {
         }
         updateURL()
     }, [selectedApp, center, zoom, color, world])
+
+    // ^ TODO move Above to Core
 
     // Handle viewport events
     useEffect(() => {

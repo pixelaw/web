@@ -1,4 +1,4 @@
-import App from "@/components/Viewport/App/App.tsx"
+import App from "@/components/GamePage/App/App.tsx"
 import type { AppStore, Coordinate } from "@/webtools/types/types.ts"
 import styles from "./Apps.module.css"
 

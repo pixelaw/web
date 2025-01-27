@@ -2,7 +2,8 @@ import type { PixelStore } from "@/core/PixelStore.types.ts"
 import { DojoEngine } from "@/core/dojo/DojoEngine.ts"
 import { MudEngine } from "@/core/mud/MudEngine.ts"
 import type { CoreStatus, Engine, EngineConstructor, PixelCoreEvents, WorldConfig } from "@/core/types.ts"
-import ViewPort, { type Viewport } from "@/webtools/components/Viewport/ViewPort.ts"
+
+import { Canvas2DRenderer } from "@/webtools/components/Canvas2DRenderer/Canvas2DRenderer"
 import type { AppStore, TileStore } from "@/webtools/types/types.ts"
 import mitt from "mitt"
 
@@ -18,7 +19,7 @@ export class PixelawCore {
     pixelStore: PixelStore = null!
     tileStore: TileStore = null!
     appStore: AppStore = null!
-    viewPort: Viewport = null!
+    viewPort: Canvas2DRenderer = null!
     events = mitt<PixelCoreEvents>()
 
     async loadWorld(worldConfig: WorldConfig) {
@@ -45,10 +46,12 @@ export class PixelawCore {
         this.tileStore = this.engine.tileStore
         this.appStore = this.engine.appStore
 
-        this.viewPort = new ViewPort(this.events, this.tileStore, this.pixelStore)
+        this.viewPort = new Canvas2DRenderer(this.events, this.tileStore, this.pixelStore)
 
         this.updateStatus("ready")
     }
+
+    // TODO url stuff here, not in GamePage
 
     private updateStatus(newStatus: CoreStatus) {
         this.status = newStatus

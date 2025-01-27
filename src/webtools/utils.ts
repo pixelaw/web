@@ -1,5 +1,5 @@
+import { ZOOM_FACTOR } from "@/webtools/components/Canvas2DRenderer/constants.ts"
 import { shortString } from "starknet"
-import { ZOOM_FACTOR } from "./components/Viewport/constants.ts"
 import {
     type Bounds,
     type Coordinate,
@@ -414,5 +414,8 @@ if (import.meta.vitest) {
 }
 
 export function miniUID() {
-    return (`000${(Math.random() * 46656 | 0).toString(36)}`).slice(-3) + (`000${(Math.random() * 46656 | 0).toString(36)}`).slice(-3);
+    return (
+        `000${((Math.random() * 46656) | 0).toString(36)}`.slice(-3) +
+        `000${((Math.random() * 46656) | 0).toString(36)}`.slice(-3)
+    )
 }
