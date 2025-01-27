@@ -147,9 +147,11 @@ const GamePage: React.FC = () => {
     return (
         <>
             <div ref={viewportContainerRef} style={{ width: "100%", height: "100%" }} />
+
             <div className={styles.colorpicker} style={{ bottom: zoombasedAdjustment }}>
                 <SimpleColorPicker color={color} onColorSelect={setColor} />
             </div>
+
             <div className={styles.apps} style={{ left: zoombasedAdjustment }}>
                 <Apps
                     appStore={pixelawCore.appStore}
@@ -158,9 +160,6 @@ const GamePage: React.FC = () => {
                     hoveredCell={hoveredCell}
                 />
             </div>
-            {/*{paramDialogVisible && (*/}
-            {/*    <ParamDialog params={paramDialogParams} onSubmit={handleParamSubmit} onClose={closeParamDialog} />*/}
-            {/*)}*/}
         </>
     )
 
