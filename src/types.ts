@@ -1,68 +1,174 @@
 
-type PixelawEngine = {
-  type: string;
-  config: unknown;
+import type mitt from "mitt"
+
+export type Pixel = {
+    action: string
+    color: number | string
+    owner: string
+    text: string
+    timestamp: number | string
+    x: number
+    y: number
 }
 
-type MudEngineType = PixelawEngine & {
-  config: {
-    serverUrl: string;
-    world: string
-  }
-}
-
-type DojoEngineType = PixelawEngine & {
-  config: {
-    toriiUrl: string;
-    serverUrl: string;
-    rpcUrl: string;
-    relayUrl: string;
-    world: string;
-    wallets: {
-      burner: {
-        masterAddress: string;
-        masterPrivateKey: string;
-        accountClassHash: string;
-      };
-      controller: {
-        rpcUrl: string;
-        profileUrl: string;
-        url: string;
-      };
-    };
-  }
-}
-
-
-type PixelawConfig = {
-  engine: PixelawEngine;
-  description: string;
-}
-
-const DojoConfig: DojoEngineType = {
-  type: "Dojo",
-  config: {
-    toriiUrl: "http://127.0.0.1:8080",
-    serverUrl: "http://127.0.0.1:3000",
-    rpcUrl: "http://127.0.0.1:5050",
-    relayUrl: "http://127.0.0.1:8080",
-    world: "0x1869796b1c25976fc5f4b08ca84995945aa68a8850d3739c96e4c9994456ed7",
-    wallets: {
-      burner: {
-        masterAddress: "0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec",
-        masterPrivateKey: "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912",
-        accountClassHash: "0x07dc7899aa655b0aae51eadff6d801a58e97dd99cf4666ee59e704249e51adf2"
-      },
-      controller: {
-        rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
-        profileUrl: "https://api.cartridge.gg/x/starknet/mainnet",
-        url: "https://api.cartridge.gg/x/starknet/mainnet"
-      }
+export type App = {
+    system: string
+    name: string
+    // manifest: string
+    icon: string
+    action: string
+    entity: {
+        id: string
     }
-  },
 }
 
-export const localEmpty: PixelawConfig = {
-  description: "dude",
-  engine: DojoConfig
+export type Tile = HTMLImageElement
+
+export type TileChangedMessage = {
+    tileName: string
+    timestamp: number
+}
+
+export interface UpdateService {
+    // tileChanged: TileChangedMessage | null
+    setBounds: (newBounds: Bounds) => void
+}
+
+export interface AppStore {
+    getByName: (name: string) => App | undefined
+    getAll: () => App[]
+}
+
+
+export interface TileStore {
+    refresh: () => void
+    prepare: (bounds: Bounds) => void
+    // fetchTile: (key: string) => void
+    // getTile: (key: string) => Tile | undefined | "";
+    // setTile: (key: string, tile: Tile) => Promise<void>;
+    setTiles: (tiles: { key: string; tile: Tile }[]) => Promise<void>
+    tileset: Tileset | null
+    cacheUpdated: number
+}
+
+export interface Tileset {
+    tileSize: number
+    scaleFactor: number
+    bounds: Bounds
+    tileRows: (Tile | undefined | "")[][]
+}
+
+export type Dimension = [width: number, height: number]
+export type Coordinate = [number, number]
+export type Bounds = [topLeft: Coordinate, bottomRight: Coordinate]
+
+// export const MAX_DIMENSION: number = 4_294_967_295
+export const MAX_DIMENSION: number = 32_767 // 2**15 -1
+
+// Don't query everytime bounds change, but only when the buffer resolution changes
+// So when bounds change from 5 to 6, but Buffer is 10, no requery happens
+export const QUERY_BUFFER: number = 10
+
+export const TILESIZE = 100
+
+// TODO handle scalefactor 10 later
+export const DEFAULT_SCALEFACTOR = 1
+
+export function makeString<Coordinate>(coordinate: Coordinate): string {
+    if (!Array.isArray(coordinate) || coordinate.length !== 2) {
+        throw new Error("Invalid coordinate")
+    }
+    return `${coordinate[0]}_${coordinate[1]}`
+}
+
+export type PixelCoreEvents = {
+    cellClicked: Coordinate
+    cellHovered: Coordinate | undefined
+    centerChanged: Coordinate
+    worldViewChanged: Bounds
+    zoomChanged: number
+    statusChange: CoreStatus
+    pixelStoreUpdated: number
+    tileStoreUpdated: number
+    appStoreUpdated: number
+    userScrolled: { bounds: Bounds }
+    userZoomed: { bounds: Bounds }
+    cacheUpdated: number
+}
+
+export type InteractHandler = {
+    hoi: string
+}
+
+export type EngineStatus = "ready" | "loading" | "error" | "uninitialized"
+export type CoreStatus = "uninitialized" | "loadConfig" | "initializing" | "ready" | "error"
+export interface Engine {
+    interacthandler: InteractHandler
+    pixelStore: PixelStore
+    tileStore: TileStore
+    appStore: AppStore
+    status: EngineStatus
+
+    init(engineConfig: EngineConfig): Promise<void>
+}
+
+export type EngineConstructor<T extends Engine> = new () => T
+
+export interface WalletConfig {
+    masterAddress?: string
+    masterPrivateKey?: string
+    accountClassHash?: string
+    rpcUrl?: string
+    profileUrl?: string
+    url?: string
+}
+
+export interface DojoConfig {
+    serverUrl: string
+    rpcUrl: string
+    toriiUrl: string
+    relayUrl: string
+    feeTokenAddress: string
+    wallets: {
+        burner?: WalletConfig
+        controller?: WalletConfig
+    }
+    world: string
+}
+
+// biome-ignore lint/complexity/noBannedTypes: TODO impl
+export type MudConfig = {}
+
+export type EngineConfig = DojoConfig | MudConfig
+
+export interface DojoWorldConfig {
+    engine: "dojo"
+    description: string
+    config: DojoConfig
+}
+
+export interface MudWorldConfig {
+    engine: "mud"
+    description: string
+    config: MudConfig
+}
+
+export type WorldConfig = DojoWorldConfig | MudWorldConfig
+
+
+export type PixelStoreEvents = {
+    cacheUpdated: number
+}
+
+export interface PixelStore {
+    eventEmitter: ReturnType<typeof mitt<PixelStoreEvents>>
+    refresh: () => void
+    prepare: (bounds: Bounds) => void
+    getPixel: (coordinate: Coordinate) => Pixel | undefined
+    setPixelColor: (coord: Coordinate, color: number) => void
+    setPixel: (key: string, pixel: Pixel) => void
+    setPixels: (pixels: { key: string; pixel: Pixel }[]) => void
+    unload?: () => Promise<void>
+    // updateCache: () => void
+    // cacheUpdated: number
 }

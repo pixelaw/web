@@ -1,0 +1,20 @@
+query GetAllApps {
+    pixelawAppModels(first: 1000) {
+        totalCount
+        edges {
+            node {
+                system
+                name
+                icon
+                action
+                entity {
+                    id
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
