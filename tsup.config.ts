@@ -2,7 +2,7 @@ import alias from "esbuild-plugin-alias"
 import { defineConfig } from "tsup"
 
 export default defineConfig({
-    entry: ["src/index.ts", "src/engines/dojo/DojoSqlPixelStore.webworker.ts"],
+    entry: ["src/index.ts", "src/engines/dojo/DojoEngine.ts", "src/engines/dojo/DojoSqlPixelStore.webworker.ts"],
     esbuildPlugins: [
         alias({
             "@": "./src",

@@ -8,27 +8,9 @@ import type { Manifest } from "@dojoengine/core"
 import { BurnerConnector, BurnerManager, type BurnerManagerOptions } from "@dojoengine/create-burner"
 import { init } from "@dojoengine/sdk"
 import type { SDK } from "@dojoengine/sdk"
-import { GraphQLClient } from "graphql-request"
 import { Account, RpcProvider, shortString } from "starknet"
-import GET_APPS_QUERY from "./graphql/GetApps.graphql"
 import baseManifest from "./utils/manifest.js"
-import { felt252ToUnicode, formatAddress, getAbi } from "./utils/utils.ts"
-
-type GetAppsResponse = {
-    pixelawAppModels: {
-        edges: Array<{
-            node: {
-                system: string
-                name: string
-                icon: string
-                action: string
-                entity: {
-                    id: string
-                }
-            }
-        }>
-    }
-}
+import { felt252ToString, felt252ToUnicode, formatAddress, getAbi } from "./utils/utils.ts"
 
 export type DojoStuff = {
     apps: App[]
@@ -78,19 +60,25 @@ export async function dojoInit(worldConfig: DojoConfig, schema: SchemaType): Pro
 }
 
 async function fetchAppsAndManifest(worldConfig: DojoConfig): Promise<{ apps: App[]; manifest: Manifest }> {
-    const gqlClient = new GraphQLClient(`${worldConfig.toriiUrl}/graphql`)
     try {
-        const data = await gqlClient.request<GetAppsResponse>(GET_APPS_QUERY)
+        const query = "SELECT internal_entity_id, name, system, action, icon FROM 'pixelaw-App';"
 
-        const apps = data.pixelawAppModels.edges.map(({ node }) => ({
-            name: shortString.decodeShortString(node.name),
-            icon: felt252ToUnicode(node.icon),
-            action: shortString.decodeShortString(node.action),
-            system: node.system,
-            entity: {
-                id: node.entity.id,
-            },
-        }))
+        const response = await fetch(`http://localhost:8080/sql?query=${query}`)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        const json = await response.json()
+        const apps = json.map((item) => {
+            return {
+                name: felt252ToString(item.name),
+                icon: felt252ToUnicode(item.icon),
+                action: felt252ToString(item.action),
+                system: item.system,
+                entity: {
+                    id: item.internal_entity_id,
+                },
+            }
+        })
 
         const contracts = await Promise.all(
             apps.map((app) => getAbi(new RpcProvider({ nodeUrl: worldConfig.rpcUrl }), app)),
@@ -109,7 +97,7 @@ async function fetchAppsAndManifest(worldConfig: DojoConfig): Promise<{ apps: Ap
 }
 
 function setupControllerConnector(manifest: Manifest, worldConfig: DojoConfig): ControllerConnector | null {
-    return null // TODO disabling controller since it broke with latest dojo update
+    // return null // TODO disabling controller since it broke with latest dojo update
     if (!worldConfig.wallets.controller) {
         return null
     }
@@ -142,6 +130,7 @@ async function setupBurnerConnector(
     const promise = (async () => {
         if (worldConfig.wallets?.burner) {
             const burnerConfig = worldConfig.wallets.burner
+
             const manager = new BurnerManager({
                 ...burnerConfig,
                 feeTokenAddress: worldConfig.feeTokenAddress,

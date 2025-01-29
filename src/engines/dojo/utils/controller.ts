@@ -45,10 +45,9 @@ export const getControllerConnector = ({ rpcUrl, feeTokenAddress, manifest }: Co
         // })
     }
 
-    console.log("0-0000000000000000000000000")
     return new ControllerConnector({
         // policies,
-        defaultChainId: "",
+        defaultChainId: "0x534e5f4d41494e", // TODO this is just copied from a debug, and it makes it not crash...
         chains: [{ rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet" }],
         // profileUrl,
         // slot: "pixelaw-slot",

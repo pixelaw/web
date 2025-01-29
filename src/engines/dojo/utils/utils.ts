@@ -1,4 +1,3 @@
-import { felt252ToString } from "@/global/utils.ts"
 import { type RpcProvider, shortString } from "starknet"
 export function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms))
@@ -29,7 +28,8 @@ export const felt252ToString = (felt252Input: string | number | bigint) => {
     if (result === "0x0" || result === "0") return ""
     if (typeof result === "string") {
         try {
-            return shortString.decodeShortString(result)
+            // biome-ignore lint/suspicious/noControlCharactersInRegex: Somehow null characters are in the string
+            return shortString.decodeShortString(result).replace(/^\u0000+/, "")
         } catch (e) {
             return result
         }

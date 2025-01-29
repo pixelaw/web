@@ -1,11 +1,12 @@
+import { RestTileStore } from "@/common/RestTileStore.ts"
 import { WsUpdateService } from "@/common/WsUpdateService.ts"
-import { type DojoStuff, dojoInit } from "@/engines/dojo/DojoEngineInit.ts"
+import { type DojoStuff, dojoInit } from "@/engines/dojo/DojoEngine.init.ts"
 import DojoSqlPixelStore from "@/engines/dojo/DojoSqlPixelStore.ts"
 import { schema } from "@/engines/dojo/generated/models.gen.ts"
 import type { DojoConfig, Engine, EngineStatus, InteractHandler } from "@/types.ts"
 import type { PixelStore } from "@/types.ts"
 import type { AppStore, TileStore, UpdateService } from "@/types.ts"
-import { RestTileStore } from "../../common/RestTileStore.ts"
+import type { Connector } from "@starknet-react/core"
 import { DojoAppStore } from "./DojoAppStore.ts"
 
 export class DojoEngine implements Engine {
@@ -17,6 +18,7 @@ export class DojoEngine implements Engine {
     status: EngineStatus = "uninitialized"
     config: DojoConfig = null!
     dojoSetup: DojoStuff | null = null
+    walletConnectors: Connector[]
 
     async init(config: DojoConfig) {
         this.config = config
@@ -36,6 +38,8 @@ export class DojoEngine implements Engine {
 
             // Setup TileStore
             this.tileStore = new RestTileStore(config.serverUrl)
+
+            // Setup WalletConnectors
 
             // TODO Setup InteractHandler
         } catch (error) {

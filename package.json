@@ -24,29 +24,30 @@
     "@dojoengine/state": "^1.0.12",
     "@dojoengine/torii-client": "^1.0.12",
     "@dojoengine/utils": "^1.0.12",
+    "@starknet-react/core": "3.6.2",
     "@types/upng-js": "^2.1.5",
     "autoprefixer": "^10.4.20",
     "browserify-zlib": "^0.2.0",
     "dotenv": "^16.4.7",
-    "graphql": "^16.10.0",
-    "graphql-request": "^7.1.2",
     "idb-keyval": "^6.2.1",
     "immer": "^10.1.1",
     "mitt": "^3.0.1",
     "pngjs3": "^6.1.1",
-    "starknet": "^6.11.0",
+    "starknet": "6.21.0",
     "starknetkit": "^2.6.1",
     "upng-js": "^2.1.0",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@graphql-codegen/cli": "^5.0.3",
-    "@graphql-codegen/typescript-graphql-request": "^6.2.0",
     "esbuild-plugin-alias": "^0.2.1",
     "globals": "^15.14.0",
     "tsup": "^8.3.6",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
+  },
+  "resolutions": {
+    "starknet": "6.21.0",
+    "@starknet-react/core": "3.6.2"
   }
 }
