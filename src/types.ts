@@ -1,4 +1,3 @@
-
 import type mitt from "mitt"
 
 export type Pixel = {
@@ -17,17 +16,13 @@ export type App = {
     // manifest: string
     icon: string
     action: string
+    plugin: string
     entity: {
         id: string
     }
 }
 
 export type Tile = HTMLImageElement
-
-export type TileChangedMessage = {
-    tileName: string
-    timestamp: number
-}
 
 export interface UpdateService {
     // tileChanged: TileChangedMessage | null
@@ -38,7 +33,6 @@ export interface AppStore {
     getByName: (name: string) => App | undefined
     getAll: () => App[]
 }
-
 
 export interface TileStore {
     refresh: () => void
@@ -51,6 +45,21 @@ export interface TileStore {
     cacheUpdated: number
 }
 
+//  @dev TODO this is just a sketch
+export interface EngineAction {
+    execute: () => void
+}
+
+export interface Interact {
+    execute: () => void
+}
+
+//  @dev TODO this is just a sketch
+export interface Interaction {
+    dialog: HTMLDialogElement
+    actions: EngineAction[]
+}
+
 export interface Tileset {
     tileSize: number
     scaleFactor: number
@@ -59,7 +68,16 @@ export interface Tileset {
 }
 
 export type Dimension = [width: number, height: number]
+
+// Used internally
 export type Coordinate = [number, number]
+
+// Used for SmartContracts
+export type Position = {
+    x: number
+    y: number
+}
+
 export type Bounds = [topLeft: Coordinate, bottomRight: Coordinate]
 
 // export const MAX_DIMENSION: number = 4_294_967_295
@@ -94,22 +112,20 @@ export type PixelCoreEvents = {
     userScrolled: { bounds: Bounds }
     userZoomed: { bounds: Bounds }
     cacheUpdated: number
-}
-
-export type InteractHandler = {
-    hoi: string
+    appChange: App | null
 }
 
 export type EngineStatus = "ready" | "loading" | "error" | "uninitialized"
 export type CoreStatus = "uninitialized" | "loadConfig" | "initializing" | "ready" | "error"
 export interface Engine {
-    interacthandler: InteractHandler
     pixelStore: PixelStore
     tileStore: TileStore
     appStore: AppStore
     status: EngineStatus
+    // TODO walletConnectors generic type??
 
     init(engineConfig: EngineConfig): Promise<void>
+    getInteraction(app: App, pixel: Pixel): Interaction
 }
 
 export type EngineConstructor<T extends Engine> = new () => T
@@ -154,7 +170,6 @@ export interface MudWorldConfig {
 }
 
 export type WorldConfig = DojoWorldConfig | MudWorldConfig
-
 
 export type PixelStoreEvents = {
     cacheUpdated: number

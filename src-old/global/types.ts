@@ -35,9 +35,9 @@ export type NotificationDataType = {
 }
 
 export type TPackedSQLPixel = {
-    t: string,
+    t: string
     v: number
-    c: string,
+    c: string
 }
 
 export type TPixel = Omit<Pixel, "created_at" | "updated_at" | "timestamp">
@@ -151,9 +151,4 @@ export type Manifest = {
     base: Class
     contracts: Contract[]
     models: Model[]
-}
-
-export type Position = {
-    x: number
-    y: number
 }

@@ -1,6 +1,6 @@
 import { DojoEngine } from "./engines/dojo/DojoEngine.ts"
 import { MudEngine } from "./engines/mud/MudEngine.ts"
-import type { PixelStore } from "./types.ts"
+import type { App, Interaction, Pixel, PixelStore } from "./types.ts"
 import type { CoreStatus, Engine, EngineConstructor, PixelCoreEvents, WorldConfig } from "./types.ts"
 
 import mitt from "mitt"
@@ -21,6 +21,7 @@ export class PixelawCore {
     appStore: AppStore = null!
     viewPort: Canvas2DRenderer = null!
     events = mitt<PixelCoreEvents>()
+    private app: App | null = null
 
     // TODO add Query(string) manager that allows safe read/write to the zoom/world etc.
     // TODO Wallets?
@@ -54,10 +55,26 @@ export class PixelawCore {
         this.updateStatus("ready")
     }
 
+    public getApp(): App | null {
+        return this.app
+    }
+
+    public setApp(newApp: App | null) {
+        this.updateApp(newApp)
+    }
+
+    public getInteraction(pixel: Pixel): Interaction {
+        return this.engine.getInteraction(this.app, pixel)
+    }
     // TODO url stuff here, not in GamePage
 
     private updateStatus(newStatus: CoreStatus) {
         this.status = newStatus
         this.events.emit("statusChange", newStatus)
+    }
+
+    private updateApp(newApp: App) {
+        this.app = newApp
+        this.events.emit("appChange", newApp)
     }
 }
